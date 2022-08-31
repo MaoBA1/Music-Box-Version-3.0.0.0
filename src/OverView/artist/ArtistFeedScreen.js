@@ -35,12 +35,15 @@ const ArtistFeedScreen = props => {
     const [commentScreenVisible, setCommentScreenVisble] = useState(false);
     
     
-    useEffect(async() => {
-        const jsonToken = await AsyncStorage.getItem('Token');
-        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
-        if(userToken) {
-            getArtistPostsById(dispatch, userToken, artistId);
+    useEffect(() => {
+        async function getArtistPostsAsync(){
+            const jsonToken = await AsyncStorage.getItem('Token');
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+            if(userToken) {
+                getArtistPostsById(dispatch, userToken, artistId);
+            }
         }
+        getArtistPostsAsync();
         
     },[])
 
