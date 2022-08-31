@@ -45,12 +45,15 @@ const ArtistProfileScreen = props => {
     const [edditSkillsModalVisible, setEditSkillsMoadlVisible] = useState(false);
     const [edditSkillsModalDetails, setEditSkillsMoadlDetails] = useState(false);
     
-    useEffect(async () => {
-        const jsonToken = await AsyncStorage.getItem('Token');
-        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
-        if(userToken) {
-            getArtistData(dispatch, userToken);
+    useEffect(() => {
+        async function getArtistDataAsync(){
+            const jsonToken = await AsyncStorage.getItem('Token');
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+            if(userToken) {
+                getArtistData(dispatch, userToken);
+            }
         }
+        getArtistDataAsync();
     },[])
     
 

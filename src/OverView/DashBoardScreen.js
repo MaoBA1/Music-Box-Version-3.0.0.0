@@ -44,14 +44,17 @@ const DashBoardScreen = props => {
        setIsVisble(!isVisible);
     }
 
-    useEffect(async() => {
-        if(isSuperUser) {
-            const jsonToken = await AsyncStorage.getItem('Token');
-            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
-            if(userToken) {
-                getArtistData(dispatch, userToken);
+    useEffect(() => {
+        async function getArtistDataAsync(){
+            if(isSuperUser) {
+                const jsonToken = await AsyncStorage.getItem('Token');
+                const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+                if(userToken) {
+                    getArtistData(dispatch, userToken);
+                }
             }
-        }
+        }   
+        getArtistDataAsync();     
     }, [])
     
     return(
