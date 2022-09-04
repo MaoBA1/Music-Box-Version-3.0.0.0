@@ -1,11 +1,12 @@
 import { 
-    SET_MUSIC_ON_BACKGROUND,
-    SET_SONG_ON_BACKGROUND,
-    SET_SONG_INDEX,    
+    SET_MUSIC_ON_BACK_GROUND,
     PLAY_FOR_FIRST_TIME,
     PAUSE_SONG,
     RESUME_SONG,
-    PLAY_NEXT_SONG
+    PLAY_NEXT_SONG,
+    PREPER_NEXT_SONG,
+    HANDLE_SEE_BAR,
+    SET_MUSIC_ON_FORGROUND
  } from '../actions/appActions';
 
 
@@ -18,28 +19,20 @@ const initialState = {
     playbackObj: null,
     currentAudio: {},
     playbackPosition: null,
-    playbackDuration: null
+    playbackDuration: null,
+    isLoading: false,
+    MusicOnForGroundReducer: false,
 }
 
 
 
 export default (state = initialState, action) => {       
     switch (action.type) {
-        case SET_MUSIC_ON_BACKGROUND:
+        case SET_MUSIC_ON_BACK_GROUND:
             return {
                 ...state,
-                MusicOnBackGroundReducer: action.boolValue
+                MusicOnBackGroundReducer: action.boolean
             }
-        case SET_SONG_ON_BACKGROUND:
-            return {
-                ...state,
-                SongOnBackGroundReducer: action.list
-            }
-        case SET_SONG_INDEX:
-            return {
-                ...state,
-                SongIndexReducer: action.index
-            }        
         case PLAY_FOR_FIRST_TIME:
            return {
                 ...state,
@@ -49,7 +42,9 @@ export default (state = initialState, action) => {
                 isPlaying: action.isPlaying,
                 SongIndexReducer: action.index,
                 SongOnBackGroundReducer: action.list,
-                MusicOnBackGroundReducer: action.musicOnBackGround
+                MusicOnBackGroundReducer: action.musicOnBackGround,
+                isLoading: action.isLoading,
+                MusicOnForGroundReducer: action.MusicOnForGroundReducer
             }
         case PAUSE_SONG:
             return {
@@ -70,6 +65,27 @@ export default (state = initialState, action) => {
                 currentAudio: action.currentAudio,
                 isPlaying: action.isPlaying,
                 SongIndexReducer: action.index,
+                isLoading: action.isLoading,
+                MusicOnForGroundReducer: action.MusicOnForGroundReducer
+            }
+        case PREPER_NEXT_SONG:
+            return {
+                ...state,
+                currentAudio: action.currentAudio,
+                isPlaying: action.isPlaying,
+                SongIndexReducer: action.index,
+                isLoading: action.isLoading
+            }
+        case HANDLE_SEE_BAR:
+            return {
+                ...state,
+                playbackPosition: action.playbackPosition,
+                playbackDuration: action.playbackDuration, 
+            }
+        case SET_MUSIC_ON_FORGROUND: 
+            return {
+                ...state,
+                MusicOnForGroundReducer: action.boolean
             }
         default:
             return state;

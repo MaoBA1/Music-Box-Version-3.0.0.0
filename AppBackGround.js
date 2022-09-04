@@ -1,16 +1,28 @@
 import React, { useState } from "react";
 import {
-    View, TouchableOpacity,
-    Text, ImageBackground
+    View, 
+    TouchableOpacity,
+    Text,
+    ImageBackground,
+    Platform
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMusicOnBackGroundAction } from './store/actions/appActions'
 import {RootStack as AppNavigator, AuthStack} from './src/navigation';
 import {NavigationContainer} from '@react-navigation/native';
 import Colors from './src/Utitilities/AppColors';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import MusicScreenModal from "./MusicScreenModal";
+import PlayerButton from './src/components/PlayerButton';
+import { play, pause, resume, playNext } from './audioController';
+import { 
+    pauseSongAction,
+    resumeSongAction,
+    playNextSongAction,
+    preperNextSongAction,
+    setMusicOnForGroundAction
+} from './store/actions/appActions';
+import { Image } from "react-native";
 
 export const SongBar = props => {
     const dispatch = useDispatch();
@@ -22,6 +34,17 @@ export const SongBar = props => {
     const songName = songDetails?.trackName;
     const songUri = songDetails?.trackUri;
     const songImage = songDetails?.trackImage;
+    const {
+        playbackPosition,
+        playbackDuration,
+        SongOnBackGroundReducer,
+        SongIndexReducer,
+        soundObj,
+        isLoading,
+        playbackObj,
+        MusicOnForGroundReducer,
+        isPlaying
+    } = appSelector;
     
 
     const closeSongBar = () => {
@@ -33,57 +56,275 @@ export const SongBar = props => {
         }
     }
 
+    const calculateSeeBar = () => {
+        if(playbackPosition != null && playbackDuration != null) {
+            return playbackPosition / playbackDuration * 100;
+        }
+        return 0;
+    }
+
+    const handlePlayPause = async() => {
+        if(isLoading) return;
+       if(soundObj.isPlaying) {            
+            try {
+                const status = await pause(playbackObj)
+                return dispatch(pauseSongAction({
+                    status: status,
+                    isPlaying: false                
+                }))
+            }catch(error) {
+            console.log(error.message);
+            }  
+        }
+
+        if(!soundObj.isPlaying) {
+            try{
+                const status = await resume(playbackObj);            
+                return dispatch(resumeSongAction({
+                    status: status,
+                    isPlaying: true  
+                }));
+                
+            }catch(error) {
+                console.log(error.message);
+            } 
+        }
+    }
+
+
+    const handleNext = async() => {
+        if(isLoading) {
+            return;
+        }
+        try{
+            const nextAudioIndex = (SongIndexReducer + 1) % SongOnBackGroundReducer?.length;
+            const audio = SongOnBackGroundReducer[nextAudioIndex];
+            dispatch(preperNextSongAction({
+                currentAudio: audio,
+                isPlaying: false,
+                index: nextAudioIndex,
+                isLoading: true
+            }))
+            const status = await playNext(playbackObj, audio.trackUri);
+        
+            return dispatch(playNextSongAction({
+                status: status,
+                currentAudio: audio,
+                isPlaying: true,
+                index: nextAudioIndex,
+                isLoading: false,
+                MusicOnForGroundReducer: MusicOnForGroundReducer
+            }))
+        }catch(error) {
+            console.log(error.message);
+        }
+    }
+
+    const handlePrev = async() => {
+        if(isLoading) {
+            return;
+        }
+        try{
+            const nextAudioIndex = SongIndexReducer > 0 ? SongIndexReducer - 1 : SongOnBackGroundReducer?.length - 1;
+            const audio = SongOnBackGroundReducer[nextAudioIndex];
+            dispatch(preperNextSongAction({
+                currentAudio: audio,
+                isPlaying: false,
+                index: nextAudioIndex,
+                isLoading: true
+            }))
+            const status = await playNext(playbackObj, audio.trackUri);
+            return dispatch(playNextSongAction({
+                status: status,
+                currentAudio: audio,
+                isPlaying: true,
+                index: nextAudioIndex,
+                isLoading: false,
+                MusicOnForGroundReducer: MusicOnForGroundReducer
+            }))
+        }catch(error) {
+            console.log(error.message);
+        }
+    }
+
+    const calculatePlaybackPostition = (position) => {
+        var milliseconds = parseInt((position % 1000) / 100),
+            seconds = Math.floor((position / 1000) % 60),
+            minutes = Math.floor((position / (1000 * 60)) % 60),
+            hours = Math.floor((position / (1000 * 60 * 60)) % 24);
+
+            hours = (hours == 0) ? null : hours;
+            if(hours != null) {
+                hours = (hours < 10) ? "0" + hours : hours;
+            }            
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            seconds = (seconds < 10) ? "0" + seconds : seconds;
+            if(hours != null) {
+                return hours + ":" + minutes + ":" + seconds;
+            }
+            return minutes + ":" + seconds;
+    }
+
+
+    const openMusicScreen = () => {
+        try{
+            dispatch(setMusicOnForGroundAction(true));
+        }catch(error){
+            console.log(error.message);
+        }
+    }
+
     return(
-      <View style={{width:'100%', alignItems: 'center', position:'absolute', zIndex:1, top:655}}>
-          <View style={{width:'90%', backgroundColor:'#fff', borderRadius:20, backgroundColor: Colors.grey6, flexDirection:'row', padding:10}}>
-                <View style={{width:'20%', alignItems: 'center'}}>
-                    <ImageBackground
-                        source={{uri: songImage}}
-                        style={{width:40, height:40, alignItems: 'center', justifyContent: 'center'}}
-                        imageStyle={{opacity:1}}
+        <>
+            <TouchableOpacity onPress={openMusicScreen} style={{width:'100%', alignItems: 'center', position:'absolute', zIndex:1, top:Platform.OS === 'ios'? 690 : 665}}>
+                <View style={{
+                    width:'100%',
+                    backgroundColor:'#fff',
+                    borderTopLeftRadius:15,
+                    borderTopRightRadius:15,
+                    backgroundColor: Colors.grey4,
+                    flexDirection:'row',
+                    paddingVertical:10,
+                }}>
+                        <View style={{width:'20%', alignItems: 'center'}}>
+                            <ImageBackground
+                                source={{uri: songImage}}
+                                style={{width:40, height:40, alignItems: 'center', justifyContent: 'center'}}
+                                imageStyle={{opacity:1, borderRadius:50}}
+                            >
+                                
+                            </ImageBackground>
+                        </View>
+                        <View style={{width:'30%'}}>
+                            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Bold', color:Colors.red3, width:'80%'}}>{songName}</Text>
+                            <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3}}>{artistName}</Text>
+                        </View>
+                        <View style={{
+                            width:'20%',
+                            flexDirection:'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height:'100%',
+                        }}
                     >
-                        <FontAwesome5
-                            name="play"
-                            size={15}
-                            color={"#000"}
-                            style={{opacity:0.8}}
+                        <PlayerButton 
+                            iconType={'PREV'}
+                            onPress={handlePrev}
+                            size={20}
                         />
-                    </ImageBackground>
+                        <PlayerButton 
+                            onPress={handlePlayPause}
+                            style={{marginHorizontal:20}}
+                            iconType={isPlaying ? 'PLAY' : 'PAUSE'}
+                            size={20}
+                        />
+                        <PlayerButton 
+                            iconType={'NEXT'} 
+                            onPress={handleNext}
+                            size={20}
+                        />
+                        
+                    </View>
+                        <View style={{
+                            width:'40%',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                            <TouchableOpacity style={{
+                                    shadowColor: '#171717',
+                                    shadowOffset: {width: 0, height: 10},
+                                    shadowOpacity: 0.5,
+                                    shadowRadius: 3,
+                                    width:'50%',
+                                    alignItems: 'center',
+                                    left:20
+                                }} 
+                                onPress={closeSongBar}
+                            >
+                                <FontAwesome
+                                    name='close'
+                                    size={17}
+                                    color={'#fff'}
+                                />
+                            </TouchableOpacity>
+                           <Text style={{
+                                fontFamily:'Baloo2-Medium',
+                                color:Colors.grey3,
+                                fontSize:12
+                            }}>
+                                {`${calculatePlaybackPostition(playbackPosition)} / ${songLength}`}
+                            </Text>
+                        </View>
                 </View>
-                <View style={{width:'50%'}}>
-                    <Text numberOfLines={1} style={{fontFamily:'Baloo2-Bold', color:Colors.red3}}>{songName}</Text>
-                    <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3}}>{artistName}</Text>
+                <View style={{width:'100%', height:5, backgroundColor:Colors.grey3}}>
+                    <View style={{
+                        width: `${calculateSeeBar()}%`,
+                        height:5,
+                        backgroundColor:'#fff'
+                    }}>
+
+                    </View>
                 </View>
-                <View style={{width:'20%'}}></View>
-                <TouchableOpacity style={{
-                        shadowColor: '#171717',
-                        shadowOffset: {width: 0, height: 10},
-                        shadowOpacity: 0.5,
-                        shadowRadius: 3,
-                        width:'10%',
-                        alignItems: 'center'
-                    }} 
-                    onPress={closeSongBar}
-                >
-                    <FontAwesome
-                        name='close'
-                        size={17}
-                        color={'#fff'}
-                    />
-                </TouchableOpacity>
-          </View>
-      </View>
+            </TouchableOpacity>
+            
+      </>
+    )
+}
+
+export const SideSongBar = props => {
+    const dispatch = useDispatch();
+    const appSelector = useSelector(state => state.AppReducer);
+    const index = appSelector?.SongIndexReducer;
+    const songDetails = appSelector?.SongOnBackGroundReducer[index];
+    const songImage = songDetails?.trackImage;
+
+    const openSongBar = () => {
+        let action = setMusicOnBackGroundAction(true);
+        try{
+            dispatch(action);
+        }catch(error) {
+            console.log(error.message);
+        }
+    }
+
+    return (
+        <TouchableOpacity 
+            style={{
+                width:60,
+                height:60,
+                backgroundColor:Colors.grey4, 
+                bottom:95,
+                alignSelf:'flex-end',
+                right:10,
+                position:'absolute',
+                borderRadius:50,
+                borderWidth:2,
+                borderColor:Colors.grey3,
+                alignItems: 'center',
+                justifyContent: 'center'
+            }} onPress={openSongBar}
+        >
+            <Image
+                source={{uri: songImage}}
+                style={{width:50, height:50, borderRadius:50}}
+            />
+        </TouchableOpacity>
     )
 }
 
 const AppBackGround = props => {
     const appSelector = useSelector(state => state.AppReducer);
     const backgrounMusicBarVisible = appSelector.MusicOnBackGroundReducer;
-    
+    const {
+        MusicOnForGroundReducer,
+        soundObj
+    } = appSelector
     return(
         <NavigationContainer>
             <AppNavigator/>
             {backgrounMusicBarVisible && <SongBar/>}
+            {MusicOnForGroundReducer && <MusicScreenModal/>}
+            {!backgrounMusicBarVisible && soundObj && <SideSongBar/>}
         </NavigationContainer>
     )
 }
