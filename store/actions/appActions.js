@@ -92,7 +92,8 @@ export const playNextSongDispatch = ({
     isPlaying,
     index,
     isLoading,
-    MusicOnForGroundReducer
+    MusicOnForGroundReducer,
+    list
 }) => {
     return dispatch => {
         dispatch({
@@ -102,7 +103,8 @@ export const playNextSongDispatch = ({
             isPlaying,
             index,
             isLoading,
-            MusicOnForGroundReducer
+            MusicOnForGroundReducer,
+            list
         })
     }
 }

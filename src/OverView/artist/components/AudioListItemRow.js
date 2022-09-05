@@ -34,7 +34,7 @@ const AudioListItemRow = ({
             }}>
                 <ImageBackground
                     source={{uri:trackImage}}
-                    style={[{width:50, height:50, alignItems: 'center', justifyContent: 'center'}, {opacity:index === SongIndex? 0.8 : 1}]}
+                    style={[{width:50, height:50, alignItems: 'center', justifyContent: 'center'}, {opacity:index === SongIndex && item._id === currentAudio._id? 0.8 : 1}]}
                     imageStyle={{borderRadius:50}}
                 >
                     {
@@ -96,15 +96,17 @@ const AudioListItemRow = ({
                 style={{width:'20%', justifyContent: 'space-between', alignItems: 'center'}}
             >
                 <Text style={{fontFamily:'Baloo2-Medium', color: Colors.grey3}}>{trackLength}</Text>
-                <View style={{flexDirection:'row', alignItems: 'center', justifyContent: 'center'}}>
-                    <AntDesign
-                        name="like1"
-                        color={Colors.grey3}
-                        size={15}
-                    />
-                    <Text style={{fontFamily:'Baloo2-Medium', color: Colors.grey3, left:5, top:2}}>{likes.length} Likes</Text>
-                </View>
-                
+                {
+                    likes &&
+                    <View style={{flexDirection:'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <AntDesign
+                            name="like1"
+                            color={Colors.grey3}
+                            size={15}
+                        />
+                        <Text style={{fontFamily:'Baloo2-Medium', color: Colors.grey3, left:5, top:2}}>{likes.length} Likes</Text>
+                    </View>
+                }   
                 <Text style={{fontFamily:'Baloo2-Medium', color: Colors.grey3, fontSize:10, top:5}}>{new Date(creatAdt).toDateString()}</Text>
             </View>
 

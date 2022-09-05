@@ -23,7 +23,7 @@ const {width} = Dimensions.get('window');
 const AllArtistSingels = props => {
     const dispatch = useDispatch();
     const artistSongsSelector = useSelector(state => state.SongReducer);
-    const allArtistSongs = artistSongsSelector?.ArtistSongsReducer;
+    const allArtistSongs = props.route.params.songsList;
     const appBackGroundSelector = useSelector(state => state.AppReducer);
     const [musicScreenVisible, setMusicScreenVisible] = useState(false);
     const {
@@ -38,8 +38,7 @@ const AllArtistSingels = props => {
         isLoading,
         MusicOnForGroundReducer
     } = appBackGroundSelector;
-
-    
+    console.log(props);
    
     useEffect(() => {
         const onPlaybackStatusUpdate = async(playbackStatus) => {
@@ -69,7 +68,8 @@ const AllArtistSingels = props => {
                         isPlaying: true,
                         index: nextAudioIndex,
                         isLoading: false,
-                        MusicOnForGroundReducer: MusicOnForGroundReducer
+                        MusicOnForGroundReducer: MusicOnForGroundReducer,
+                        list: SongOnBackGroundReducer
                     }))
                 }catch(error) {
                     console.log(error.message);
@@ -88,13 +88,7 @@ const AllArtistSingels = props => {
     ])
     
 
-    const handleAudioPress = async (audio, index) => {     
-        const {            
-            currentAudio,
-            playbackObj,
-            soundObj
-        } = appBackGroundSelector;
-        
+    const handleAudioPress = async (audio, index) => {  
         if(soundObj === null) {
             try{
                 dispatch(preperNextSongAction({
@@ -166,7 +160,8 @@ const AllArtistSingels = props => {
                     isPlaying: true,
                     index: index,
                     isLoading: false,
-                    MusicOnForGroundReducer: true
+                    MusicOnForGroundReducer: true,
+                    list: SongOnBackGroundReducer
                 }))
             } catch {
                 console.log(error.message);

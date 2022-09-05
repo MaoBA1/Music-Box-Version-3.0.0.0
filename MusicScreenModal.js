@@ -44,12 +44,13 @@ const MusicScreenModal = props => {
         isLoading,
         MusicOnForGroundReducer
     } = appSelector;
-    const songDetails = appSelector?.SongOnBackGroundReducer[SongIndexReducer];
+    const songDetails = currentAudio;
     const artistName = songDetails?.artistName;
     const songLength = songDetails?.trackLength;
     const songName = songDetails?.trackName;
     const songUri = songDetails?.trackUri;
     const songImage = songDetails?.trackImage;
+    const [currentPosition, setCurrentPosition] = useState(0);
      
      const calculateSeeBar = () => {
         if(playbackPosition != null && playbackDuration != null) {
@@ -117,7 +118,8 @@ const MusicScreenModal = props => {
                 isPlaying: true,
                 index: nextAudioIndex,
                 isLoading: false,
-                MusicOnForGroundReducer: MusicOnForGroundReducer
+                MusicOnForGroundReducer: MusicOnForGroundReducer,
+                list: SongOnBackGroundReducer 
             }))
         }catch(error) {
             console.log(error.message);
@@ -144,7 +146,8 @@ const MusicScreenModal = props => {
                 isPlaying: true,
                 index: nextAudioIndex,
                 isLoading: false,
-                MusicOnForGroundReducer: MusicOnForGroundReducer
+                MusicOnForGroundReducer: MusicOnForGroundReducer,
+                list: SongOnBackGroundReducer 
             }))
         }catch(error) {
             console.log(error.message);
@@ -225,6 +228,44 @@ const MusicScreenModal = props => {
                         minimumTrackTintColor={Colors.red3}
                         maximumTrackTintColor={Colors.red3}
                         thumbTintColor={Colors.red3}
+                        onValueChange={
+                            value => {
+                                setCurrentPosition(calculatePlaybackPostition(value * playbackDuration));
+                            }
+                        }
+                        onSlidingStart={
+                            async () => {
+                                if(!isPlaying) return;
+
+                                try{
+                                    const status = await pause(playbackObj);
+                                    return dispatch(pauseSongAction({
+                                        status: status,
+                                        isPlaying: false                
+                                    }))
+                                }catch(error) {
+                                    console.log(error.message);
+                                }
+                            }
+                        }
+                        onSlidingComplete={
+                            async value => {
+                                if(soundObj === null) return;
+
+                                try{
+                                    const status = await playbackObj.setPositionAsync(Math.floor(value * playbackDuration));
+                                    setCurrentPosition(0);
+                                    await resume(playbackObj);            
+                                        return dispatch(resumeSongAction({
+                                            status: status,
+                                            isPlaying: true  
+                                    }));
+                                }catch(error) {
+                                    console.log(error.message);
+                                }
+                                
+                            }
+                        }
                         
                     />
                     <View style={{width: width-40, flexDirection:'row', justifyContent:'space-between', bottom:10}}>
@@ -232,7 +273,7 @@ const MusicScreenModal = props => {
                             fontFamily:'Baloo2-Medium',
                             color:'#fff'
                         }}>
-                            {calculatePlaybackPostition(playbackPosition)}
+                            {currentPosition ? currentPosition : calculatePlaybackPostition(playbackPosition)}
                         </Text>
                         <Text style={{
                             fontFamily:'Baloo2-Medium',

@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {AntDesign} from 'react-native-vector-icons';
 import Colors from '../Utitilities/AppColors';
 
@@ -26,6 +26,7 @@ const PlayerButton = (props) => {
         }
     }
     return (
+
         <AntDesign
             {...props}
             onPress={onPress}

@@ -66,7 +66,8 @@ export default (state = initialState, action) => {
                 isPlaying: action.isPlaying,
                 SongIndexReducer: action.index,
                 isLoading: action.isLoading,
-                MusicOnForGroundReducer: action.MusicOnForGroundReducer
+                MusicOnForGroundReducer: action.MusicOnForGroundReducer,
+                SongOnBackGroundReducer: action.list
             }
         case PREPER_NEXT_SONG:
             return {

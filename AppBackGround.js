@@ -27,13 +27,6 @@ import { Image } from "react-native";
 export const SongBar = props => {
     const dispatch = useDispatch();
     const appSelector = useSelector(state => state.AppReducer);
-    const index = appSelector?.SongIndexReducer;
-    const songDetails = appSelector?.SongOnBackGroundReducer[index];
-    const artistName = songDetails?.artistName;
-    const songLength = songDetails?.trackLength;
-    const songName = songDetails?.trackName;
-    const songUri = songDetails?.trackUri;
-    const songImage = songDetails?.trackImage;
     const {
         playbackPosition,
         playbackDuration,
@@ -43,8 +36,15 @@ export const SongBar = props => {
         isLoading,
         playbackObj,
         MusicOnForGroundReducer,
-        isPlaying
+        isPlaying,
+        currentAudio
     } = appSelector;
+    const songDetails = currentAudio;
+    const artistName = songDetails?.artistName;
+    const songLength = songDetails?.trackLength;
+    const songName = songDetails?.trackName;
+    const songUri = songDetails?.trackUri;
+    const songImage = songDetails?.trackImage;
     
 
     const closeSongBar = () => {
@@ -113,7 +113,8 @@ export const SongBar = props => {
                 isPlaying: true,
                 index: nextAudioIndex,
                 isLoading: false,
-                MusicOnForGroundReducer: MusicOnForGroundReducer
+                MusicOnForGroundReducer: MusicOnForGroundReducer,
+                list: SongOnBackGroundReducer
             }))
         }catch(error) {
             console.log(error.message);
@@ -140,7 +141,8 @@ export const SongBar = props => {
                 isPlaying: true,
                 index: nextAudioIndex,
                 isLoading: false,
-                MusicOnForGroundReducer: MusicOnForGroundReducer
+                MusicOnForGroundReducer: MusicOnForGroundReducer,
+                list: SongOnBackGroundReducer
             }))
         }catch(error) {
             console.log(error.message);
@@ -186,7 +188,7 @@ export const SongBar = props => {
                     flexDirection:'row',
                     paddingVertical:10,
                 }}>
-                        <View style={{width:'20%', alignItems: 'center'}}>
+                        <View style={{width:'15%', alignItems: 'center'}}>
                             <ImageBackground
                                 source={{uri: songImage}}
                                 style={{width:40, height:40, alignItems: 'center', justifyContent: 'center'}}
@@ -197,10 +199,10 @@ export const SongBar = props => {
                         </View>
                         <View style={{width:'30%'}}>
                             <Text numberOfLines={1} style={{fontFamily:'Baloo2-Bold', color:Colors.red3, width:'80%'}}>{songName}</Text>
-                            <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3}}>{artistName}</Text>
+                            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, width:'80%'}}>{artistName}</Text>
                         </View>
                         <View style={{
-                            width:'20%',
+                            width:'30%',
                             flexDirection:'row',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -210,23 +212,37 @@ export const SongBar = props => {
                         <PlayerButton 
                             iconType={'PREV'}
                             onPress={handlePrev}
-                            size={20}
+                            size={25}
+                            style={{
+                                width:40,
+                                height:40,
+                                margin:2,
+                            }}
                         />
                         <PlayerButton 
                             onPress={handlePlayPause}
-                            style={{marginHorizontal:20}}
                             iconType={isPlaying ? 'PLAY' : 'PAUSE'}
-                            size={20}
+                            size={25}
+                            style={{
+                                width:40,
+                                height:40,
+                                margin:2,
+                            }}
                         />
                         <PlayerButton 
                             iconType={'NEXT'} 
                             onPress={handleNext}
-                            size={20}
+                            size={25}
+                            style={{
+                                width:40,
+                                height:40,
+                                margin:2,
+                            }}
                         />
                         
                     </View>
                         <View style={{
-                            width:'40%',
+                            width:'25%',
                             alignItems: 'center',
                             justifyContent: 'space-between',
                         }}>
@@ -274,8 +290,8 @@ export const SongBar = props => {
 export const SideSongBar = props => {
     const dispatch = useDispatch();
     const appSelector = useSelector(state => state.AppReducer);
-    const index = appSelector?.SongIndexReducer;
-    const songDetails = appSelector?.SongOnBackGroundReducer[index];
+    const { currentAudio } = appSelector;
+    const songDetails = currentAudio;
     const songImage = songDetails?.trackImage;
 
     const openSongBar = () => {

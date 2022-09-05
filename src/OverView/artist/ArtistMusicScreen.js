@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
-    TextInput,
+    ActivityIndicator,
     Image,
     ImageBackground,
     TouchableOpacity,
     FlatList,
     ScrollView,
-    Modal
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Style from './style/ArtistFeedStyle';
 import Colors from '../../Utitilities/AppColors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 import { 
     getAllArtistSongs,
@@ -23,7 +23,16 @@ import {
     getArtistPlayLists
 } from '../../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { 
+    playInTheFirstTimeAction,
+    pauseSongAction,
+    resumeSongAction,
+    playNextSongAction,
+    preperNextSongAction,
+    handleSeeBarAction
+} from '../../../store/actions/appActions';
+import { play, pause, resume, playNext } from '../../../audioController';
+import { Audio } from 'expo-av';
 import MusicHeader from './components/MusicHeader';
 import UploadSongModal from './Modals/UploadSongModal';
 import CreateNewPlaylistModal from './Modals/CreateNewPlaylistModal';
@@ -40,6 +49,19 @@ const ArtistMusicScreen = props => {
     const artistLatestRealeases = artistSongsSelector?.ArtistLatestReleasesReducer;
     const allArtistSongs = artistSongsSelector?.ArtistSongsReducer;
     const allArtistPlaylist = artistSelector?.ArtistPlaylistsReducer;
+    const appBackGroundSelector = useSelector(state => state.AppReducer);
+    const {
+        SongIndexReducer,
+        SongOnBackGroundReducer,
+        currentAudio,
+        isPlaying,
+        playbackDuration,
+        playbackObj,
+        playbackPosition,
+        soundObj,
+        isLoading,
+        MusicOnForGroundReducer
+    } = appBackGroundSelector;
    
     const getArtistSongs = async () => {
         const jsonToken = await AsyncStorage.getItem('Token');        
@@ -53,8 +75,136 @@ const ArtistMusicScreen = props => {
     }
 
     useEffect(() => {
+        const onPlaybackStatusUpdate = async(playbackStatus) => {
+            if(playbackStatus.isLoaded && playbackStatus.isPlaying) {
+                dispatch(handleSeeBarAction({
+                    playbackPosition: playbackStatus.positionMillis,
+                    playbackDuration: playbackStatus.durationMillis
+                }))
+            }
+
+
+            if(playbackStatus.didJustFinish) {
+                try{
+                    const nextAudioIndex = (SongIndexReducer + 1) % SongOnBackGroundReducer?.length;
+                    const audio = SongOnBackGroundReducer[nextAudioIndex];
+                    dispatch(preperNextSongAction({
+                        currentAudio: audio,
+                        isPlaying: false,
+                        index: nextAudioIndex,
+                        isLoading: true
+                    }))
+                    const status = await playNext(playbackObj, audio.trackUri);
+                
+                    return dispatch(playNextSongAction({
+                        status: status,
+                        currentAudio: audio,
+                        isPlaying: true,
+                        index: nextAudioIndex,
+                        isLoading: false,
+                        MusicOnForGroundReducer: MusicOnForGroundReducer,
+                        list: SongOnBackGroundReducer 
+                    }))
+                }catch(error) {
+                    console.log(error.message);
+                }
+            }
+        }
+
+        if(playbackObj) {
+            playbackObj.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+        }
+
         getArtistSongs();
-    },[])
+    },[
+        SongIndexReducer,
+        SongOnBackGroundReducer,                
+        playbackObj,        
+        MusicOnForGroundReducer
+    ])
+    
+
+    const handleAudioPress = async (audio, index, list) => {     
+        if(soundObj === null) {
+            try{
+                dispatch(preperNextSongAction({
+                    currentAudio: audio,
+                    isPlaying: false,
+                    index: index,
+                    isLoading: true
+                }))
+                const playbackObj = new Audio.Sound();
+                const status = await play(playbackObj, audio.trackUri);
+                return dispatch(playInTheFirstTimeAction({
+                    playbackObj: playbackObj,
+                    status: status,
+                    currentAudio: audio,
+                    isPlaying: true,
+                    index: index,
+                    list: list,
+                    musicOnBackGround: true,
+                    isLoading: false,
+                    MusicOnForGroundReducer: false
+                }))
+            } catch(error){
+                console.log(error.message);
+            }
+           
+        }
+
+        if(soundObj?.isLoaded && soundObj?.isPlaying && currentAudio?._id === audio._id) {
+            console.log('2');            
+           const status = await pause(playbackObj)
+           try {
+            return dispatch(pauseSongAction({
+                status: status,
+                isPlaying: false                
+            }))
+           }catch(error) {
+            console.log(error.message);
+           }           
+        }
+
+        if(soundObj.isLoaded && !soundObj.isPlaying && currentAudio._id === audio._id) {
+            console.log('3');
+            try{
+                const status = await resume(playbackObj);            
+                return dispatch(resumeSongAction({
+                    status: status,
+                    isPlaying: true  
+                }));
+                
+            }catch(error) {
+                console.log(error.message);
+            }
+            
+        }
+        
+        if(soundObj.isLoaded && currentAudio._id !== audio._id){
+            console.log('4');
+            try{
+                dispatch(preperNextSongAction({
+                    currentAudio: audio,
+                    isPlaying: false,
+                    index: index,
+                    isLoading: true
+                }))
+                const status = await playNext(playbackObj, audio.trackUri);
+                return dispatch(playNextSongAction({
+                    status: status,
+                    currentAudio: audio,
+                    isPlaying: true,
+                    index: index,
+                    isLoading: false,
+                    MusicOnForGroundReducer: false,
+                    list: list
+                }))
+            } catch {
+                console.log(error.message);
+            }
+             
+        }
+    }
     
     
     
@@ -138,16 +288,127 @@ const ArtistMusicScreen = props => {
                                         horizontal
                                         data={artistLatestRealeases}
                                         keyExtractor={item => item._id}
-                                        renderItem={song => 
-                                            <View style={{margin:5, alignItems: 'center', justifyContent: 'center'}}>
-                                                <TouchableOpacity>
-                                                    <Image
-                                                        source={{uri:song.item.trackImage}}
-                                                        style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
-                                                    />                                                
-                                                </TouchableOpacity>
-                                                <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{song.item.trackName}</Text>
-                                            </View>
+                                        renderItem={({item, index}) => 
+                                            
+                                                !isLoading?
+                                                (
+                                                    <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
+                                                        <TouchableOpacity
+                                                            onPress={() => handleAudioPress(item, index, artistLatestRealeases)}
+                                                        >
+                                                            <ImageBackground
+                                                                source={{uri:item.trackImage}}
+                                                                style={{
+                                                                    width:40,
+                                                                    height:40,
+                                                                    resizeMode:'stretch',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    opacity:index === SongIndexReducer && item._id === currentAudio._id? 0.7 : 1
+                                                                }}
+                                                                imageStyle={{borderRadius:20}}
+                                                            >
+                                                                {
+                                                                    item._id === currentAudio._id &&
+                                                                    <>
+                                                                        {
+                                                                            isPlaying?
+                                                                            (
+                                                                                <FontAwesome5
+                                                                                    name="pause"
+                                                                                    size={20}
+                                                                                    color={Colors.red3}
+                                                                                />
+                                                                            )
+                                                                            :
+                                                                            (
+                                                                                <>
+                                                                                    {
+                                                                                        isLoading?
+                                                                                        (
+                                                                                            <ActivityIndicator color={Colors.red3}/>
+                                                                                        )
+                                                                                        :
+                                                                                        (
+                                                                                            <FontAwesome5
+                                                                                                name="play"
+                                                                                                size={20}
+                                                                                                color={Colors.red3}
+                                                                                            />
+                                                                                        )
+                                                                                    }
+                                                                                    
+                                                                                </>
+                                                                            )
+                                                                        }
+                                                                        
+                                                                    </>
+                                                                }
+                                                            </ImageBackground>                                  
+                                                        </TouchableOpacity>
+                                                        <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{item.trackName}</Text>
+                                                    </View>
+                                                )
+                                                :
+                                                (
+                                                    <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
+                                                        <View
+                                                            onPress={() => handleAudioPress(item, index, artistLatestRealeases)}
+                                                        >
+                                                            <ImageBackground
+                                                                source={{uri:item.trackImage}}
+                                                                style={{
+                                                                    width:40,
+                                                                    height:40,
+                                                                    resizeMode:'stretch',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    opacity:index === SongIndexReducer && item._id === currentAudio._id? 0.7 : 1
+                                                                }}
+                                                                imageStyle={{borderRadius:20}}
+                                                            >
+                                                                {
+                                                                    item._id === currentAudio._id &&
+                                                                    <>
+                                                                        {
+                                                                            isPlaying?
+                                                                            (
+                                                                                <FontAwesome5
+                                                                                    name="pause"
+                                                                                    size={20}
+                                                                                    color={Colors.red3}
+                                                                                />
+                                                                            )
+                                                                            :
+                                                                            (
+                                                                                <>
+                                                                                    {
+                                                                                        isLoading?
+                                                                                        (
+                                                                                            <ActivityIndicator color={Colors.red3}/>
+                                                                                        )
+                                                                                        :
+                                                                                        (
+                                                                                            <FontAwesome5
+                                                                                                name="play"
+                                                                                                size={20}
+                                                                                                color={Colors.red3}
+                                                                                            />
+                                                                                        )
+                                                                                    }
+                                                                                    
+                                                                                </>
+                                                                            )
+                                                                        }
+                                                                        
+                                                                    </>
+                                                                }
+                                                            </ImageBackground>                                   
+                                                        </View>
+                                                        <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{item.trackName}</Text>
+                                                    </View>
+                                                )
+                                            
                                         }
                                     />
                                 </View>
@@ -177,14 +438,14 @@ const ArtistMusicScreen = props => {
                                         data={allArtistPlaylist}
                                         keyExtractor={item => item._id}
                                         renderItem={playlist => 
-                                            <View style={{margin:5, alignItems: 'center', justifyContent: 'center'}}>
-                                                <TouchableOpacity>
+                                            <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
+                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: playlist.item.tracks})}>
                                                     <Image
                                                         source={{uri:playlist.item.playlistImage}}
                                                         style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
                                                     />                                                
                                                 </TouchableOpacity>
-                                                <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{playlist.item.playlistName}</Text>
+                                                <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{playlist.item.playlistName}</Text>
                                             </View>
                                         }
                                     />
@@ -222,23 +483,160 @@ const ArtistMusicScreen = props => {
                              <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:18}}>Your Singles</Text>
                          </View>
                          <ScrollView style={{marginTop:10, width:'100%', borderTopWidth:2, borderBottomWidth:2, borderColor:'#fff', padding:10, backgroundColor:Colors.grey4}}>
-                                    {allArtistSongs.map(item => 
-                                        <View key={item._id} style={{justifyContent: 'space-between', width:'100%', flexDirection: 'row', marginVertical:3, backgroundColor: Colors.grey1, padding:10, borderRadius:10}}>
-                                            <View style={{flexDirection:'row', alignItems: 'center'}}>
-                                                <TouchableOpacity>
-                                                    <Image
-                                                        source={{uri:item.trackImage}}
-                                                        style={{width:40, height:40, borderRadius:20, resizeMode:'stretch'}}
-                                                    />                                                
+                                    {allArtistSongs.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt))).slice(0,5).map((item,index) => 
+                                        
+                                            !isLoading?
+                                            (
+                                                <TouchableOpacity 
+                                                    key={item._id}
+                                                    style={{
+                                                        justifyContent: 'space-between',
+                                                        width:'100%',
+                                                        flexDirection: 'row',
+                                                        marginVertical:3,
+                                                        backgroundColor: Colors.grey1,
+                                                        padding:10,
+                                                        borderRadius:10
+                                                    }}
+                                                    onPress={() => handleAudioPress(item, index, allArtistSongs.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt))))}
+                                                >
+                                                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                                                        <View>
+                                                            <ImageBackground
+                                                                source={{uri:item.trackImage}}
+                                                                style={{
+                                                                    width:40,
+                                                                    height:40,
+                                                                    resizeMode:'stretch',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    opacity:index === SongIndexReducer && item._id === currentAudio._id? 0.7 : 1
+                                                                }}
+                                                                imageStyle={{borderRadius:20}}
+                                                            
+                                                            >
+                                                                {
+                                                                    item._id === currentAudio._id &&
+                                                                    <>
+                                                                        {
+                                                                            isPlaying?
+                                                                            (
+                                                                                <FontAwesome5
+                                                                                    name="pause"
+                                                                                    size={20}
+                                                                                    color={Colors.red3}
+                                                                                />
+                                                                            )
+                                                                            :
+                                                                            (
+                                                                                <>
+                                                                                    {
+                                                                                        isLoading?
+                                                                                        (
+                                                                                            <ActivityIndicator color={Colors.red3}/>
+                                                                                        )
+                                                                                        :
+                                                                                        (
+                                                                                            <FontAwesome5
+                                                                                                name="play"
+                                                                                                size={20}
+                                                                                                color={Colors.red3}
+                                                                                            />
+                                                                                        )
+                                                                                    }
+                                                                                    
+                                                                                </>
+                                                                            )
+                                                                        }
+                                                                        
+                                                                    </>
+                                                                }
+                                                            </ImageBackground>                                                
+                                                        </View>
+                                                        <Text style={{fontFamily:'Baloo2-Medium', color: '#fff', marginLeft:10}}>{item.trackName}</Text>
+                                                    </View>
+                                                    <View style={{width:'12%', flexDirection:'column-reverse'}}>
+                                                        <Text style={{fontFamily:'Baloo2-Medium', color: Colors.grey3}}>{item.trackLength}</Text>
+                                                    </View>
                                                 </TouchableOpacity>
-                                                <Text style={{fontFamily:'Baloo2-Medium', color: '#fff', marginLeft:10}}>{item.trackName}</Text>
-                                            </View>
-                                            <View style={{width:'12%', flexDirection:'column-reverse'}}>
-                                                <Text style={{fontFamily:'Baloo2-Medium', color: Colors.grey3}}>{item.trackLength}</Text>
-                                            </View>
-                                        </View>
+                                            )
+                                            :
+                                            (
+                                                <View 
+                                                    key={item._id}
+                                                    style={{
+                                                        justifyContent: 'space-between',
+                                                        width:'100%',
+                                                        flexDirection: 'row',
+                                                        marginVertical:3,
+                                                        backgroundColor: Colors.grey1,
+                                                        padding:10,
+                                                        borderRadius:10,                                                        
+                                                    }}
+                                                >
+                                                    <View style={{flexDirection:'row', alignItems: 'center'}}>
+                                                        <View>
+                                                            <ImageBackground
+                                                                source={{uri:item.trackImage}}
+                                                                style={{
+                                                                    width:40,
+                                                                    height:40,
+                                                                    resizeMode:'stretch',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    opacity:index === SongIndexReducer && item._id === currentAudio._id? 0.7 : 1
+                                                                }}
+                                                                imageStyle={{borderRadius:20}}
+                                                            
+                                                            >
+                                                                {
+                                                                    item._id === currentAudio._id &&
+                                                                    <>
+                                                                        {
+                                                                            isPlaying?
+                                                                            (
+                                                                                <FontAwesome5
+                                                                                    name="pause"
+                                                                                    size={20}
+                                                                                    color={Colors.red3}
+                                                                                />
+                                                                            )
+                                                                            :
+                                                                            (
+                                                                                <>
+                                                                                    {
+                                                                                        isLoading?
+                                                                                        (
+                                                                                            <ActivityIndicator color={Colors.red3}/>
+                                                                                        )
+                                                                                        :
+                                                                                        (
+                                                                                            <FontAwesome5
+                                                                                                name="play"
+                                                                                                size={20}
+                                                                                                color={Colors.red3}
+                                                                                            />
+                                                                                        )
+                                                                                    }
+                                                                                    
+                                                                                </>
+                                                                            )
+                                                                        }
+                                                                        
+                                                                    </>
+                                                                }
+                                                            </ImageBackground>                                                
+                                                        </View>
+                                                        <Text style={{fontFamily:'Baloo2-Medium', color: '#fff', marginLeft:10}}>{item.trackName}</Text>
+                                                    </View>
+                                                    <View style={{width:'12%', flexDirection:'column-reverse'}}>
+                                                        <Text style={{fontFamily:'Baloo2-Medium', color: Colors.grey3}}>{item.trackLength}</Text>
+                                                    </View>
+                                                </View>
+                                            )
+                                        
                                     )}
-                                    <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels")} style={{top:10 ,paddingHorizontal:10, widht:'20%', alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: allArtistSongs})} style={{top:10 ,paddingHorizontal:10, widht:'20%', alignItems: 'center'}}>
                                         <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:12}}>See all singles</Text>
                                         <Feather
                                             name="more-horizontal"
