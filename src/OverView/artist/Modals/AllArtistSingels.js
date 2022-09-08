@@ -22,6 +22,7 @@ const {width} = Dimensions.get('window');
 
 const AllArtistSingels = props => {
     const dispatch = useDispatch();
+    const ScreenTitle = props.route.params.screenName;
     const artistSongsSelector = useSelector(state => state.SongReducer);
     const allArtistSongs = props.route.params.songsList;
     const appBackGroundSelector = useSelector(state => state.AppReducer);
@@ -69,7 +70,7 @@ const AllArtistSingels = props => {
                         index: nextAudioIndex,
                         isLoading: false,
                         MusicOnForGroundReducer: MusicOnForGroundReducer,
-                        list: SongOnBackGroundReducer
+                        list: allArtistSongs
                     }))
                 }catch(error) {
                     console.log(error.message);
@@ -161,7 +162,7 @@ const AllArtistSingels = props => {
                     index: index,
                     isLoading: false,
                     MusicOnForGroundReducer: true,
-                    list: SongOnBackGroundReducer
+                    list: allArtistSongs
                 }))
             } catch {
                 console.log(error.message);
@@ -228,7 +229,7 @@ const AllArtistSingels = props => {
         <View
             style={{flex:1}}
         >
-            <MusicGeneralHeader goBack={() => props.navigation.goBack(null)} title={'Singels'}/>
+            <MusicGeneralHeader goBack={() => props.navigation.goBack(null)} title={ScreenTitle}/>
             <View
                 style={{
                     flex: 1,

@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../Utitilities/AppColors';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import { useSelector} from 'react-redux';
 
 //Authentication
 import LoginScreen, {screenOptions as LoginScreenOptions} from '../Authentication/LoginScreen';
@@ -25,8 +25,12 @@ import ResetPasswordScreen, {screenOptions as ResetPasswordScreenOptions} from '
 import FirstUseScreen, {screenOptions as FirstUseScreenOptions} from '../FirstUse';
 
 //OverView
+
+    // DashBoard
 import DashBoardScreen, {screenOptions as DashBoardScreenOptions} from '../OverView/DashBoardScreen';
 import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/MusicBoard';
+import FeedScreen from '../OverView/DashboardUserProfiles/FeedScreen';
+
 import HistoryScreen, {screenOptions as HistoryScreenOptions} from '../OverView/HistoryScreen';
 import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/LibraryScreen';
 import SearchScreen, {screenOptions as SearchScreenOptions} from '../OverView/SearchScreen';
@@ -130,8 +134,37 @@ export const DashBoardTopBarStack = () => {
     )
 }
 
+const DashBoardProfileTopStackNavigator = createMaterialTopTabNavigator();
+export const DashBoardProfileTopBarStack = () => {
+    return(
+        <DashBoardProfileTopStackNavigator.Navigator>
+            <DashBoardProfileTopStackNavigator.Group screenOptions={{
+            tabBarLabelStyle: {
+                fontFamily: 'Baloo2-Bold',
+                fontSize:16,            
+            },
+            tabBarStyle:{
+                backgroundColor:Colors.grey1,
+                paddingTop:Platform.OS == 'ios' ? 30 : 10,
+                
+            },
+            
+            tabBarIndicatorStyle:{backgroundColor:Colors.red3},
+            tabBarActiveTintColor:Colors.red3,
+            tabBarInactiveTintColor:Colors.grey3,
+            tabBarPressColor:Colors.red3,
+            indicatorStyle:{backgroundColor:Colors.red1}
+        }}>
+                <DashBoardProfileTopStackNavigator.Screen name='Feed' component={FeedScreen}/>
+                <DashBoardProfileTopStackNavigator.Screen name='Music Board' component={FeedScreen}/>
+            </DashBoardProfileTopStackNavigator.Group>
+        </DashBoardProfileTopStackNavigator.Navigator>
+    )
+}
+
 const ArtistProfileTopStackNavigator = createMaterialTopTabNavigator();
 export const ArtistProfileTopBar = () => {
+
     return(
         <ArtistProfileTopStackNavigator.Navigator>
             <ArtistProfileTopStackNavigator.Group screenOptions={{
@@ -181,6 +214,10 @@ export const ProfileStack = () => {
 const OverViewBottomStackNavigator = createMaterialBottomTabNavigator();
 
 export const OverViewStack = () => {
+
+    const appSelector = useSelector(state => state.AppReducer);
+    const { main } = appSelector;
+    
     return(
         <OverViewBottomStackNavigator.Navigator initialRouteName='Home' barStyle={{backgroundColor:Colors.grey4}}>
             <OverViewBottomStackNavigator.Screen
@@ -195,7 +232,7 @@ export const OverViewStack = () => {
                     },                                     
                 }} 
                 name='Home'
-                component={DashBoardTopBarStack}
+                component={main? DashBoardTopBarStack : DashBoardProfileTopBarStack}
                 
             />
 

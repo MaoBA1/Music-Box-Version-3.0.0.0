@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { 
     View,
     Text,
@@ -13,21 +13,37 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Colors from '../Utitilities/AppColors';
 import Style from './Style/PostStyle';
-import { Video } from 'expo-av';
+import { Video, Audio } from 'expo-av';
 import { getPosts, giveLikeToPost, unLikeToPost, getPostComment } from '../ApiCalls';
+import { SwitchBetweenDashBoardStacksAction, setPostAuthorProfileAction } from '../../store/actions/appActions';
 
 
 const Post = props => {
+    const {post, setSongForPlaylist} = props;
+    const {
+        postAuthorId,
+        postAuthorName,
+        postMedia,
+        creatAdt
+    } = post
+    
     const dispatch = useDispatch(); 
     const getAllArtistsSelector = useSelector(state => state.ArtistsReducer);
     const getUserDataSelector = useSelector(state => state.UserReducer);
     const artists = getAllArtistsSelector? getAllArtistsSelector?.ArtistsReducer?.artists : null;
     let likeStatus = false;
-    const post = props?.post;
     const formatted_artistName = post?.postAuthorName[0]?.toUpperCase() + post?.postAuthorName?.substring(1,post?.postAuthorName?.length);    
     const postDate = new Date(post?.creatAdt).toDateString();
     let postAuthor = null;
-
+    
+    const detailsForSong = {
+        trackUri: postMedia?.uri,
+        artist:{
+            artistName: postAuthorName,
+            artistId: postAuthorId
+        },
+        creatAdt: creatAdt
+    }
 
     const getPostAuthor = async() => {
         if(artists) {
@@ -114,6 +130,11 @@ const Post = props => {
             likeStatus = false;
         }
     }
+
+    const openAddToPlaylist = () => {
+        setSongForPlaylist(detailsForSong);
+        props.openAddToPlaylist();
+    }
    
     
     amILikeThisPost();
@@ -130,6 +151,16 @@ const Post = props => {
         }
     }
 
+
+    const openPostAuthorProfileScreen = () => {
+        try {
+            dispatch(setPostAuthorProfileAction(postAuthor))
+            dispatch(SwitchBetweenDashBoardStacksAction(false));
+        }catch(error) {
+            console.log(error.message);
+        }        
+    }
+
    
     
     return (
@@ -142,12 +173,12 @@ const Post = props => {
             
             <View style={Style.authorDetailsContainer}>
                 <View style={Style.authorNameAndImageContainer}>
-                    <View style={Style.authorImageContainer}>
+                    <TouchableOpacity onPress={openPostAuthorProfileScreen} style={Style.authorImageContainer}>
                         <Image
                             source={{uri:postAuthor?.profileImage}}
                             style={Style.authorImageStyle}
                         />
-                    </View>
+                    </TouchableOpacity>
                     <View style={Style.authorNameContainer}>
                         <Text style={Style.authorNameStyle}>{formatted_artistName}</Text>
                     </View>
@@ -187,14 +218,30 @@ const Post = props => {
                 </View>
             </View>
             <View style={Style.buttonsContainer}>
-                <View style={[Style.buttonIconsContainer,{opacity: post?.postMedia?.format == 'video' || post?.postMedia?.format == 'audio'? 1 : 0.5}]}>
-                    <Ionicons
-                        name='md-add-circle'
-                        size={25}   
-                        color={Colors.grey7}                     
-                    />
-                    <Text style={Style.buttonTitle}>Add to Playlist</Text>
-                </View>
+                {
+                    post?.postMedia?.format == 'video' || post?.postMedia?.format == 'audio'?
+                    (
+                        <TouchableOpacity onPress={openAddToPlaylist} style={Style.buttonIconsContainer}>
+                            <Ionicons
+                                name='md-add-circle'
+                                size={25}   
+                                color={Colors.grey7}                     
+                            />
+                            <Text style={Style.buttonTitle}>Add to Playlist</Text>
+                        </TouchableOpacity>
+                    )
+                    :
+                    (
+                        <View style={[Style.buttonIconsContainer,{opacity: 0.5}]}>
+                            <Ionicons
+                                name='md-add-circle'
+                                size={25}   
+                                color={Colors.grey7}                     
+                            />
+                            <Text style={Style.buttonTitle}>Add to Playlist</Text>
+                        </View>
+                    )
+                }
                 
                 <TouchableOpacity onPress={openCommentScreen} style={Style.buttonIconsContainer}>
                     <FontAwesome

@@ -15,38 +15,39 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPosts, getArtistPostsById, getArtistLatestRealeases, getAllArtistSongs, getArtistPlayLists } from '../../../ApiCalls';
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
 import { createNewPlaylistAction } from '../../../../store/actions/artistActions';
+import { createNewAlbumsAction, getAllArtistAlbumsAction } from '../../../../store/actions/albumsActions';
 
 
 
 import SongItem from '../../components/SongItem';
 
-const CreateNewPlaylistModal = props => {
+const CreateNewAlbumModal = props => {
     const dispatch = useDispatch();
-    const [playlistImage, setPlaylistImage] = useState('');
+    const [albumImage, setAlbumImage] = useState('');
     const [song, setSong] = useState('');
-    const [playlistName, setPlaylistName] = useState('');
+    const [albumName, setAlbumName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const artistSelector = useSelector(state => state.ArtistsReducer);
     const artistMainGener = artistSelector?.ArtistDataReducer?.mainGener;
     const artistId = artistSelector?.ArtistDataReducer?._id;
     const artistSongsSelector = useSelector(state => state.SongReducer);
     const allArtistSongs = artistSongsSelector?.ArtistSongsReducer;
-    const [playlistSongsList, setPlaylistSongsList] = useState([]);
+    const [albumSongsList, setAlbumSongsList] = useState([]);
     const [noteVisible, setNoteVisible] = useState(false);
     
 
     
 
     const AddToSongsList = song => {
-        let list = playlistSongsList;
+        let list = albumSongsList;
         list.push(song);
-        setPlaylistSongsList(list);
+        setAlbumSongsList(list);
     }
 
     const removeSongFromList = song => {
-        let list = playlistSongsList;
+        let list = albumSongsList;
         list.splice(list.indexOf(song),list.indexOf(song)+1);        
-        setPlaylistSongsList(list);
+        setAlbumSongsList(list);
     }
     
     let selectImageFromGallery = async () => {
@@ -61,7 +62,7 @@ const CreateNewPlaylistModal = props => {
             aspect: [4, 3]
         });
         if(!pickerResult.cancelled){
-            setPlaylistImage(pickerResult.uri);
+            setAlbumImage(pickerResult.uri);
         } 
     };
 
@@ -78,12 +79,12 @@ const CreateNewPlaylistModal = props => {
             aspect: [16, 9]
         });        
         if(!pickerResult.cancelled){
-            setPlaylistImage(pickerResult.uri);
+            setAlbumImage(pickerResult.uri);
         } 
     };
 
     const HandleImageUpload = async () => {
-        let sourceuri = playlistImage;
+        let sourceuri = albumImage;
         let newFile = {
             uri: sourceuri,
             type: `test/${sourceuri.split(".")[1]}`,
@@ -91,7 +92,7 @@ const CreateNewPlaylistModal = props => {
         }
         const data = new FormData();
         data.append('file', newFile);
-        data.append('upload_preset', 'playlistImage');
+        data.append('upload_preset', 'AlbumsImages');
         data.append('cloud_name', 'musicbox');
         const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
             method: 'post',
@@ -102,29 +103,30 @@ const CreateNewPlaylistModal = props => {
     }
 
     const createNewPlaylist = async() => {
-        if(playlistSongsList.length == 0) {
+        if(albumSongsList.length == 0) {
             setNoteVisible(true);
             return;
         }
         setIsLoading(true);
         setNoteVisible(false);
-        if(playlistImage != '') {
+        if(albumImage != '') {
             HandleImageUpload()
             .then(async imageUri => {
+                albumSongsList.map(x => x.trackImage = imageUri);
                 let details = {
-                    playlistName: playlistName,
-                    playlistImage: imageUri,
-                    tracks: playlistSongsList
+                    albumName: albumName,
+                    albumCover: imageUri,
+                    tracks: albumSongsList
                 }
                 
                 const jsonToken = await AsyncStorage.getItem('Token');        
                 const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
                 if(userToken) {
-                    let action = createNewPlaylistAction(userToken, details)
+                    let action = createNewAlbumsAction(userToken, artistId, details)
                     try{
                         await dispatch(action)
+                        await dispatch(getAllArtistAlbumsAction(userToken, artistId));
                         setIsLoading(false);
-                        getArtistPlayLists(dispatch, userToken);
                         props.close(false);
                     } catch(error) {
                         console.log(error.message);
@@ -134,18 +136,18 @@ const CreateNewPlaylistModal = props => {
             })
         } else {
             let details = {
-                playlistName: playlistName,
-                tracks: playlistSongsList
+                albumName: albumName,
+                tracks: albumSongsList
             }
             
             const jsonToken = await AsyncStorage.getItem('Token');        
             const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
             if(userToken) {
-                let action = createNewPlaylistAction(userToken, details)
+                let action = createNewAlbumsAction(userToken, artistId, details)
                 try{
                     await dispatch(action)
+                    await dispatch(getAllArtistAlbumsAction(userToken, artistId));
                     setIsLoading(false);
-                    getArtistPlayLists(dispatch, userToken);
                     props.close(false);
                 } catch(error) {
                     console.log(error.message);
@@ -154,7 +156,6 @@ const CreateNewPlaylistModal = props => {
         }
     }
     
-
     return(
         <Modal
             visible={true}
@@ -169,23 +170,23 @@ const CreateNewPlaylistModal = props => {
                     }}
                 >
                     <View style={{width:'100%', alignItems: 'center', justifyContent: 'center', marginTop:30}}>
-                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>Create New Playlist</Text>
+                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>Create New Album</Text>
                     </View>
                     <View style={{width:'100%', paddingHorizontal:20, marginTop:20}}>
-                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Give name to your playlist</Text>
+                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Give name to your Album</Text>
                         <TextInput
                             style={{
                                 width:'95%', height: 30, fontFamily:'Baloo2-Medium', color:Colors.red3,
                                 paddingHorizontal:10, backgroundColor:'#fff', borderWidth:2,
                                 marginTop:10, borderRadius:50, borderColor:Colors.grey5
                             }}
-                            value={playlistName}
-                            onChangeText={text => setPlaylistName(text)}
+                            value={albumName}
+                            onChangeText={text => setAlbumName(text)}
                             returnKeyType='done'
                         />
                     </View>
                     <View style={{width:'100%', paddingHorizontal:20, marginTop:20}}>
-                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Would you like to add playlist picture?</Text>
+                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Would you like to add album picture?</Text>
                     </View>
                     <View style={{width:'100%', alignItems: 'center', justifyContent: 'center', marginTop:10}}>
                         <View style={{borderWidth:2, borderColor:'#fff', width:'85%', backgroundColor:Colors.grey4, padding:10, borderRadius:20, flexDirection:'row', alignItems: 'center', justifyContent: 'space-between'}}>
@@ -205,7 +206,7 @@ const CreateNewPlaylistModal = props => {
                             </View>
                             <View style={{width:'70%', alignItems: 'center', justifyContent: 'center', padding:10}}>
                                 <Image
-                                    source={playlistImage == ''? require('../../../../assets/noimage.jpg') : {uri:playlistImage}}
+                                    source={albumImage == ''? require('../../../../assets/noimage.jpg') : {uri:albumImage}}
                                     style={{width:150, height:120, borderRadius:20}}
                                 />
                             </View>
@@ -231,7 +232,7 @@ const CreateNewPlaylistModal = props => {
                     {
                         noteVisible && 
                         <View style={{width:'100%', alignItems: 'center', justifyContent:'center'}}>
-                            <Text style={{fontFamily:'Baloo2-Medium', color:Colors.red3}}>You have atleast one song to create playlist</Text>
+                            <Text style={{fontFamily:'Baloo2-Medium', color:Colors.red3}}>You have atleast one song to create Album</Text>
                         </View>
                     }
                     
@@ -246,7 +247,7 @@ const CreateNewPlaylistModal = props => {
                             <Text style={{fontFamily:'Baloo2-Medium', color:'#fff'}}>Cancel</Text>
                         </TouchableOpacity>
                         {
-                            playlistName != ''?
+                            albumName != ''?
                             (
                                 <View>
                                     {
@@ -260,7 +261,7 @@ const CreateNewPlaylistModal = props => {
                                                 }}
                                                 onPress={createNewPlaylist}
                                             >
-                                                <Text style={{fontFamily:'Baloo2-Medium', color:'#fff'}}>Create new playlist</Text>
+                                                <Text style={{fontFamily:'Baloo2-Medium', color:'#fff'}}>Create new Album</Text>
                                             </TouchableOpacity>
                                         )
                                         :
@@ -288,7 +289,7 @@ const CreateNewPlaylistModal = props => {
                                         borderRadius:50, borderWidth:2, borderColor: 'white',
                                     }}
                                 >
-                                    <Text style={{fontFamily:'Baloo2-Medium', color:'#fff'}}>Create new playlist</Text>
+                                    <Text style={{fontFamily:'Baloo2-Medium', color:'#fff'}}>Create new Album</Text>
                                 </View>
                             )
                         }
@@ -300,4 +301,4 @@ const CreateNewPlaylistModal = props => {
     )
 }
 
-export default CreateNewPlaylistModal;
+export default CreateNewAlbumModal;

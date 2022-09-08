@@ -11,6 +11,7 @@ import GetPostReducer from './store/reducers/postReducer';
 import GetArtistsReducer from './store/reducers/artistReducer';
 import SongReducers from './store/reducers/songReducer';
 import AppReducers from './store/reducers/appReducers';
+import AlbumReducers from './store/reducers/albumReducer';
 import * as SplashScreen from 'expo-splash-screen';
 
 const rootReducer = combineReducers({
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
     Post: GetPostReducer,
     ArtistsReducer: GetArtistsReducer,
     SongReducer: SongReducers,
-    AppReducer: AppReducers
+    AppReducer: AppReducers,
+    AlbumReducers: AlbumReducers
 }) 
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

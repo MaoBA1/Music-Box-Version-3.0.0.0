@@ -174,11 +174,11 @@ const ProfileScreen = props => {
                             data={userFavoritesGeners}
                             keyExtractor={item => item._id}
                             renderItem={
-                                gener => 
+                                ({item, index}) => 
                                 <View>
                                     {
                                         userFavoritesGeners.length > 1 &&
-                                        <TouchableOpacity onPress={() => removeGenerFromFavorites(gener.item._id)} style={{backgroundColor:Colors.grey5, borderRadius:50, width:20, height:20, alignItems: 'center', justifyContent: 'center', position: 'absolute', zIndex:1}}>
+                                        <TouchableOpacity onPress={() => removeGenerFromFavorites(item._id)} style={{backgroundColor:Colors.grey5, borderRadius:50, width:20, height:20, alignItems: 'center', justifyContent: 'center', position: 'absolute', zIndex:1}}>
                                             <Ionicons
                                                 name='close'
                                                 size={15}
@@ -188,7 +188,7 @@ const ProfileScreen = props => {
                                     }
                                     
                                     <Image
-                                        source={{uri:gener.item.generImage}}
+                                        source={{uri:item.generImage}}
                                         style={{width:100, height:70, margin:2}}
                                     />
                                 </View>
@@ -213,18 +213,18 @@ const ProfileScreen = props => {
                         userSubscribes?.length > 0?
                         (
                             <View style={{width:'100%', flexDirection:'row', backgroundColor:Colors.grey4, padding:10, alignItems: 'center', marginVertical:5}}>
-                                <FlatList
+                                {/* <FlatList
                                     horizontal
                                     data={userPlaylists}
                                     keyExtractor={item => item._id}
                                     renderItem={
                                         playlist => 
-                                        <Image
-                                            source={{uri:gener.item.generImage}}
-                                            style={{width:100, height:70, margin:2}}
-                                        />
+                                        // <Image
+                                        //     source={{uri:gener.item.generImage}}
+                                        //     style={{width:100, height:70, margin:2}}
+                                        // />
                                     }
-                                />
+                                /> */}
 
                             </View>
                         )
@@ -257,11 +257,17 @@ const ProfileScreen = props => {
                                     data={userPlaylists}
                                     keyExtractor={item => item._id}
                                     renderItem={
-                                        playlist => 
-                                        <Image
-                                            source={{uri:gener.item.generImage}}
-                                            style={{width:100, height:70, margin:2}}
-                                        />
+                                        ({item, index}) => 
+                                        <TouchableOpacity 
+                                            onPress={() => props.navigation.navigate("AllSingels", {songsList: item.songs, screenName: item.playlistName})}
+                                            style={{alignItems: 'center'}}
+                                        >
+                                            <Image
+                                                source={{uri:item.playlistImage}}
+                                                style={{width:80, height:50, margin:5, borderRadius:10, resizeMode:'stretch'}}
+                                            />
+                                            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Bold', color:'#fff', top:5}}>{item.playlistName}</Text>
+                                        </TouchableOpacity>
                                     }
                                 />
 

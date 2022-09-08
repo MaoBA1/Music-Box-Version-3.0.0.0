@@ -14,6 +14,8 @@ import Menu from './MenuScreen';
 import Comment from './CommentScreen';
 import { getArtistData } from '../ApiCalls';
 
+import AddSongFromPostToPlaylist from '../components/AddSongFromPostToPlaylist';
+
 const DashBoardScreen = props => {
     const dispatch = useDispatch();
     const userDataSelector = useSelector(state => state.UserReducer);
@@ -23,6 +25,8 @@ const DashBoardScreen = props => {
     const post = postSelector?.PostReducer;
     const [modalStatus, setModalStatus] = useState('');
     const [commentParams, setCommentParams] = useState(null);
+    const [songForPlaylist, setSongForPlaylist] = useState(null);
+    const [addToPlaylistVisible, setAddToPlaylistVisible] = useState(false);
 
     const closeAndOpenMenu = () => {
         setModalStatus('menu');
@@ -67,6 +71,7 @@ const DashBoardScreen = props => {
                { modalStatus == 'menu' && <Menu func={closeAndOpenMenu} logout={logout}/>}
                {modalStatus == 'comment' && <Comment func={CloseAndOpenCommentScreen} params={commentParams}/>}
             </Modal>
+            {addToPlaylistVisible && <AddSongFromPostToPlaylist close={setAddToPlaylistVisible} track={songForPlaylist}/>}
 
             <Header func={closeAndOpenMenu}/>
             <View style={Style.mainContainer}>                
@@ -78,7 +83,15 @@ const DashBoardScreen = props => {
                             style={{width: '100%'}}
                             data={post.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt)))}
                             keyExtractor={item => item._id}
-                            renderItem={currentPost => <Post post={currentPost.item} openCommentScreen={CloseAndOpenCommentScreen}/>}
+                            renderItem={
+                                currentPost => 
+                                <Post 
+                                    post={currentPost.item}
+                                    openCommentScreen={CloseAndOpenCommentScreen} 
+                                    openAddToPlaylist={() => setAddToPlaylistVisible(true)}
+                                    setSongForPlaylist={setSongForPlaylist}
+                                />
+                            }
                             
                         />
                     )

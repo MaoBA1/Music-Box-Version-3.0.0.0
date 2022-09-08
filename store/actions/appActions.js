@@ -6,7 +6,8 @@ export const PLAY_NEXT_SONG = "PLAY_NEXT_SONG";
 export const PREPER_NEXT_SONG = "PREPER_NEXT_SONG";
 export const HANDLE_SEE_BAR = "HANDLE_SEE_BAR";
 export const SET_MUSIC_ON_FORGROUND = "SET_MUSIC_ON_FORGROUND";
-
+export const SWITCH_BETEEN_DASHBOARDS = "SWITCH_BETEEN_DASHBOARDS";
+export const SET_POST_AUTHOR_PROFILE = "SET_POST_AUTHOR_PROFILE";
 
 
 export const setMusicOnBackGroundDispatch = (boolean) => {
@@ -164,5 +165,31 @@ export const setMusicOnForGroundDispatch = (boolean) => {
 export const setMusicOnForGroundAction = (boolean) => {
     return dispatch => {
         dispatch(setMusicOnForGroundDispatch(boolean))
+    }
+}
+
+export const SwitchBetweenDashBoardStacksDispatch = (boolean) => {
+    return dispatch => {
+        dispatch({type: SWITCH_BETEEN_DASHBOARDS, boolean});
+    }
+}
+
+
+export const SwitchBetweenDashBoardStacksAction = (boolean) => {
+    return dispatch => {
+        dispatch(SwitchBetweenDashBoardStacksDispatch(boolean));
+    }
+}
+
+export const setPostAuthorProfileDispatch = (profile) => {
+    return dispatch => {
+        dispatch({type: SET_POST_AUTHOR_PROFILE, profile});
+    }
+}
+
+
+export const setPostAuthorProfileAction = (profile) => {
+    return dispatch => {
+        dispatch(setPostAuthorProfileDispatch(profile));
     }
 }

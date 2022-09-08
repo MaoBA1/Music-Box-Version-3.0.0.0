@@ -25,7 +25,15 @@ const SongItem = props => {
     }
 
     return(
-        <TouchableOpacity onPress={hendelClick} style={{alignItems: 'center', justifyContent: 'center'}}>
+        <TouchableOpacity 
+            onPress={hendelClick} 
+            style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 80,
+                marginHorizontal:8
+            }}
+        >
             <ImageBackground
                 source={{uri:props.song.trackImage}}
                 style={{width:60, height:60, margin:5, alignItems:'center', justifyContent:'center'}}
@@ -34,7 +42,7 @@ const SongItem = props => {
             >
                 {isClicked && <FontAwesome name="check" size={30} color={Colors.red3}/>}
             </ImageBackground>
-            <Text style={{fontFamily:'Baloo2-Medium', color:'#fff'}}>{props.song.trackName}</Text>
+            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:'#fff'}}>{props.song.trackName}</Text>
         </TouchableOpacity>
     )
 }

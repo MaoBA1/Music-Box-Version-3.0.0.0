@@ -6,7 +6,9 @@ import {
     PLAY_NEXT_SONG,
     PREPER_NEXT_SONG,
     HANDLE_SEE_BAR,
-    SET_MUSIC_ON_FORGROUND
+    SET_MUSIC_ON_FORGROUND,
+    SWITCH_BETEEN_DASHBOARDS,
+    SET_POST_AUTHOR_PROFILE
  } from '../actions/appActions';
 
 
@@ -22,6 +24,8 @@ const initialState = {
     playbackDuration: null,
     isLoading: false,
     MusicOnForGroundReducer: false,
+    main: true,
+    PostAuthorProfile: null
 }
 
 
@@ -87,6 +91,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 MusicOnForGroundReducer: action.boolean
+            }
+        case SWITCH_BETEEN_DASHBOARDS:
+            return {
+                ...state,
+                main: action.boolean
+            }
+        case SET_POST_AUTHOR_PROFILE:
+            return {
+                ...state,
+                PostAuthorProfile: action.profile
             }
         default:
             return state;

@@ -31,19 +31,24 @@ import {
     preperNextSongAction,
     handleSeeBarAction
 } from '../../../store/actions/appActions';
+import { getAllArtistAlbumsAction } from '../../../store/actions/albumsActions';
 import { play, pause, resume, playNext } from '../../../audioController';
 import { Audio } from 'expo-av';
 import MusicHeader from './components/MusicHeader';
 import UploadSongModal from './Modals/UploadSongModal';
 import CreateNewPlaylistModal from './Modals/CreateNewPlaylistModal';
+import CreateNewAlbumModal from './Modals/CreateNewAlbumModal';
 
 
 const ArtistMusicScreen = props => {
     const dispatch = useDispatch();
     const artistSelector = useSelector(state => state.ArtistsReducer);
+    const artistAlbumSelector = useSelector(state => state.AlbumReducers);
+    const allArtistAlbums = artistAlbumSelector?.ArtistAlbumReducer?.ArtistAlbums;
     const artistId = artistSelector?.ArtistDataReducer?._id;
     const [uploadSongModalVisible, setUploadSongModalVisible] = useState(false);
-    const [createNewPlaylistModalVisible, setCreateNewPlaylistModalVisible] = useState(false);    
+    const [createNewPlaylistModalVisible, setCreateNewPlaylistModalVisible] = useState(false);  
+    const [createNewAlbumModalVisible, setCreateNewAlbumModalVisible] = useState(false);    
     const artistSongsSelector = useSelector(state => state.SongReducer);
     const artistTop5 = artistSongsSelector?.ArtistTop5SongsReducer;
     const artistLatestRealeases = artistSongsSelector?.ArtistLatestReleasesReducer;
@@ -71,6 +76,12 @@ const ArtistMusicScreen = props => {
             getArtistTop5(dispatch, userToken, artistId);
             getArtistLatestRealeases(dispatch, userToken, artistId);
             getArtistPlayLists(dispatch, userToken);
+            try{
+                dispatch(getAllArtistAlbumsAction(userToken, artistId));
+            }catch(error){
+                console.log(error.message);
+            }
+            
         }
     }
 
@@ -122,7 +133,7 @@ const ArtistMusicScreen = props => {
         playbackObj,        
         MusicOnForGroundReducer
     ])
-    
+     
 
     const handleAudioPress = async (audio, index, list) => {     
         if(soundObj === null) {
@@ -218,9 +229,10 @@ const ArtistMusicScreen = props => {
             <MusicHeader goBack={() =>  props.navigation.navigate('Setting')}/>
             {uploadSongModalVisible && <UploadSongModal close={setUploadSongModalVisible}/>}
             {createNewPlaylistModalVisible && <CreateNewPlaylistModal close={setCreateNewPlaylistModalVisible}/>}
+            {createNewAlbumModalVisible && <CreateNewAlbumModal close={setCreateNewAlbumModalVisible}/>}
             
             <View style={{width:'100%', flexDirection:'row', borderBottomWidth:2, borderColor:Colors.grey3}}>
-                <TouchableOpacity style={{backgroundColor:Colors.grey1, padding:10, width:`${100/3}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => setCreateNewAlbumModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/3}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
                     <MaterialIcons
                         name='album'
                         size={18}
@@ -439,7 +451,7 @@ const ArtistMusicScreen = props => {
                                         keyExtractor={item => item._id}
                                         renderItem={playlist => 
                                             <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
-                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: playlist.item.tracks})}>
+                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: playlist.item.tracks, screenName: playlist.item.playlistName})}>
                                                     <Image
                                                         source={{uri:playlist.item.playlistImage}}
                                                         style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
@@ -461,16 +473,32 @@ const ArtistMusicScreen = props => {
                     </View>
                     <View style={{marginTop:10, width:'100%', borderTopWidth:2, borderBottomWidth:2, borderColor:'#fff', padding:10, backgroundColor:Colors.grey4}}>
                         {
-                            !artistTop5 || artistTop5.length == 0 ?
+                            !allArtistAlbums || allArtistAlbums.length == 0 ?
                             (
                                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                                    <Text style={{fontFamily:'Baloo2-Medium', color: Colors.red3, fontSize:15}}>Start creating playlists of your</Text>
-                                    <Text style={{fontFamily:'Baloo2-Medium', color: Colors.red3, fontSize:15}}>singles by styles</Text>
+                                    <Text style={{fontFamily:'Baloo2-Medium', color: Colors.red3, fontSize:15}}>You haven't released any albums yet</Text>                                    
                                 </View>
                             )
                             :
                             (
-                                <View></View>
+                                <View style={{width:'100%', justifyContent: 'center'}}>
+                                    <FlatList
+                                        horizontal
+                                        data={allArtistAlbums}
+                                        keyExtractor={item => item._id}
+                                        renderItem={({item, index}) => 
+                                            <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
+                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.albumName})}>
+                                                    <Image
+                                                        source={{uri:item.albumCover}}
+                                                        style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
+                                                    />                                                
+                                                </TouchableOpacity>
+                                                <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{item.albumName}</Text>
+                                            </View>
+                                        }
+                                    />
+                                </View>
                             )
                         }
                     </View>
@@ -636,7 +664,7 @@ const ArtistMusicScreen = props => {
                                             )
                                         
                                     )}
-                                    <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: allArtistSongs})} style={{top:10 ,paddingHorizontal:10, widht:'20%', alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: allArtistSongs, screenName:"Singels"})} style={{top:10 ,paddingHorizontal:10, widht:'20%', alignItems: 'center'}}>
                                         <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:12}}>See all singles</Text>
                                         <Feather
                                             name="more-horizontal"
