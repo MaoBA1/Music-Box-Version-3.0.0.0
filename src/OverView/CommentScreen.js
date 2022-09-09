@@ -14,7 +14,7 @@ import Style from './Style/CommentStyle';
 import CommentHeader from '../components/CommentHeader';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import CommentItem from '../components/CommentItem';
-import { giveCommentToPost , getPosts } from '../ApiCalls';
+import { giveCommentToPost , getPosts, getArtistPostsById } from '../ApiCalls';
 
 
 const CommentScreen = props => {
@@ -23,10 +23,14 @@ const CommentScreen = props => {
     const userDataSelector = useSelector(state => state.UserReducer);
     const user = userDataSelector?.UserReducer?.message;
     const post = props.params.post;
+    const postAuthorId = props.params.post.postAuthorId;
     const postAuthorName = props.params.postAuthor;
     const postAuthorImage = props.params.postAuthorImage;    
     let commentsSelector = useSelector(state => state.Post?.postCommentReducer);
     const [commentText, setCommentText] = useState('');
+    console.log('====================================');
+    console.log(post);
+    console.log('====================================');
 
     const sendComment = async() => {
         Keyboard.dismiss();
@@ -34,8 +38,9 @@ const CommentScreen = props => {
             const jsonToken = await AsyncStorage.getItem('Token');
             const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
             if(userToken) {
-                getPosts(dispatch, userToken);
-                giveCommentToPost(dispatch, userToken, post._id, commentText);
+                await giveCommentToPost(dispatch, userToken, post._id, commentText);
+                await getPosts(dispatch, userToken);
+                await getArtistPostsById(dispatch, userToken, postAuthorId);
                 setCommentText('');
             }
         } catch (error) {

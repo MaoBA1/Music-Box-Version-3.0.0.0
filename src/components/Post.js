@@ -14,7 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Colors from '../Utitilities/AppColors';
 import Style from './Style/PostStyle';
 import { Video, Audio } from 'expo-av';
-import { getPosts, giveLikeToPost, unLikeToPost, getPostComment } from '../ApiCalls';
+import { getPosts, giveLikeToPost, unLikeToPost, getPostComment, getArtistPostsById } from '../ApiCalls';
 import { SwitchBetweenDashBoardStacksAction, setPostAuthorProfileAction } from '../../store/actions/appActions';
 
 
@@ -78,7 +78,7 @@ const Post = props => {
         }
     }
 
-    const like = async() => {
+    const like = async(artistId) => {
         try {
             const jsonToken = await AsyncStorage.getItem('Token');
             const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
@@ -86,6 +86,7 @@ const Post = props => {
                 await giveLikeToPost(dispatch, userToken, post?._id)
                 .then(result => {
                     getPosts(dispatch, userToken);
+                    getArtistPostsById(dispatch, userToken, artistId);
                     amILikeThisPost();
                     likeStatus = true;
                 })
@@ -96,7 +97,7 @@ const Post = props => {
         
     }
 
-    const unlike = async() => {
+    const unlike = async(artistId) => {
         try {
             const jsonToken = await AsyncStorage.getItem('Token');
             const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
@@ -104,6 +105,7 @@ const Post = props => {
                 await unLikeToPost(dispatch, userToken, post?._id)
                 .then(result => {
                     getPosts(dispatch, userToken);
+                    getArtistPostsById(dispatch, userToken, artistId);
                     amILikeThisPost();
                 })
             }
@@ -255,7 +257,7 @@ const Post = props => {
                 {
                     likeStatus?
                     (
-                        <TouchableOpacity onPress={unlike} style={Style.buttonIconsContainer}>
+                        <TouchableOpacity onPress={() => unlike(postAuthor._id)} style={Style.buttonIconsContainer}>
                             <AntDesign
                                 name='dislike1'
                                 size={25} 
@@ -268,7 +270,7 @@ const Post = props => {
                     )
                     :
                     (
-                        <TouchableOpacity onPress={like} style={Style.buttonIconsContainer}>
+                        <TouchableOpacity onPress={() => like(postAuthor._id)} style={Style.buttonIconsContainer}>
                             <AntDesign
                                 name='like1'
                                 size={25}

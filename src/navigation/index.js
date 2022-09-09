@@ -11,7 +11,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../Utitilities/AppColors';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+
+
 
 //Authentication
 import LoginScreen, {screenOptions as LoginScreenOptions} from '../Authentication/LoginScreen';
@@ -214,7 +216,6 @@ export const ProfileStack = () => {
 const OverViewBottomStackNavigator = createMaterialBottomTabNavigator();
 
 export const OverViewStack = () => {
-
     const appSelector = useSelector(state => state.AppReducer);
     const { main } = appSelector;
     
@@ -226,14 +227,17 @@ export const OverViewStack = () => {
                         const iconColor = focused? Colors.red3 : '#ffffff'
                         const iconSzie = focused? 24 : 22
                         return(
-                        <Entypo name={'home'} color={iconColor} size={iconSzie} />
+                        <Entypo 
+                            name={'home'}
+                            color={iconColor}
+                            size={iconSzie}
+                        />
                         )
             
                     },                                     
                 }} 
                 name='Home'
                 component={main? DashBoardTopBarStack : DashBoardProfileTopBarStack}
-                
             />
 
             <OverViewBottomStackNavigator.Screen

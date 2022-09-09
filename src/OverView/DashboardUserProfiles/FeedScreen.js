@@ -76,185 +76,198 @@ const FeedScreen = () => {
                {modalStatus == 'comment' && <Comment func={CloseAndOpenCommentScreen} params={commentParams}/>}
             </Modal>
             {addToPlaylistVisible && <AddSongFromPostToPlaylist close={setAddToPlaylistVisible} track={songForPlaylist}/>}
-            <View style={{width:'100%'}}>
-                <Entypo
-                    name="arrow-left"
-                    style={{
-                        position:'absolute',
-                        zIndex:1,
-                        top:10,
-                        left:5,
-                        shadowColor:'#000',
-                        shadowOffset:{width:0, height:3},
-                        shadowOpacity:0.5,
-                        shadowRadius :5
-                    }}
-                    color={Colors.red3}
-                    size={35}
-                    onPress={backToHomePage}
-                />
-                <View style={{
+            <Entypo
+                name="arrow-left"
+                style={{
+                    left:8,
+                    shadowColor:'#000', shadowOffset:{width:0, height:3},
+                    shadowOpacity:0.5, 
+                    position: 'absolute',
+                    zIndex:1,
+                    
+                }}
+                size={35}
+                color={Colors.red3}
+                onPress={backToHomePage}
+            />
+            <ImageBackground
+                source={{uri:profileSeconderyImage}}
+                style={{
+                    width: '100%',
+                    height:200,
                     borderBottomWidth:2,
-                    borderColor: Colors.grey6
-                }}>
-                    <Image
-                        source={{uri:profileSeconderyImage}}
-                        style={{width:'100%', height:200, resizeMode:'stretch'}}
-                    />
-                </View>                
-            </View>
-            <View style={{
-                    width:'100%',
-                    alignItems: 'center',
-                    bottom: 50,
-                    zIndex:1,                    
-                }}>
-                <View style={{
-                    borderRadius:50,
-                    padding:1,
-                    borderWidth:1,
-                    borderColor: Colors.grey6
-                }}>
-                    <Image
-                        source={{uri:profileImage}}
-                        style={{width: 90, height: 90, borderRadius:50, resizeMode:'stretch'}}
-                    />
-                </View>
-            </View>
-            <View style={{
-                width:'100%',
-                backgroundColor: Colors.grey4,
-                bottom:95
-            }}>
-                <View style={{
-                    marginLeft:10,
-                    marginTop:30,
-                    padding:10
-                }}>
+                    borderColor:Colors.grey6,
+                    flexDirection:'column-reverse',
+                }}
+                imageStyle={{resizeMode:'stretch'}}
+            >
+                
+                <View
+                    style={{
+                        width:'100%',
+                        padding:10,
+                        justifyContent:'space-between',
+                        flexDirection:'row',
+                    }}
+                >
                     <Text style={{
                         fontFamily: 'Baloo2-ExtraBold',
-                        fontSize:25,
-                        color:Colors.red3
+                        color: Colors.red3,
+                        fontSize:20,
+                        top:30
                     }}>
                         {artistName}
                     </Text>
                 </View>
-
-                <View
-                    style={{
-                        borderWidth:0.5,
-                        padding:10,
-                        paddingHorizontal:20,
-                        width:'95%',
-                        alignSelf:'center',
-                        backgroundColor: Colors.grey1,
-                        shadowColor:'#000',
-                        shadowOffset:{width:0, height:3},
-                        shadowOpacity:0.5,
-                        shadowRadius :5,
-                        borderRadius:20
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontFamily: 'Baloo2-Bold',
-                            color:Colors.red1,
-                            textShadowColor: '#fff',
-                            textShadowOffset: {width: 1, height:1},
-                            textShadowRadius:2,
-                            fontSize:18
-                        }}
-                    >
-                        {mainGener?.generName}
-                    </Text>
+            </ImageBackground>
+            <View
+                style={{
+                    backgroundColor: Colors.grey4,
+                    width:'100%'
+                }}
+            >
+                <View style={{
+                    width:'100%',
+                    flexDirection:'row',
+                    justifyContent:'space-between',
+                }}>
+                    
                     <View style={{
-                        flexDirection:'row',
+                        width:'70%',
+                        alignItems:'center',
+                        justifyContent:'center',
+                        borderBottomWidth:2,
+                        borderRightWidth:2,
+                        borderBottomRightRadius:50,
+                        borderColor: Colors.grey6,
+                        shadowColor:'#000', shadowOffset:{width:0, height:3},
+                        shadowOpacity:0.5, shadowRadius :5
                     }}>
-                        {
-                            additionalGener.map((item, index) => 
-                                <Text 
-                                    key={item._id}
-                                    style={{
-                                        fontFamily: 'Baloo2-Bold',
-                                        color:Colors.grey6,
-                                        textShadowColor: '#fff',
-                                        textShadowOffset: {width: 0, height:1},
-                                        textShadowRadius:1,
-                                    }}
-                                >
-                                    {item?.generName}{index === additionalGener.length - 1? ' ' : ', '}                                
-                                </Text>
-                            )
-                        }
+                        <Text style={{
+                            fontFamily:'Baloo2-Bold',
+                            color: '#fff',
+                            fontSize:12
+                        }}>
+                            {description}
+                        </Text>
                     </View>
                     <View style={{
-                        flexDirection:'row',
-                        marginTop:10,
+                        borderRadius:50,
+                        borderWidth:2,
+                        alignSelf:'flex-end', 
+                        marginLeft:10,
+                        borderColor: Colors.grey6,
+                        bottom:40,
+                        right:8,
+                        zindex:1,                    
                     }}>
-                        {
-                            
-                            skills.map((item, index) => 
-                                <Text 
-                                    key={index}
-                                    style={{
-                                        fontFamily: 'Baloo2-Bold',
-                                        color:Colors.grey2,
-                                        textShadowColor: '#fff',
-                                        textShadowOffset: {width: 0, height:1},
-                                        textShadowRadius:1,
-                                    }}
-                                >
-                                    {item}{index === skills.length - 1? ' ' : ', '}                                
-                                </Text>
-                            )
-                        }
+                        <Image
+                            source={{uri:profileImage}}
+                            style={{width:70, height:70, borderRadius:50}}
+                        />
                     </View>
                 </View>
 
                 <View style={{
-                    width:'95%',
-                    alignSelf:'center',
+                    width:'100%',
+                    marginTop:10,
+                    flexDirection:'row'
+                }}>
+                    <View style={{
+                        width:'50%', 
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{
+                            fontFamily: 'Baloo2-Bold',
+                            color:Colors.grey6,
+                            fontSize:12
+                        }}>
+                            Main Gener
+                        </Text>
+
+                        <Text style={{
+                            fontFamily: 'Baloo2-Bold',
+                            color:'#fff',
+                            fontSize:12
+                        }}>
+                            {mainGener.generName}
+                        </Text>
+                    </View>
+
+                    <View style={{
+                        width:'50%', 
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{
+                            fontFamily: 'Baloo2-Bold',
+                            color:Colors.grey6,
+                            fontSize:12
+                        }}>
+                            Additional geners
+                        </Text>
+
+                        <View style={{flexDirection:'row'}}>
+                            {additionalGener.map((item, index) => 
+                                <Text
+                                    key={index}
+                                    style={{
+                                        fontFamily: 'Baloo2-Bold',
+                                        color:'#fff',
+                                        fontSize:12
+                                    }}
+                                >
+                                    {item.generName}{index === additionalGener.length - 1 ? '' : ', '}
+                                </Text>
+                            )}
+                        </View>
+                    </View>
+                </View>
+                <View style={{
+                    width:'100%', 
                     alignItems: 'center',
-                    borderRadius:20,
-                    borderWidth:0.5,
-                    backgroundColor:Colors.grey1,
-                    margin:10,
-                    padding:10,
-                    backgroundColor: Colors.grey1,
-                    shadowColor:'#000',
-                    shadowOffset:{width:0, height:3},
-                    shadowOpacity:0.5,
-                    shadowRadius :5
+                    borderTopWidth:0.5,
+                    borderColor:Colors.grey6,
                 }}>
                     <Text style={{
                         fontFamily: 'Baloo2-Bold',
-                        fontSize:16,
-                        color:'#fff'
+                        color:Colors.grey6,
+                        fontSize:12
                     }}>
-                        {description}
+                        Skills
                     </Text>
+
+                    <View style={{flexDirection:'row'}}>
+                        {additionalGener.map((item, index) => 
+                            <Text
+                                key={index}
+                                style={{
+                                    fontFamily: 'Baloo2-Bold',
+                                    color:'#fff',
+                                    fontSize:12
+                                }}
+                            >
+                                {item.generName}{index === additionalGener.length - 1 ? '' : ', '}
+                            </Text>
+                        )}
+                    </View>
                 </View>
             </View>
 
             {
                     artistPosts?
                     (
-                        <View
-                            style={{
-                                bottom:100
-                            }}
-                        >
+                        <View style={{bottom: 12}}>
                             {
-                                artistPosts.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt)))
-                                .map((item, index) => 
-                                    <Post
-                                        key={item._id} 
-                                        post={item}
-                                        openCommentScreen={CloseAndOpenCommentScreen} 
-                                        openAddToPlaylist={() => setAddToPlaylistVisible(true)}
-                                        setSongForPlaylist={setSongForPlaylist}
-                                    />
-                                )
+                                artistPosts?.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt))).map((item, index) => (
+                                    <View key={index}>
+                                        <Post
+                                            post={item}
+                                            openCommentScreen={CloseAndOpenCommentScreen} 
+                                            openAddToPlaylist={() => setAddToPlaylistVisible(true)}
+                                            setSongForPlaylist={setSongForPlaylist}
+                                        />
+                                    </View>
+                                ))
                             }
                         </View>
                     )
@@ -263,10 +276,10 @@ const FeedScreen = () => {
                         <ImageBackground 
                                 source={ require('../../../assets/AppAssets/Logo.png') }
                                 resizeMode="cover" 
-                                style={{top:400, width: '100%', height:'100%', alignItems: 'center', position: 'absolute'}}
-                                imageStyle={{flex:1 , opacity: 0.3, width:300, height:300, left:40}}
+                                style={{flex:1, width:'100%', height:'100%', alignItems: 'center', justifyContent:'center'}}
+                                imageStyle={{opacity: 0.3}}
                         >
-                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20, top:150}}>This profile have no post right now</Text>
+                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>There is no content to show right now</Text>
                         </ImageBackground>
                     ) 
                     
@@ -278,3 +291,41 @@ const FeedScreen = () => {
 
 
 export default FeedScreen;
+
+
+
+
+// {
+//     artistPosts?
+//     (
+//         <View
+            
+//         >
+//             {
+//                 artistPosts.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt)))
+//                 .map((item, index) => 
+//                     <View key={index}>
+//                         <Post
+//                             post={item}
+//                             openCommentScreen={CloseAndOpenCommentScreen} 
+//                             openAddToPlaylist={() => setAddToPlaylistVisible(true)}
+//                             setSongForPlaylist={setSongForPlaylist}
+//                         />
+//                     </View>
+//                 )
+//             }
+//         </View>
+//     )
+//     :
+//     (
+//         <ImageBackground 
+//                 source={ require('../../../assets/AppAssets/Logo.png') }
+//                 resizeMode="cover" 
+//                 style={{top:400, width: '100%', height:'100%', alignItems: 'center', position: 'absolute'}}
+//                 imageStyle={{flex:1 , opacity: 0.3, width:300, height:300, left:40}}
+//         >
+//             <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20, top:150}}>This profile have no post right now</Text>
+//         </ImageBackground>
+//     ) 
+    
+// }
