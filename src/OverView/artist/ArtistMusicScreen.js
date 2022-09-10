@@ -298,7 +298,7 @@ const ArtistMusicScreen = props => {
                                 <View style={{width:'100%', justifyContent: 'center'}}>
                                     <FlatList
                                         horizontal
-                                        data={artistLatestRealeases}
+                                        data={artistLatestRealeases.slice(0,5)}
                                         keyExtractor={item => item._id}
                                         renderItem={({item, index}) => 
                                             

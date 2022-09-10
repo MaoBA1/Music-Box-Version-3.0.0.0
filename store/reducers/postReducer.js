@@ -1,9 +1,16 @@
-import { GET_ALL_POST, GET_POST_COMMENTS, GET_ALL_ARTIST_POST_BY_ID } from '../actions/postActions';
+import { 
+    GET_ALL_POST,
+    GET_POST_COMMENTS,
+    GET_ALL_ARTIST_POST_BY_ID,
+    GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE ,
+    CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE
+} from '../actions/postActions';
 
 const initialState = {
     PostReducer:null,
     postCommentReducer:null,
-    ArtistPostsReducer:null
+    ArtistPostsReducer:null,
+    DashBoardProfilePostReducer:null,
 };
 
 
@@ -23,6 +30,16 @@ export default (state = initialState, action) => {
             return{
                 ...state,  
                 ArtistPostsReducer: action.data.Posts
+            }
+        case GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE:
+            return{
+                ...state,  
+                DashBoardProfilePostReducer: action.data.Posts
+            }
+        case CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE:
+            return{
+                ...state,
+                DashBoardProfilePostReducer: null
             }
         default:
             return state;

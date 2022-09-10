@@ -32,6 +32,8 @@ import FirstUseScreen, {screenOptions as FirstUseScreenOptions} from '../FirstUs
 import DashBoardScreen, {screenOptions as DashBoardScreenOptions} from '../OverView/DashBoardScreen';
 import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/MusicBoard';
 import FeedScreen from '../OverView/DashboardUserProfiles/FeedScreen';
+import MusciScreen from '../OverView/DashboardUserProfiles/MusciScreen';
+import PlayListScreen from '../OverView/DashboardUserProfiles/PlayListScreen';
 
 import HistoryScreen, {screenOptions as HistoryScreenOptions} from '../OverView/HistoryScreen';
 import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/LibraryScreen';
@@ -158,11 +160,21 @@ export const DashBoardProfileTopBarStack = () => {
             indicatorStyle:{backgroundColor:Colors.red1}
         }}>
                 <DashBoardProfileTopStackNavigator.Screen name='Feed' component={FeedScreen}/>
-                <DashBoardProfileTopStackNavigator.Screen name='Music Board' component={FeedScreen}/>
+                <DashBoardProfileTopStackNavigator.Screen name='Music Board' component={MusciScreen}/>
             </DashBoardProfileTopStackNavigator.Group>
         </DashBoardProfileTopStackNavigator.Navigator>
     )
 }
+const profiledashBoardStackNavigator = createStackNavigator();
+export const ProfiledashBoardStack = () => {
+    return(
+        <profiledashBoardStackNavigator.Navigator>
+            <profiledashBoardStackNavigator.Screen name="DashBoardProfile" component={DashBoardProfileTopBarStack} options={{headerShown: false}}/> 
+            <profiledashBoardStackNavigator.Screen name="PlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>                        
+        </profiledashBoardStackNavigator.Navigator>
+    )
+}
+
 
 const ArtistProfileTopStackNavigator = createMaterialTopTabNavigator();
 export const ArtistProfileTopBar = () => {
@@ -237,7 +249,7 @@ export const OverViewStack = () => {
                     },                                     
                 }} 
                 name='Home'
-                component={main? DashBoardTopBarStack : DashBoardProfileTopBarStack}
+                component={main? DashBoardTopBarStack : ProfiledashBoardStack}
             />
 
             <OverViewBottomStackNavigator.Screen

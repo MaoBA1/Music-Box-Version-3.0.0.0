@@ -2,7 +2,9 @@ import {
     getAllArtistsAction,
     createArtistAction,
     getArtistDataAction,
-    getArtistPlaylistAction
+    getArtistPlaylistAction,
+    getArtistPlaylistForDashBoardAction,
+    cleanPlaylistReducerAction
 } from '../store/actions/artistActions';
 import { getUserDataAction, updateProfileAction } from '../store/actions/userActions';
 import { getGenersAction } from '../store/actions/genersActions';
@@ -11,13 +13,23 @@ import {
     likeAction,
     unLikeAction,
     getPostCommentsAction,
-    sendCommentsAction, getAllArtistPostsByIdAction 
+    sendCommentsAction, getAllArtistPostsByIdAction ,
+    getAllArtistPostsForDashBoardProfileAction,
+    cleanArtistPostsForDashBoardProfileAction
 } from '../store/actions/postActions';
 import {
      getAllArtistSongsAction,
      getArtistTop5SongsAction,
-     getArtistLatestRealeasesAction
+     getArtistLatestRealeasesAction,
+     getAllArtistSongsForDashBoardProfileAction,
+     getArtistTop5SongsForDashBoardProfileAction,
+     getArtistLatestRealeasesForDashBoardProfileAction,
+     cleanSongReducerAction
  } from '../store/actions/songActions';
+ import {
+    getAllArtistAlbumsForDasboardProfileAction,
+    cleanAlbumReducerAction
+ } from '../store/actions/albumsActions';
 
 
 
@@ -164,6 +176,27 @@ export const getArtistPostsById = async(dispatch, token, artistId) => {
     }
 }
 
+export const getArtistPostsForDashboardProfileById = async(dispatch, token, artistId) => {
+    let action = getAllArtistPostsForDashBoardProfileAction(token, artistId);
+    try {
+        await dispatch(action);
+    } catch(error) {
+        console.log(error.message);
+    }
+}
+
+export const cleanArtistPostsForDashboardProfil = async(dispatch) => {
+    let action = cleanArtistPostsForDashBoardProfileAction();
+    try {
+        await dispatch(action);
+    } catch(error) {
+        console.log(error.message);
+    }
+}
+
+
+
+
 export const getAllArtistSongs = async(dispatch, token, artistId) => {
     let action = getAllArtistSongsAction(token, artistId);
     try{
@@ -213,5 +246,88 @@ export const getArtistPlayLists = async(dispatch, token) => {
 
 
 
+export const getAllArtistSongsForDashBoardProfil = async(dispatch, token, artistId) => {
+    let action = getAllArtistSongsForDashBoardProfileAction(token, artistId);
+    try{
+        await dispatch(action)
+        .then(result => {
+            
+        })
+    } catch(error) {
+        console.log(error.message);
+    }
+}
 
+
+export const getArtistTop5ForDashBoardProfil = async(dispatch, token, artistId) => {
+    let action = getArtistTop5SongsForDashBoardProfileAction(token, artistId);
+    try{
+        await dispatch(action)
+        .then(result => {
+            return result;
+        })
+    }
+    catch(error) {
+        console.log(error.message);
+    }
+}
+
+export const getArtistLatestRealeasesForDashBoardProfil = async(dispatch, token, artistId) => {
+    let action = getArtistLatestRealeasesForDashBoardProfileAction(token, artistId);
+    try{
+        await dispatch(action)
+        .then(result => {
+            return result;
+        })
+    }catch(error) {
+        console.log(error.message);
+    }
+}
+
+
+export const cleanSongReducers = (dispatch) => {
+    let action = cleanSongReducerAction();
+    try {
+        dispatch(action);
+    } catch(error) {
+        console.log(error.message);
+    }
+}
+
+export const getArtistPlayListsForDashBoardProfile = async(dispatch, token, artistId) => {
+    let action = getArtistPlaylistForDashBoardAction(token, artistId);
+    try {
+        await dispatch(action)        
+    } catch(error) {
+        console.log(error.message);
+    }
+}
+
+export const cleanPlaylistReducer = (dispatch) => {
+    let action = cleanPlaylistReducerAction();
+    try {
+        dispatch(action)        
+    } catch(error) {
+        console.log(error.message);
+    }
+}
+
+export const getAllArtistAlbumsForDashBoardProfile = async(dispatch, token, artistId) => {
+    let action = getAllArtistAlbumsForDasboardProfileAction(token, artistId);
+    try{
+        await dispatch(action);
+    }catch(error) {
+        console.log(error.message);
+    }
+}
+
+
+export const cleanAlbumReducer = (dispatch) => {
+    let action = cleanAlbumReducerAction();
+    try{
+        dispatch(action);
+    }catch(error) {
+        console.log(error.message);
+    }
+}
 

@@ -1,9 +1,16 @@
-import { GET_ALL_ARTISTS, GET_ARTIST_DATA, GET_ARTIST_PLAYLISTS } from '../actions/artistActions';
+import { 
+    GET_ALL_ARTISTS,
+    GET_ARTIST_DATA,
+    GET_ARTIST_PLAYLISTS,
+    GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE,
+    CLEAN_PLAYLIST_REDUCER
+} from '../actions/artistActions';
 
 const initialState = {
     ArtistsReducer: null,
     ArtistDataReducer: null,
-    ArtistPlaylistsReducer: null
+    ArtistPlaylistsReducer: null,
+    ArtistPlaylistsDashBoardReducer: null,
 }
 
 
@@ -23,6 +30,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,       
                 ArtistPlaylistsReducer: action.data.playlists
+            }
+        case GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE:
+            return {
+                ...state,       
+                ArtistPlaylistsDashBoardReducer: action.data.playlists
+            }
+        case CLEAN_PLAYLIST_REDUCER:
+            return {
+                ...state, 
+                ArtistPlaylistsDashBoardReducer: null
             }
         default:
             return state;

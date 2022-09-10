@@ -5,6 +5,8 @@ export const UNLIKE = "UNLIKE";
 export const SEND_COMMENT = "SEND_COMMENT";
 export const UPLOAD_NEW_POST = "UPLOAD_NEW_POST";
 export const GET_ALL_ARTIST_POST_BY_ID = "GET_ALL_ARTIST_POST_BY_ID";
+export const GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE = "GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE";
+export const CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE = "CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -213,3 +215,45 @@ export const getAllArtistPostsByIdAction = (token, artistId) => {
     }
 }
 
+
+
+export const getAllArtistPostsForDashBoardProfileDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE, data});
+    }
+
+} 
+
+
+export const getAllArtistPostsForDashBoardProfileAction = (token, artistId) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/post/getAllArtistPosts/' + artistId,{
+            method: 'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        const data = await response.json();
+        if(data){
+            dispatch(getAllArtistPostsForDashBoardProfileDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong'); 
+        }
+    }
+}
+
+export const cleanArtistPostsForDashBoardProfileDispatch = () => {
+    return dispatch => {
+        dispatch({type: CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE});
+    }
+
+} 
+
+export const cleanArtistPostsForDashBoardProfileAction = () => {
+    return dispatch => {
+        dispatch(cleanArtistPostsForDashBoardProfileDispatch());
+    }
+
+} 

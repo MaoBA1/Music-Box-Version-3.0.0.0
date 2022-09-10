@@ -10,6 +10,8 @@ export const ADD_SKILL_TO_ARTIST_SKILLS = "ADD_SKILL_TO_ARTIST_SKILLS";
 export const REMOVE_SKILL_FROM_ARTIST_SKILLS = "REMOVE_SKILL_FROM_ARTIST_SKILLS";
 export const CREATE_NEW_PLAYLIST = "CREATE_NEW_PLAYLIST";
 export const GET_ARTIST_PLAYLISTS = "GET_ARTIST_PLAYLISTS";
+export const GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE = "GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE"; 
+export const CLEAN_PLAYLIST_REDUCER = "CLEAN_PLAYLIST_REDUCER";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -363,3 +365,43 @@ export const getArtistPlaylistAction = (token) =>{
     }
 }
 
+
+export const getArtistPlayListForDashBoardDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE, data});
+    }
+
+} 
+
+
+export const getArtistPlaylistForDashBoardAction = (token, artistId) =>{ 
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/getArtistPlayListById/' + artistId, {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getArtistPlayListForDashBoardDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const cleanPlaylistReducerDispatch = () => {
+    return dispatch => {
+        dispatch({type:CLEAN_PLAYLIST_REDUCER});
+    }
+}
+
+export const cleanPlaylistReducerAction = () => {
+    return dispatch => {
+        dispatch(cleanPlaylistReducerDispatch());
+    }
+}

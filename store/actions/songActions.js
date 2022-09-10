@@ -3,7 +3,10 @@ export const GET_ALL_ARTIST_SONGS = "GET_ALL_ARTIST_SONGS";
 export const GET_ARTIST_TOP5_SONGS = "GET_ARTIST_TOP5_SONGS";
 export const GET_ARTIST_LATEST_REALEASES = "GET_ARTIST_LATEST_REALEASES";
 export const CREATE_NEW_PLAYLIST = "CREATE_NEW_PLAYLIST";
-
+export const GET_ALL_ARTIST_SONGS_FOR_DASHBOARD_PROFILE = "GET_ALL_ARTIST_SONGS_FOR_DASHBOARD_PROFILE";
+export const GET_ARTIST_TOP5_SONGS_FOR_DASHBOARD_PROFILE = "GET_ARTIST_TOP5_SONGS_FOR_DASHBOARD_PROFILE";
+export const GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE = "GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE";
+export const CLEAN_SONGS_REDUCERS = "CLEAN_SONGS_REDUCERS";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -148,5 +151,103 @@ export const createNewPlaylistAction = (token, details) =>{
         } else {
             throw new Error('Something went wrong');
         }
+    }
+}
+
+
+
+export const getAllArtistSongsForDashBoardProfileDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ALL_ARTIST_SONGS_FOR_DASHBOARD_PROFILE, data});
+    }
+
+} 
+
+
+export const getAllArtistSongsForDashBoardProfileAction = (token, artistId) =>{   
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/song/getAllArtistSong/' + artistId, {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getAllArtistSongsForDashBoardProfileDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const getArtistTop5SongsForDashBoardProfileDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ARTIST_TOP5_SONGS_FOR_DASHBOARD_PROFILE, data});
+    }
+
+} 
+
+
+export const getArtistTop5SongsForDashBoardProfileAction = (token, artistId) =>{   
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/song/getArtistTop5Songs/' + artistId, {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getArtistTop5SongsForDashBoardProfileDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+
+export const getArtistLatestRealeasesForDashBoardProfileDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE, data});
+    }
+
+} 
+
+
+export const getArtistLatestRealeasesForDashBoardProfileAction = (token, artistId) =>{   
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/song/getArtistLatestReleases/' + artistId, {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getArtistLatestRealeasesForDashBoardProfileDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+
+
+export const cleanSongReducerDispatch = () => {
+    return dispatch => {
+        dispatch({type:CLEAN_SONGS_REDUCERS})
+    }
+}
+
+export const cleanSongReducerAction = () => {
+    return dispatch => {
+        dispatch(cleanSongReducerDispatch());
     }
 }
