@@ -13,7 +13,9 @@ import Header from '../components/Header';
 import Menu from './MenuScreen';
 import Comment from './CommentScreen';
 import { getArtistData } from '../ApiCalls';
-
+import { getUserDataAction, getAllUserPlaylistsAction, getAllUserSubScribesAction, getAllSearchResultsAction } from '../../store/actions/userActions';
+import { getArtistsByUserFavoriteGenersAction } from '../../store/actions/artistActions';
+import { getSongsByUserFavoriteGenersAction } from '../../store/actions/songActions';
 import AddSongFromPostToPlaylist from '../components/AddSongFromPostToPlaylist';
 
 const DashBoardScreen = props => {
@@ -57,8 +59,78 @@ const DashBoardScreen = props => {
                     getArtistData(dispatch, userToken);
                 }
             }
+        }
+        async function getAllUserSubScribes() {
+            const jsonToken = await AsyncStorage.getItem('Token');
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+            if(userToken) {
+                let action = getAllUserSubScribesAction(userToken);
+                try{
+                    await dispatch(action);
+                }catch (error) {
+                    console.log(error.message);
+                }
+            }
         }   
-        getArtistDataAsync();     
+        async function getAllUserPlaylist(){
+            const jsonToken = await AsyncStorage.getItem('Token');
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+            if(userToken) {
+                let action = getAllUserPlaylistsAction(userToken);
+                try{
+                    await dispatch(action);
+                }catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }
+        async function getSongsByUserFavoriteGeners(){
+            const jsonToken = await AsyncStorage.getItem('Token');
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+            if(userToken) {
+                let action = getSongsByUserFavoriteGenersAction(userToken);
+                try{
+                    await dispatch(action);
+                }catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }
+        async function getArtistsByUserFavoriteGeners(){
+            const jsonToken = await AsyncStorage.getItem('Token');
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+            if(userToken) {
+                let action = getArtistsByUserFavoriteGenersAction(userToken);
+                try{
+                    await dispatch(action);
+                }catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }
+        async function getAllSearchResults(){
+            const jsonToken = await AsyncStorage.getItem('Token');
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+            if(userToken) {
+                let action = getAllSearchResultsAction(userToken);
+                try{
+                    await dispatch(action);
+                }catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }
+        getSongsByUserFavoriteGeners();
+        getAllUserPlaylist();
+        getArtistDataAsync(); 
+        getAllUserSubScribes();
+        getArtistsByUserFavoriteGeners();
+        getAllSearchResults();
+        try{
+            dispatch(setPostAuthorProfileAction(null));
+        } catch (error) {
+            console.log();
+        }
     }, [])
     
     return(
@@ -90,6 +162,7 @@ const DashBoardScreen = props => {
                                     openCommentScreen={CloseAndOpenCommentScreen} 
                                     openAddToPlaylist={() => setAddToPlaylistVisible(true)}
                                     setSongForPlaylist={setSongForPlaylist}
+                                    moveToPostAuthorProfile={() => props.navigation.navigate("ProfileStack")}
                                 />
                             }
                             

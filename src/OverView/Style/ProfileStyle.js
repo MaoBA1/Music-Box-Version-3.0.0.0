@@ -24,9 +24,8 @@ export default StyleSheet.create({
         paddingHorizontal:10, flexDirection:'row', alignItems: 'center'
     },
     userDetailsPart:{
-        marginTop:20, width:'100%',
+        width:'100%',
         alignItems: 'center', justifyContent: 'center',
-        padding:20
     },
     userImageContainer:{
         borderWidth:2, borderColor:Colors.grey3, 

@@ -30,14 +30,15 @@ import FirstUseScreen, {screenOptions as FirstUseScreenOptions} from '../FirstUs
 
     // DashBoard
 import DashBoardScreen, {screenOptions as DashBoardScreenOptions} from '../OverView/DashBoardScreen';
-import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/MusicBoard';
+import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/DashBoardMusic/MusicBoard';
 import FeedScreen from '../OverView/DashboardUserProfiles/FeedScreen';
 import MusciScreen from '../OverView/DashboardUserProfiles/MusciScreen';
 import PlayListScreen from '../OverView/DashboardUserProfiles/PlayListScreen';
+import MusicBoardPlaylistScreen from '../OverView/DashBoardMusic/MusicBoardPlaylistScreen';
 
 import HistoryScreen, {screenOptions as HistoryScreenOptions} from '../OverView/HistoryScreen';
-import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/LibraryScreen';
-import SearchScreen, {screenOptions as SearchScreenOptions} from '../OverView/SearchScreen';
+import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/Library/LibraryScreen';
+import SearchScreen, {screenOptions as SearchScreenOptions} from '../OverView/Search/SearchScreen';
 import ProfileScreen, {screenOptions as ProfileScreenOptions} from '../OverView/ProfileScreen';
 import EditRegularUserScreen, {screenOptions as EditRegularUserScreenOptions} from '../OverView/EditRegularUserScreen';
 import CreatArtistScreen, {screenOptions as CreatArtistScreenOptions} from '../OverView/CreateArtistScreen';
@@ -206,6 +207,18 @@ export const ArtistProfileTopBar = () => {
     )
 }
 
+
+const DashBoardContainerStackNavigator = createStackNavigator();
+export const DashBoardContainerStack = () => {
+    return(
+        <DashBoardContainerStackNavigator.Navigator>
+            <DashBoardContainerStackNavigator.Screen name="HomeStack" component={DashBoardTopBarStack} options={{headerShown: false}}/>
+            <DashBoardContainerStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
+            <DashBoardContainerStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+        </DashBoardContainerStackNavigator.Navigator>
+    )
+}
+
 const profileStackNavigator = createStackNavigator();
 export const ProfileStack = () => {
     return(
@@ -214,14 +227,34 @@ export const ProfileStack = () => {
             <profileStackNavigator.Screen name="EditRegularUserPage" component={EditRegularUserScreen} options={EditRegularUserScreenOptions}/>
             <profileStackNavigator.Screen name="CreateArtistPage" component={CreatArtistScreen} options={CreatArtistScreenOptions}/>
             <profileStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileTopBar} options={{headerShown: false}}/>
-            <profileStackNavigator.Screen name="AllSingels" component={AllArtistSingels} options={{headerShown: false}}/>
+            <profileStackNavigator.Screen name="AllSingels" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+            <profileStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
         </profileStackNavigator.Navigator>
     )
 }
 
 
+const LibraryStackNavigator = createStackNavigator();
+export const LibraryStack = () => {
+    return(
+        <LibraryStackNavigator.Navigator>
+            <LibraryStackNavigator.Screen name="LibraryScreen" component={LibraryScreen} options={{headerShown: false}}/>
+            <LibraryStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+        </LibraryStackNavigator.Navigator>
+    )
+}
 
 
+const SearchStackNavigator = createStackNavigator();
+export const SearchStack = () => {
+    return(
+        <SearchStackNavigator.Navigator>
+            <SearchStackNavigator.Screen name="SearchScreen" component={SearchScreen} options={{headerShown: false}}/>
+            <SearchStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
+            <SearchStackNavigator.Screen name="PlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/> 
+        </SearchStackNavigator.Navigator>
+    )
+}
 
 
 
@@ -249,19 +282,19 @@ export const OverViewStack = () => {
                     },                                     
                 }} 
                 name='Home'
-                component={main? DashBoardTopBarStack : ProfiledashBoardStack}
+                component={DashBoardContainerStack}
             />
 
             <OverViewBottomStackNavigator.Screen
                 options = {LibraryScreenOptions} 
                 name='Library'
-                component={LibraryScreen}
+                component={LibraryStack}
             />
 
             <OverViewBottomStackNavigator.Screen
                 options = {SearchScreenOptions} 
                 name='Search'
-                component={SearchScreen}
+                component={SearchStack}
             />
 
             <OverViewBottomStackNavigator.Screen

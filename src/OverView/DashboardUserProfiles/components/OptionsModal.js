@@ -11,10 +11,16 @@ const OptionsModal = ({
     index,
     list,
     play,
+    setAddToPlaylistVisible
 }) => {
 
     const playThisSong = () => {
         play(currentAudio, index, list);
+        close(false);
+    }
+
+    const openAddToPlayListScreen = () => {
+        setAddToPlaylistVisible(true);
         close(false);
     }
     return (
@@ -112,6 +118,7 @@ const OptionsModal = ({
                                 paddingVertical:10,
                                 backgroundColor:Colors.grey1
                             }}
+                            onPress={openAddToPlayListScreen}
                         >
                             <Text style={{
                                 fontFamily:'Baloo2-Bold',

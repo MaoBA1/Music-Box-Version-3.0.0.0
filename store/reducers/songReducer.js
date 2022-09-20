@@ -6,7 +6,8 @@ import {
      GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE,
      GET_ARTIST_TOP5_SONGS_FOR_DASHBOARD_PROFILE,
      GET_ALL_ARTIST_SONGS_FOR_DASHBOARD_PROFILE,
-     CLEAN_SONGS_REDUCERS
+     CLEAN_SONGS_REDUCERS,
+     GET_SONGS_BY_USER_FAVORITE_GANERS
  } from '../actions/songActions';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
     ArtistSongsDashBoardProfileReducer: null,
     ArtistTop5SongsDashBoardProfileReducer: null,
     ArtistLatestReleasesDashBoardProfileReducer: null,
+    SongsByUserFavoriteGeners: null,
 };
 
 
@@ -58,7 +60,12 @@ export default (state = initialState, action) => {
                 ArtistSongsDashBoardProfileReducer: null,
                 ArtistTop5SongsDashBoardProfileReducer: null,
                 ArtistLatestReleasesDashBoardProfileReducer: null,
-            }     
+            } 
+        case GET_SONGS_BY_USER_FAVORITE_GANERS:
+            return {
+                ...state,
+                SongsByUserFavoriteGeners: action.data
+            }    
         default:
             return state;
     }

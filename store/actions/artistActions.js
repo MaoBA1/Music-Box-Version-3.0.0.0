@@ -12,6 +12,8 @@ export const CREATE_NEW_PLAYLIST = "CREATE_NEW_PLAYLIST";
 export const GET_ARTIST_PLAYLISTS = "GET_ARTIST_PLAYLISTS";
 export const GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE = "GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE"; 
 export const CLEAN_PLAYLIST_REDUCER = "CLEAN_PLAYLIST_REDUCER";
+export const GET_ARTIST_SUBS = "GET_ARTIST_SUBS";
+export const GET_ARTISTS_BY_USER_FAVORITE_GANERS = "GET_ARTISTS_BY_USER_FAVORITE_GANERS";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -403,5 +405,59 @@ export const cleanPlaylistReducerDispatch = () => {
 export const cleanPlaylistReducerAction = () => {
     return dispatch => {
         dispatch(cleanPlaylistReducerDispatch());
+    }
+}
+
+export const getArtistSubsDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ARTIST_SUBS, data});
+    }
+
+} 
+
+
+export const getArtistSubsAction = (token, artistId) =>{   
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/getArtistSubs/' + artistId, {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getArtistSubsDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const getArtistsByUserFavoriteGenersDispatch = data => {
+    return dispatch => {
+        dispatch({type:GET_ARTISTS_BY_USER_FAVORITE_GANERS, data});
+    }
+}
+
+
+export const getArtistsByUserFavoriteGenersAction = token => {
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/getAllArtistByUserFavoritesGeners', {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getArtistsByUserFavoriteGenersDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
     }
 }

@@ -171,58 +171,7 @@ const AllArtistSingels = props => {
         }
     }
 
-    const rowRender = ({item, index}) => {
-        return <>
-            {
-                isLoading?
-                (
-                    <View
-                        style={{
-                            width: width,
-                            backgroundColor:Colors.grey4,
-                            padding:10,
-                            borderBottomWidth:0.8,
-                            flexDirection:'row',
-                            opacity: item._id === currentAudio._id ? 1 : 0.6
-                        }}
-                    >
-                        <AudioListItemRow
-                            isPlaying={isPlaying}
-                            isLoading={isLoading}
-                            item={item}
-                            currentAudio={currentAudio}
-                            index={index}
-                            SongIndex={SongIndexReducer}
-                        />
-                    </View>
-                )
-                :
-                (
-                    <TouchableOpacity
-                        style={{
-                            width: width,
-                            backgroundColor:Colors.grey4,
-                            padding:10,
-                            borderBottomWidth:0.8,
-                            flexDirection:'row',
-                        }}
 
-                        onPress={() => handleAudioPress(item, index)}
-                    >
-                        <AudioListItemRow
-                            isPlaying={isPlaying}
-                            isLoading={isLoading}
-                            item={item}
-                            currentAudio={currentAudio}
-                            index={index}
-                            SongIndex={SongIndexReducer}
-                        />
-                    </TouchableOpacity>
-                )
-            }
-            
-        </>
-    }
     
 
     return (
@@ -237,12 +186,61 @@ const AllArtistSingels = props => {
                 }}
             >
 
-                <FlatList
-                    data={allArtistSongs}
-                    keyExtractor={item => item._id}
-                    renderItem={rowRender}
-                    
-                />
+                
+                {
+                    allArtistSongs.map((item, index) => 
+                    <View key={index}>
+                        {
+                            isLoading?
+                            (
+                                <View
+                                    style={{
+                                        width: width,
+                                        backgroundColor:Colors.grey4,
+                                        padding:10,
+                                        borderBottomWidth:0.8,
+                                        flexDirection:'row',
+                                        opacity: item._id === currentAudio._id ? 1 : 0.6
+                                    }}
+                                >
+                                    <AudioListItemRow
+                                        isPlaying={isPlaying}
+                                        isLoading={isLoading}
+                                        item={item}
+                                        currentAudio={currentAudio}
+                                        index={index}
+                                        SongIndex={SongIndexReducer}
+                                    />
+                                </View>
+                            )
+                            :
+                            (
+                                <TouchableOpacity
+                                    style={{
+                                        width: width,
+                                        backgroundColor:Colors.grey4,
+                                        padding:10,
+                                        borderBottomWidth:0.8,
+                                        flexDirection:'row',
+                                    }}
+            
+                                    onPress={() => handleAudioPress(item, index)}
+                                >
+                                    <AudioListItemRow
+                                        isPlaying={isPlaying}
+                                        isLoading={isLoading}
+                                        item={item}
+                                        currentAudio={currentAudio}
+                                        index={index}
+                                        SongIndex={SongIndexReducer}
+                                    />
+                                </TouchableOpacity>
+                            )
+                        }
+                        
+                    </View>
+                    )
+                }
                 
             </View>
         </View>

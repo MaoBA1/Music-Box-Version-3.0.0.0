@@ -78,7 +78,8 @@ const AudioListItemRow = ({
             <View
                 style={{
                     justifyContent: 'center',
-                    width: '60%'
+                    width: '60%',
+                    alignItems: 'flex-start'
                 }}
             >
                 <Text

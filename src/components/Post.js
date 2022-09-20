@@ -19,7 +19,7 @@ import { SwitchBetweenDashBoardStacksAction, setPostAuthorProfileAction } from '
 
 
 const Post = props => {
-    const {post, setSongForPlaylist} = props;
+    const {post, setSongForPlaylist, moveToPostAuthorProfile} = props;
     const {
         postAuthorId,
         postAuthorName,
@@ -157,7 +157,7 @@ const Post = props => {
     const openPostAuthorProfileScreen = () => {
         try {
             dispatch(setPostAuthorProfileAction(postAuthor))
-            dispatch(SwitchBetweenDashBoardStacksAction(false));
+            moveToPostAuthorProfile();
         }catch(error) {
             console.log(error.message);
         }        

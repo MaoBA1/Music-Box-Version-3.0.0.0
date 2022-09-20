@@ -3,7 +3,9 @@ import {
     GET_ARTIST_DATA,
     GET_ARTIST_PLAYLISTS,
     GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE,
-    CLEAN_PLAYLIST_REDUCER
+    CLEAN_PLAYLIST_REDUCER,
+    GET_ARTIST_SUBS,
+    GET_ARTISTS_BY_USER_FAVORITE_GANERS
 } from '../actions/artistActions';
 
 const initialState = {
@@ -11,6 +13,8 @@ const initialState = {
     ArtistDataReducer: null,
     ArtistPlaylistsReducer: null,
     ArtistPlaylistsDashBoardReducer: null,
+    ArtistSubs: null,
+    ArtistsByUserFavoritGeners: null,
 }
 
 
@@ -40,6 +44,18 @@ export default (state = initialState, action) => {
             return {
                 ...state, 
                 ArtistPlaylistsDashBoardReducer: null
+            }
+        case GET_ARTIST_SUBS:
+            {
+                return {
+                    ...state, 
+                    ArtistSubs: action.data.Subscribes
+                }
+            }
+        case GET_ARTISTS_BY_USER_FAVORITE_GANERS:
+            return {
+                ...state,
+                ArtistsByUserFavoritGeners: action.data.List
             }
         default:
             return state;

@@ -4,6 +4,14 @@ export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const CREATE_NEW_PLAYLIST = "CREATE_NEW_PLAYLIST";
 export const GET_ALL_USER_PLAYLIST = "GET_ALL_USER_PLAYLIST";
 export const ADD_SONG_TO_USER_PLAYLIST = "ADD_SONG_TO_USER_PLAYLIST";
+export const SUBSCRIBE_TO_ARTIST_PAGE = "SUBSCRIBE_TO_ARTIST_PAGE";
+export const UNSUBSCRIBE_TO_ARTIST_PAGE = "UNSUBSCRIBE_TO_ARTIST_PAGE";
+export const GET_ALL_USER_SUBSCRIBES = "GET_ALL_USER_SUBSCRIBES";
+export const GET_ALL_USER_FAVORITE_SONGS = "GET_ALL_USER_FAVORITE_SONGS";
+export const LIKE_TO_SONG = "LIKE_TO_SONG";
+export const UNLIKE_TO_SONG = "UNLIKE_TO_SONG";
+export const GET_ALL_SEARCH_RESULTS = "GET_ALL_SEARCH_RESULTS";
+
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -178,6 +186,205 @@ export const addSongTouserPlaylistAction = (token, song, playlistId) => {
             if(data.status) {
                 return data;
             }
+        } else {
+            throw new Error(data.message);
+        }
+    }
+}
+
+
+export const subscribeToArtistPageDispatch = (data) => {
+    return dispatch => {
+        dispatch({type: SUBSCRIBE_TO_ARTIST_PAGE, data})
+    }
+}
+
+export const subscribeToArtistPageAction = (token, artistId) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/subscribeToArtistPage/' + artistId, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token                    
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(subscribeToArtistPageDispatch(data));
+            if(data.status) {
+                return data;
+            }
+        } else {
+            throw new Error(data.message);
+        }
+    }
+}
+
+
+export const getAllUserSubScribesDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ALL_USER_SUBSCRIBES, data});
+    }
+
+} 
+
+
+export const getAllUserSubScribesAction = token =>{     
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/getAllUserSubScribes', {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+                
+            }            
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getAllUserSubScribesDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+
+export const unsubscribeToArtistPageDispatch = (data) => {
+    return dispatch => {
+        dispatch({type: SUBSCRIBE_TO_ARTIST_PAGE, data})
+    }
+}
+
+export const unsubscribeToArtistPageAction = (token, artistId) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/unsubscribeFromArtistPage/' + artistId, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token                    
+            }
+        })
+        const data = await response.json();
+        if(data){
+            dispatch(unsubscribeToArtistPageDispatch(data));
+            if(data.status) {
+                return data;
+            }
+        } else {
+            throw new Error(data.message);
+        }
+    }
+}
+
+export const getAllUserFavoriteSongsDispatch = data => {
+    return dispatch => {
+        dispatch({type: GET_ALL_USER_FAVORITE_SONGS, data});
+    }
+
+} 
+
+
+export const getAllUserFavoriteSongsAction = token =>{     
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/getUserFavoriteSong', {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+                
+            }            
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getAllUserFavoriteSongsDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const likeUserSongDispatch = data => {
+    return dispatch => {
+        dispatch({type: LIKE_TO_SONG, data});
+    }
+
+} 
+
+
+export const likeUserSongAction = (token, songId) =>{     
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/likeToSong/' + songId, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token                    
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(likeUserSongDispatch(data));
+            if(data.status) {
+                return data;
+            }
+        } else {
+            throw new Error(data.message);
+        }
+    }
+}
+
+export const unlikeUserSongDispatch = data => {
+    return dispatch => {
+        dispatch({type: UNLIKE_TO_SONG, data});
+    }
+
+} 
+
+
+export const unlikeUserSongAction = (token, songId) =>{     
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/unlikeToSong/' + songId, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token                    
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(unlikeUserSongDispatch(data));
+            if(data.status) {
+                return data;
+            }
+        } else {
+            throw new Error(data.message);
+        }
+    }
+}
+
+
+export const getAllSearchResultsDispatch = (data) => {
+    return dispatch => {
+        dispatch({type:GET_ALL_SEARCH_RESULTS, data});
+    }
+}
+
+
+export const getAllSearchResultsAction = (token) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/getSearchResult', {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token                    
+            }
+        })
+
+        const data = await response.json();
+        if(data) {
+            dispatch(getAllSearchResultsDispatch(data));
+            return data;
         } else {
             throw new Error(data.message);
         }

@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import MusicGeneralHeader from '../../OverView/artist/components/MusicGeneralHeder';
 import Colors from '../../Utitilities/AppColors';
@@ -17,11 +17,17 @@ import {
     handleSeeBarAction
 } from '../../../store/actions/appActions';
 
+import AddSongToPlayList from './components/AddSongToPlayList';
+import OptionsModal from './components/OptionsModal';
 
 export const AudioListItemRow = ({
     item,
     index,
-    list
+    list,
+    setOptionIsVisible,
+    setOptionModalTrack,
+    setListForOptionsModal,
+    setIndexForOptionsModal
 }) => {
     const {
         trackName,
@@ -30,6 +36,9 @@ export const AudioListItemRow = ({
         artistName,
         likes
     } = item
+
+    
+    
 
     const dispatch = useDispatch();
     const appBackGroundSelector = useSelector(state => state.AppReducer);
@@ -48,9 +57,15 @@ export const AudioListItemRow = ({
     
 
 
-
+    const openOptionsModal = () => {
+        setOptionIsVisible(true);
+        setOptionModalTrack(item);
+        setListForOptionsModal(list);
+        setIndexForOptionsModal(index);
+    }
 
     return(
+        <>
         <View
             style={{
                 width: '100%',
@@ -146,9 +161,12 @@ export const AudioListItemRow = ({
                     name="options"
                     color={Colors.grey3}
                     size={20}
+                    style={{alignItems: 'center', justifyContent: 'center', padding:10}}
+                    onPress={openOptionsModal}
                 />
             </View>
         </View>
+        </>
     )
 }
 
@@ -174,7 +192,21 @@ const PlayListScreen = (props) => {
         isLoading,
         MusicOnForGroundReducer
     } = appBackGroundSelector;
+
     
+    const { PostAuthorProfile } = appBackGroundSelector;
+    const { 
+        _id,
+        artistName,
+    } = PostAuthorProfile;
+    const artistId = _id;
+    
+    const [optionIsVisible, setOptionIsVisible] = useState(false);
+    const [optionModalTrack, setOptionModalTrack] = useState(null);
+    const [listForOptionsModal, setListForOptionsModal] = useState(null);
+    const [indexForOptionsModal, setIndexForOptionsModal] = useState(null);
+    const [addToPlayListVisible, setAddToPlaylistVisible] = useState(false);
+
 
     useEffect(() => {
         const onPlaybackStatusUpdate = async(playbackStatus) => {
@@ -306,6 +338,27 @@ const PlayListScreen = (props) => {
     }
 
     return (
+        <>
+        {
+            optionIsVisible && 
+            <OptionsModal
+                currentAudio={optionModalTrack}
+                close={setOptionIsVisible}
+                backGroundCurrentAudio={currentAudio}
+                play={handleAudioPress}
+                list={listForOptionsModal}
+                index={indexForOptionsModal}    
+                setAddToPlaylistVisible={setAddToPlaylistVisible}
+            />
+        }
+        {
+            addToPlayListVisible &&
+            <AddSongToPlayList
+                artist={{artistName:artistName, artistId:artistId}}
+                song={optionModalTrack}
+                close={setAddToPlaylistVisible}
+            />
+        }
         <View style={{
             flex: 1,
             backgroundColor: Colors.grey1
@@ -323,6 +376,10 @@ const PlayListScreen = (props) => {
                                 index={index}
                                 play={play}
                                 list={songsList}
+                                setOptionModalTrack={setOptionModalTrack}
+                                setIndexForOptionsModal={setIndexForOptionsModal}
+                                setListForOptionsModal={setListForOptionsModal}
+                                setOptionIsVisible={setOptionIsVisible}
                             />
                         </TouchableOpacity>
                     )
@@ -334,6 +391,10 @@ const PlayListScreen = (props) => {
                                 index={index}
                                 play={play}
                                 list={songsList}
+                                setOptionModalTrack={setOptionModalTrack}
+                                setIndexForOptionsModal={setIndexForOptionsModal}
+                                setListForOptionsModal={setListForOptionsModal}
+                                setOptionIsVisible={setOptionIsVisible}
                             />
                         </View>
                     )
@@ -341,6 +402,7 @@ const PlayListScreen = (props) => {
                 }
             />
         </View>
+        </>
     );
 };
 

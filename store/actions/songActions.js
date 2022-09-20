@@ -7,6 +7,7 @@ export const GET_ALL_ARTIST_SONGS_FOR_DASHBOARD_PROFILE = "GET_ALL_ARTIST_SONGS_
 export const GET_ARTIST_TOP5_SONGS_FOR_DASHBOARD_PROFILE = "GET_ARTIST_TOP5_SONGS_FOR_DASHBOARD_PROFILE";
 export const GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE = "GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE";
 export const CLEAN_SONGS_REDUCERS = "CLEAN_SONGS_REDUCERS";
+export const GET_SONGS_BY_USER_FAVORITE_GANERS = "GET_SONGS_BY_USER_FAVORITE_GANERS";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -249,5 +250,32 @@ export const cleanSongReducerDispatch = () => {
 export const cleanSongReducerAction = () => {
     return dispatch => {
         dispatch(cleanSongReducerDispatch());
+    }
+}
+
+
+export const getSongsByUserFavoriteGenersDispatch = data => {
+    return dispatch => {
+        dispatch({type:GET_SONGS_BY_USER_FAVORITE_GANERS, data});
+    }
+}
+
+
+export const getSongsByUserFavoriteGenersAction = token => {
+    return async dispatch => {        
+        const response = await fetch(baseIpRequest.ServerAddress + '/song/getSongsByUserFavoritesGeners', {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getSongsByUserFavoriteGenersDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
     }
 }

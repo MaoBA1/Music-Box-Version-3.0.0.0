@@ -21,6 +21,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import AddGenersScreen from './AddGenersScreen';
 import baseIpRequest from '../ServerDev';
 import { getUserData } from '../ApiCalls';
+import { setPostAuthorProfileAction } from '../../store/actions/appActions';
 
 const ProfileScreen = props => {
     const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const ProfileScreen = props => {
     const generSelector = useSelector(state => state.GenerReducer);
     const userFavoriteGenersIDs = userDataSelector?.UserReducer?.account?.favoritesGeners;
     const userPlaylists = userDataSelector?.UserReducer?.account?.playlists;
-    const userSubscribes = userDataSelector?.UserReducer?.account?.subscribes;
+    const userSubscribes = userDataSelector?.UserSubs?.Subscribes;
     const userFirstName = userDataSelector?.UserReducer?.account?.firstName;
     const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
     const userLastName = userDataSelector?.UserReducer?.account?.lastName;
@@ -95,6 +96,14 @@ const ProfileScreen = props => {
         
     }
     
+    const openToArtistScreen = (artist) => {
+        try {
+            dispatch(setPostAuthorProfileAction(artist))
+            props.navigation.navigate("ProfileStack");
+        }catch(error) {
+            console.log(error.message);
+        }        
+    }
     
 
     return(
@@ -213,18 +222,24 @@ const ProfileScreen = props => {
                         userSubscribes?.length > 0?
                         (
                             <View style={{width:'100%', flexDirection:'row', backgroundColor:Colors.grey4, padding:10, alignItems: 'center', marginVertical:5}}>
-                                {/* <FlatList
+                                <FlatList
                                     horizontal
-                                    data={userPlaylists}
+                                    data={userSubscribes}
                                     keyExtractor={item => item._id}
                                     renderItem={
-                                        playlist => 
-                                        // <Image
-                                        //     source={{uri:gener.item.generImage}}
-                                        //     style={{width:100, height:70, margin:2}}
-                                        // />
+                                        ({item, index}) => 
+                                        <TouchableOpacity 
+                                            style={{alignItems: 'center'}}
+                                            onPress={() => openToArtistScreen(item)}
+                                        >
+                                            <Image
+                                                source={{uri:item.profileImage}}
+                                                style={{width:80, height:50, margin:5, borderRadius:10, resizeMode:'stretch'}}
+                                            />
+                                            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Bold', color:'#fff', top:5}}>{item.artistName}</Text>
+                                        </TouchableOpacity>
                                     }
-                                /> */}
+                                />
 
                             </View>
                         )

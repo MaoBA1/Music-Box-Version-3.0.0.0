@@ -14,17 +14,18 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PlayerButton from './src/components/PlayerButton';
 import Slider from '@react-native-community/slider';
-import { setMusicOnForGroundAction } from './store/actions/appActions';
 import { 
     playInTheFirstTimeAction,
     pauseSongAction,
     resumeSongAction,
     playNextSongAction,
     preperNextSongAction,
-    handleSeeBarAction
+    handleSeeBarAction,
+    setMusicOnForGroundAction
 } from './store/actions/appActions';
+import { getAllUserFavoriteSongsAction, likeUserSongAction, unlikeUserSongAction } from './store/actions/userActions';
 import { play, pause, resume, playNext } from './audioController';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -32,6 +33,8 @@ const { width, height } = Dimensions.get('window');
 const MusicScreenModal = props => {
     const dispatch = useDispatch();    
     const appSelector = useSelector(state => state.AppReducer);
+    const userSelector = useSelector(state => state.UserReducer);
+    const userFavoriteSongs = userSelector?.UserFavoritesSongs?.Playlist;
     const {
         SongIndexReducer,
         SongOnBackGroundReducer,
@@ -51,6 +54,71 @@ const MusicScreenModal = props => {
     const songUri = songDetails?.trackUri;
     const songImage = songDetails?.trackImage;
     const [currentPosition, setCurrentPosition] = useState(0);
+    let [isUserLikeThisSong, setIsUserLikeThisSong] = useState(false);
+
+
+   async function getUserFavoritesSongs() {
+        const jsonToken = await AsyncStorage.getItem('Token');
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+        if(userToken) {
+            let action = getAllUserFavoriteSongsAction(userToken);
+            try{
+                await dispatch(action);
+            }catch(error){
+                console.log(error.message);
+            }
+        }
+        
+    }
+
+    const amILikeThisSong = () => {
+        if(userFavoriteSongs?.length > 0) {
+            userFavoriteSongs[0]?.songs?.forEach(x => {
+                if(x._id.toString() === currentAudio?._id.toString()) {
+                    return setIsUserLikeThisSong(true);
+                }
+            });
+
+        }
+    }
+
+    const like = async() => {
+        const jsonToken = await AsyncStorage.getItem('Token');
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+        if(userToken) {
+            let action = likeUserSongAction(userToken, currentAudio?._id);
+            try{
+                await dispatch(action);
+                await getUserFavoritesSongs();
+                setIsUserLikeThisSong(true);
+            }catch(error) {
+                console.log(error.message);
+            }
+        }
+    }
+
+    const unlike = async() => {
+        const jsonToken = await AsyncStorage.getItem('Token');
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+        if(userToken) {
+            let action = unlikeUserSongAction(userToken, currentAudio?._id);
+            try{
+                await dispatch(action);
+                await getUserFavoritesSongs();
+                setIsUserLikeThisSong(false);
+            }catch(error) {
+                console.log(error.message);
+            }
+        }
+    }
+
+    useEffect(() => {
+        getUserFavoritesSongs();
+        amILikeThisSong();
+    },[])
+
+    
+    
      
      const calculateSeeBar = () => {
         if(playbackPosition != null && playbackDuration != null) {
@@ -180,22 +248,62 @@ const MusicScreenModal = props => {
             animationType='slide'
         >
             <View style={{flex:1, width: '100%', height: '100%', backgroundColor:Colors.grey4}}>
-                <TouchableOpacity style={{
-                        shadowColor: '#171717',
-                        shadowOffset: {width: 0, height: 10},
-                        shadowOpacity: 0.5,
-                        shadowRadius: 3,
-                        width:'10%',
-                        alignItems: 'center', top:35
-                    }} 
-                    onPress={closeMusicScreen}
-                >
-                    <FontAwesome
-                        name='close'
-                        size={25}
-                        color={'#fff'}
-                    />
-                </TouchableOpacity>
+                <View style={{top:10, width:'100%', flexDirection:'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <TouchableOpacity style={{
+                            shadowColor: '#171717',
+                            shadowOffset: {width: 0, height: 10},
+                            shadowOpacity: 0.5,
+                            shadowRadius: 3,
+                            width:'10%',
+                            alignItems: 'center', top:35
+                        }} 
+                        onPress={closeMusicScreen}
+                    >
+                        <FontAwesome
+                            name='close'
+                            size={25}
+                            color={'#fff'}
+                        />
+                    </TouchableOpacity>
+
+                    {
+                        isUserLikeThisSong?
+                        (
+                            <AntDesign
+                                style={{
+                                    shadowColor: '#171717',
+                                    shadowOffset: {width: 0, height: 10},
+                                    shadowOpacity: 0.5,
+                                    shadowRadius: 3,
+                                    width:'10%',
+                                    alignItems: 'center', top:35
+                                }} 
+                                name="heart"
+                                color={Colors.red3}
+                                size={30}
+                                onPress={unlike}
+                            />
+                        )
+                        :
+                        (
+                            <AntDesign
+                                style={{
+                                    shadowColor: '#171717',
+                                    shadowOffset: {width: 0, height: 10},
+                                    shadowOpacity: 0.5,
+                                    shadowRadius: 3,
+                                    width:'10%',
+                                    alignItems: 'center', top:35
+                                }} 
+                                name="hearto"
+                                color={Colors.red3}
+                                size={30}
+                                onPress={like}
+                            />
+                        )
+                    }
+                    
+                </View>
                 <View style={{width: '100%', marginTop:90}}>
                     <View 
                         style={{

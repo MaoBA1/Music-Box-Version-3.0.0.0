@@ -14,6 +14,12 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
+import { 
+    cleanArtistPostsForDashboardProfil,
+    cleanSongReducers ,
+    cleanPlaylistReducer,
+    cleanAlbumReducer
+} from '../../ApiCalls';
 import { SwitchBetweenDashBoardStacksAction, setPostAuthorProfileAction } from '../../../store/actions/appActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../Utitilities/AppColors';
@@ -40,6 +46,7 @@ import { play, pause, resume, playNext } from '../../../audioController';
 
 import AudioListItemRow from './components/AudioListItemRow';
 import OptionsModal from './components/OptionsModal';
+import AddSongToPlayList from './components/AddSongToPlayList';
 
 const MusicScreen = props => {
     const dispatch = useDispatch();
@@ -81,6 +88,8 @@ const MusicScreen = props => {
     const [optionModalTrack, setOptionModalTrack] = useState(null);
     const [listForOptionsModal, setListForOptionsModal] = useState(null);
     const [indexForOptionsModal, setIndexForOptionsModal] = useState(null);
+    const [addToPlayListVisible, setAddToPlaylistVisible] = useState(false);
+    
     
     useEffect(() => {
         const onPlaybackStatusUpdate = async(playbackStatus) => {
@@ -224,8 +233,25 @@ const MusicScreen = props => {
         }
     }
 
+    const backToHomePage = () => {
+        props.navigation.goBack(null);
+    }
+
     return (
         <>
+        <View style={{backgroundColor: Colors.grey4}}>
+            <Entypo
+                name="arrow-left"
+                style={{
+                    left:8,
+                    shadowColor:'#000', shadowOffset:{width:0, height:3},
+                    shadowOpacity:0.5, 
+                }}
+                size={35}
+                color={Colors.red3}
+                onPress={backToHomePage}
+            />
+        </View>
         {
             optionIsVisible && 
             <OptionsModal
@@ -234,9 +260,19 @@ const MusicScreen = props => {
                 backGroundCurrentAudio={currentAudio}
                 play={handleAudioPress}
                 list={listForOptionsModal}
-                index={indexForOptionsModal}
+                index={indexForOptionsModal}    
+                setAddToPlaylistVisible={setAddToPlaylistVisible}
             />
         }
+        {
+            addToPlayListVisible &&
+            <AddSongToPlayList
+                artist={{artistName:artistName, artistId:artistId}}
+                song={optionModalTrack}
+                close={setAddToPlaylistVisible}
+            />
+        }
+        
             {
                 (!artistTop5 || artistTop5?.length === 0) && (!artistLatestRealeases || artistLatestRealeases?.length === 0)
                 && (!allArtistPlaylist || allArtistPlaylist?.length === 0) && (!allArtistAlbums || allArtistAlbums?.length === 0)
@@ -275,9 +311,51 @@ const MusicScreen = props => {
                             backgroundColor: Colors.grey1
                         }}
                     >
-                        {artistTop5 && artistTop5.length > 0 && artistTop5.map((item, index) => {
-                            <View></View>
-                        })}
+                        {artistTop5 && artistTop5.length > 0 && 
+                            <>
+                                    <View style={{
+                                        marginTop:20, 
+                                        marginLeft:10
+                                    }}>
+                                        <Text style={{
+                                            fontFamily:'Baloo2-Bold',
+                                            color: '#fff',
+                                            fontSize:16
+                                        }}>
+                                            Top 5
+                                        </Text>
+                                    </View>
+
+                                    <View style={{
+                                        borderColor: Colors.grey6,
+                                        borderTopWidth:0.5,
+                                        borderBottomWidth:0.5,
+                                    }}>
+                                        {
+                                            artistTop5.map((item, index) => 
+                                                <AudioListItemRow
+                                                    key={item._id}
+                                                    index={index}
+                                                    item={item}
+                                                    list={artistTop5}
+                                                    handleAudioPress={handleAudioPress}
+                                                    SongIndex={SongIndexReducer}
+                                                    currentAudio={currentAudio}
+                                                    isPlaying={isPlaying}
+                                                    isLoading={isLoading}
+                                                    setOptionIsVisible={setOptionIsVisible}
+                                                    setOptionModalTrack={setOptionModalTrack}
+                                                    setListForOptionsModal={setListForOptionsModal}
+                                                    setIndexForOptionsModal={setIndexForOptionsModal}
+                                                />
+                                            )
+                                        }
+
+                                    </View>
+
+                                    
+                            </>
+                        }
 
 
                         
@@ -470,6 +548,8 @@ const MusicScreen = props => {
                                                         isLoading={isLoading}
                                                         setOptionIsVisible={setOptionIsVisible}
                                                         setOptionModalTrack={setOptionModalTrack}
+                                                        setListForOptionsModal={setListForOptionsModal}
+                                                        setIndexForOptionsModal={setIndexForOptionsModal}
                                                     />
                                                 )
                                             }
