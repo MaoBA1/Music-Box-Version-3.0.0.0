@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNewPlaylistAction, getAllUserPlaylistsAction, addSongTouserPlaylistAction, getUserDataAction } from '../../../../store/actions/userActions'
 import { useDispatch, useSelector } from 'react-redux';
 import {getUserData} from '../../../ApiCalls';
+import { storage } from '../../../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export const ThisModalHeader = ({
     newPlaylist,
@@ -462,23 +464,31 @@ const AddSongFromPostToPlaylist = props => {
         
     }
     
+    // const HandleImageUpload = async () => {
+    //     let sourceuri = playlistImage;
+    //     let newFile = {
+    //         uri: sourceuri,
+    //         type: `test/${sourceuri.split(".")[1]}`,
+    //         name: `test.${sourceuri.split(".")[1]}`
+    //     }
+    //     const data = new FormData();
+    //     data.append('file', newFile);
+    //     data.append('upload_preset', 'playlistImage');
+    //     data.append('cloud_name', 'musicbox');
+    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
+    //         method: 'post',
+    //         body: data
+    //     });
+    //     const result = await res.json();  
+    //     return result.secure_url;
+    // }
+
     const HandleImageUpload = async () => {
-        let sourceuri = playlistImage;
-        let newFile = {
-            uri: sourceuri,
-            type: `test/${sourceuri.split(".")[1]}`,
-            name: `test.${sourceuri.split(".")[1]}`
-        }
-        const data = new FormData();
-        data.append('file', newFile);
-        data.append('upload_preset', 'playlistImage');
-        data.append('cloud_name', 'musicbox');
-        const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-            method: 'post',
-            body: data
-        });
-        const result = await res.json();  
-        return result.secure_url;
+        const response = await fetch(playlistImage);
+        const blob = await response.blob();
+        const imageRef = ref(storage, "playlistImages/" + `${playlistImage.split("/")[playlistImage.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
     const creatNewPlaylistCollection = async() => {
