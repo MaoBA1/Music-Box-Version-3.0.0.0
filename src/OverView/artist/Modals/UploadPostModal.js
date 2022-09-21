@@ -13,7 +13,8 @@ import { uploadNewPostAction } from '../../../../store/actions/postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPosts, getArtistPostsById } from '../../../ApiCalls';
-import * as firebase from 'firebase';
+import { storage } from '../../../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 
@@ -94,20 +95,21 @@ const UploadPostModal = props => {
             setVideo(pickerResult.uri);
         } 
     };
-
-
+    
     const HandleVideoUpload = async (video) => {
         const response = await fetch(video);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("postVideos/" + `${video.split("/")[video.split("/").length - 1]}`)
-        return ref.put(blob);
+        const imageRef = ref(storage, "postVideos/" + `${video.split("/")[video.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
     const HandleImageUpload = async (image) => {
         const response = await fetch(image);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("postImages/" + `${image.split("/")[image.split("/").length - 1]}`)
-        return ref.put(blob);
+        const imageRef = ref(storage, "postImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
     // const HandleVideoUpload = async video => {
@@ -160,7 +162,7 @@ const UploadPostModal = props => {
                 .then(async result => {
                     let details = {
                         postContent: postContent,
-                        uri: result.downloadURL ,
+                        uri: result ,
                         format: 'image'
                     }
                     let action = uploadNewPostAction(userToken, details);
@@ -180,7 +182,7 @@ const UploadPostModal = props => {
                 .then(async result => {                
                     let details = {
                         postContent: postContent,
-                        uri: result.downloadURL,
+                        uri: result,
                         format: 'video'
                     }
                     let action = uploadNewPostAction(userToken, details);

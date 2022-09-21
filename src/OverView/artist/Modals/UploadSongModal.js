@@ -14,7 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPosts, getArtistPostsById, getArtistLatestRealeases, getAllArtistSongs } from '../../../ApiCalls';
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
-import * as firebase from 'firebase';
+import { storage } from '../../../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 
@@ -68,18 +69,21 @@ const UploadPostModal = props => {
     //     return result.secure_url;
     // }
 
+    
     const HandleVideoUpload = async (video) => {
         const response = await fetch(video);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("songVideos/" + `${video.split("/")[video.split("/").length - 1]}`)
-        return ref.put(blob);
+        const imageRef = ref(storage, "songVideos/" + `${video.split("/")[video.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
     const HandleImageUpload = async (image) => {
         const response = await fetch(image);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("songImages/" + `${image.split("/")[image.split("/").length - 1]}`)
-        return ref.put(blob);
+        const imageRef = ref(storage, "songImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
     let selectVideoFromGallery = async () => {
@@ -194,8 +198,8 @@ const UploadPostModal = props => {
                     let details = {
                         trackName: songName,
                         trackLength: trackLength,
-                        trackImage: image.downloadURL,
-                        trackUri: video.downloadURL,
+                        trackImage: image,
+                        trackUri: video,
                         gener: artistMainGener
                     }
 
@@ -224,7 +228,7 @@ const UploadPostModal = props => {
                 let details = {
                     trackName: songName,
                     trackLength: trackLength,
-                    trackUri: video.downloadURL,
+                    trackUri: video,
                     gener: artistMainGener
                 }
 

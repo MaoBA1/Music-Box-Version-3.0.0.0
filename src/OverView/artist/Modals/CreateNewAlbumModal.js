@@ -16,7 +16,8 @@ import { getPosts, getArtistPostsById, getArtistLatestRealeases, getAllArtistSon
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
 import { createNewPlaylistAction } from '../../../../store/actions/artistActions';
 import { createNewAlbumsAction, getAllArtistAlbumsAction } from '../../../../store/actions/albumsActions';
-import * as firebase from 'firebase';
+import { storage } from '../../../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 
@@ -103,11 +104,13 @@ const CreateNewAlbumModal = props => {
     //     return result.secure_url;
     // }
 
+    
     const HandleImageUpload = async () => {
         const response = await fetch(albumImage);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("AlbumsImages/" + `${albumImage.split("/")[albumImage.split("/").length - 1]}`)
-        return ref.put(blob);
+        const imageRef = ref(storage, "AlbumsImages/" + `${albumImage.split("/")[albumImage.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
     const createNewPlaylist = async() => {
@@ -120,10 +123,10 @@ const CreateNewAlbumModal = props => {
         if(albumImage != '') {
             HandleImageUpload()
             .then(async result => {
-                albumSongsList.map(x => x.trackImage = result.downloadURL);
+                albumSongsList.map(x => x.trackImage = result);
                 let details = {
                     albumName: albumName,
-                    albumCover: result.downloadURL,
+                    albumCover: result,
                     tracks: albumSongsList
                 }
                 

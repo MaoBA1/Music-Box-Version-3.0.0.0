@@ -28,7 +28,8 @@ import { checkDob, checkPhoneNumber } from '../Authentication/checkFileds';
 import ModalStyle from '../Authentication/style/ModalStyle';
 import { getUserDataAction } from '../../store/actions/userActions';
 import { updateRegularProfile } from '../ApiCalls';
-import * as firebase from 'firebase';
+import { storage } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 const EditRegularUserScreen = props => {
@@ -98,9 +99,10 @@ const EditRegularUserScreen = props => {
     const HandleFileUpload = async () => {
         const response = await fetch(image);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("RegularUserProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`)
-        return ref.put(blob);
-      }
+        const imageRef = ref(storage, "RegularUserProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
+    }
 
     let selectImageFromGallery = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -133,9 +135,9 @@ const EditRegularUserScreen = props => {
             if(image != userAvatar) {
                 setIsLoading(true);
                 setIsVisble(true);
-                HandleFileUpload()
+                await HandleFileUpload()
                 .then(result => {
-                    detailsToUpdate.Avatar = result.downloadURL;
+                    detailsToUpdate.Avatar = result;
                     updateRegularProfile(dispatch,userToken, detailsToUpdate)
                     .then(result => {
                         setIsLoading(false);

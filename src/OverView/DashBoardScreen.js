@@ -149,7 +149,7 @@ const DashBoardScreen = props => {
             <View style={Style.mainContainer}>                
                 
                 {
-                    post?
+                    post && post.length > 0 ?
                     (
                         <FlatList
                             style={{width: '100%'}}

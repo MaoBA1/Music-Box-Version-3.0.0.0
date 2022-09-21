@@ -15,7 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPosts, getArtistPostsById, getArtistLatestRealeases, getAllArtistSongs, getArtistPlayLists } from '../../../ApiCalls';
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
 import { createNewPlaylistAction } from '../../../../store/actions/artistActions';
-import * as firebase from 'firebase';
+import { storage } from '../../../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 import SongItem from '../../components/SongItem';
@@ -106,8 +107,9 @@ const CreateNewPlaylistModal = props => {
     const HandleImageUpload = async () => {
         const response = await fetch(playlistImage);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("playlistImages/" + `${playlistImage.split("/")[playlistImage.split("/").length - 1]}`)
-        return ref.put(blob);
+        const imageRef = ref(storage, "playlistImages/" + `${playlistImage.split("/")[playlistImage.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
     const createNewPlaylist = async() => {
@@ -122,7 +124,7 @@ const CreateNewPlaylistModal = props => {
             .then(async result => {
                 let details = {
                     playlistName: playlistName,
-                    playlistImage: result.downloadURL,
+                    playlistImage: result,
                     tracks: playlistSongsList
                 }
                 

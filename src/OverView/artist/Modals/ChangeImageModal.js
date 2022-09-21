@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeArtistImageAction } from '../../../../store/actions/artistActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getArtistData } from '../../../ApiCalls';
-import * as firebase from 'firebase';
+import { storage } from '../../../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const ChangeImageModal = props => {
     const dispatch = useDispatch();
@@ -35,11 +36,13 @@ const ChangeImageModal = props => {
         } 
     };
 
-    const HandleFileUpload = async (image) => {
+    
+      const HandleFileUpload = async (image) => {
         const response = await fetch(image);
         const blob = await response.blob();
-        let ref = firebase.storage().ref().child("AritstProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`)
-        return ref.put(blob);
+        const imageRef = ref(storage, "AritstProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
       }
 
     // const HandleFileUpload = async image => {
@@ -81,7 +84,7 @@ const ChangeImageModal = props => {
             const jsonToken = await AsyncStorage.getItem('Token');
             const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
             if(userToken) {
-                let action = changeArtistImageAction(userToken, {image:result.downloadURL, type:props.details.type});
+                let action = changeArtistImageAction(userToken, {image:result, type:props.details.type});
                 try{
                     await dispatch(action)
                     .then(result => {

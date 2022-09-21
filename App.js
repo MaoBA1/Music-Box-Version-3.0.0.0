@@ -13,24 +13,7 @@ import SongReducers from './store/reducers/songReducer';
 import AppReducers from './store/reducers/appReducers';
 import AlbumReducers from './store/reducers/albumReducer';
 import * as SplashScreen from 'expo-splash-screen';
-import * as firebase from 'firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCuHUhB84qcXK2i59tEXlXsmShnNO2iu-4",
-  authDomain: "musicboxapp-aad61.firebaseapp.com",
-  projectId: "musicboxapp-aad61",
-  storageBucket: "musicboxapp-aad61.appspot.com",
-  messagingSenderId: "474894645241",
-  appId: "1:474894645241:web:596e942795aabc0d27af28"
-};
-
-
-if(firebase.apps.length == 0) {
-  console.log('1');
-  const app = firebase.initializeApp(firebaseConfig);
-}
 
 const rootReducer = combineReducers({
     UserReducer: GetUserDataReducer,

@@ -24,6 +24,8 @@ import { getUserData, getArtistData } from '../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createArtistAction } from '../../store/actions/artistActions';
 import ModalStyle from '../Authentication/style/ModalStyle';
+import { storage } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import GeneralHeader from '../components/GeneralHedher';
 import AdditionalGanersItem from './components/AdditionalGanersItem';
@@ -118,23 +120,31 @@ const CreatArtistScreen = props => {
         ]
     }
 
-    const HandleFileUpload = async image => {
-        let sourceuri = image;
-        let newFile = {
-            uri: sourceuri,
-            type: `test/${sourceuri.split(".")[1]}`,
-            name: `test.${sourceuri.split(".")[1]}`
-        }
-        const data = new FormData();
-        data.append('file', newFile);
-        data.append('upload_preset', 'AritstProfileImages');
-        data.append('cloud_name', 'musicbox');
-        const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-            method: 'post',
-            body: data
-        });
-        const result = await res.json();  
-        return result.secure_url;
+    // const HandleFileUpload = async image => {
+    //     let sourceuri = image;
+    //     let newFile = {
+    //         uri: sourceuri,
+    //         type: `test/${sourceuri.split(".")[1]}`,
+    //         name: `test.${sourceuri.split(".")[1]}`
+    //     }
+    //     const data = new FormData();
+    //     data.append('file', newFile);
+    //     data.append('upload_preset', 'AritstProfileImages');
+    //     data.append('cloud_name', 'musicbox');
+    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
+    //         method: 'post',
+    //         body: data
+    //     });
+    //     const result = await res.json();  
+    //     return result.secure_url;
+    // }
+
+    const HandleFileUpload = async (image) => {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const imageRef = ref(storage, "AritstProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const uploadFile = await uploadBytes(imageRef, blob);
+        return getDownloadURL(uploadFile.ref);
     }
 
 

@@ -418,7 +418,7 @@ const MusicBoardScreen = props => {
                     </View>
                 </View>
                 {
-                    songsByUserFavoriteGeners &&
+                    songsByUserFavoriteGeners && songsByUserFavoriteGeners?.length > 0 &&
                     <>
                         <View style={{borderBottomWidth: 1, borderColor:'#fff', width:'70%', left:10}}>
                             <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:18}}>
@@ -499,7 +499,7 @@ const MusicBoardScreen = props => {
                     </>
                 }
                 {
-                    artistsByUserFavoriteGeners && 
+                    artistsByUserFavoriteGeners && artistsByUserFavoriteGeners?.length > 0 &&
                     <>
                         <View style={{borderBottomWidth: 1, borderColor:'#fff', width:'70%', left:10, marginTop:20}}>
                             <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:18}}>
