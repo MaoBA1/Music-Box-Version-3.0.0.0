@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeArtistImageAction } from '../../../../store/actions/artistActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getArtistData } from '../../../ApiCalls';
-
+import * as firebase from 'firebase';
 
 const ChangeImageModal = props => {
     const dispatch = useDispatch();
@@ -35,24 +35,31 @@ const ChangeImageModal = props => {
         } 
     };
 
-    const HandleFileUpload = async image => {
-        let sourceuri = image;
-        let newFile = {
-            uri: sourceuri,
-            type: `test/${sourceuri.split(".")[1]}`,
-            name: `test.${sourceuri.split(".")[1]}`
-        }
-        const data = new FormData();
-        data.append('file', newFile);
-        data.append('upload_preset', 'AritstProfileImages');
-        data.append('cloud_name', 'musicbox');
-        const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-            method: 'post',
-            body: data
-        });
-        const result = await res.json();  
-        return result.secure_url;
-    }
+    const HandleFileUpload = async (image) => {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        let ref = firebase.storage().ref().child("AritstProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`)
+        return ref.put(blob);
+      }
+
+    // const HandleFileUpload = async image => {
+    //     let sourceuri = image;
+    //     let newFile = {
+    //         uri: sourceuri,
+    //         type: `test/${sourceuri.split(".")[1]}`,
+    //         name: `test.${sourceuri.split(".")[1]}`
+    //     }
+    //     const data = new FormData();
+    //     data.append('file', newFile);
+    //     data.append('upload_preset', 'AritstProfileImages');
+    //     data.append('cloud_name', 'musicbox');
+    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
+    //         method: 'post',
+    //         body: data
+    //     });
+    //     const result = await res.json();  
+    //     return result.secure_url;
+    // }
 
     let takeImageWithcamra = async () => {
         let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -70,11 +77,11 @@ const ChangeImageModal = props => {
     const changeImage = async () => {
         setIsLoading(true);
         HandleFileUpload(updatedImage)
-        .then(async imageUri => {
+        .then(async result => {
             const jsonToken = await AsyncStorage.getItem('Token');
             const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
             if(userToken) {
-                let action = changeArtistImageAction(userToken, {image:imageUri, type:props.details.type});
+                let action = changeArtistImageAction(userToken, {image:result.downloadURL, type:props.details.type});
                 try{
                     await dispatch(action)
                     .then(result => {

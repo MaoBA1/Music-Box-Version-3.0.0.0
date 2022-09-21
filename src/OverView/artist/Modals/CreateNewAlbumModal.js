@@ -16,6 +16,7 @@ import { getPosts, getArtistPostsById, getArtistLatestRealeases, getAllArtistSon
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
 import { createNewPlaylistAction } from '../../../../store/actions/artistActions';
 import { createNewAlbumsAction, getAllArtistAlbumsAction } from '../../../../store/actions/albumsActions';
+import * as firebase from 'firebase';
 
 
 
@@ -83,23 +84,30 @@ const CreateNewAlbumModal = props => {
         } 
     };
 
+    // const HandleImageUpload = async () => {
+    //     let sourceuri = albumImage;
+    //     let newFile = {
+    //         uri: sourceuri,
+    //         type: `test/${sourceuri.split(".")[1]}`,
+    //         name: `test.${sourceuri.split(".")[1]}`
+    //     }
+    //     const data = new FormData();
+    //     data.append('file', newFile);
+    //     data.append('upload_preset', 'AlbumsImages');
+    //     data.append('cloud_name', 'musicbox');
+    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
+    //         method: 'post',
+    //         body: data
+    //     });
+    //     const result = await res.json();  
+    //     return result.secure_url;
+    // }
+
     const HandleImageUpload = async () => {
-        let sourceuri = albumImage;
-        let newFile = {
-            uri: sourceuri,
-            type: `test/${sourceuri.split(".")[1]}`,
-            name: `test.${sourceuri.split(".")[1]}`
-        }
-        const data = new FormData();
-        data.append('file', newFile);
-        data.append('upload_preset', 'AlbumsImages');
-        data.append('cloud_name', 'musicbox');
-        const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-            method: 'post',
-            body: data
-        });
-        const result = await res.json();  
-        return result.secure_url;
+        const response = await fetch(albumImage);
+        const blob = await response.blob();
+        let ref = firebase.storage().ref().child("AlbumsImages/" + `${albumImage.split("/")[albumImage.split("/").length - 1]}`)
+        return ref.put(blob);
     }
 
     const createNewPlaylist = async() => {
@@ -111,11 +119,11 @@ const CreateNewAlbumModal = props => {
         setNoteVisible(false);
         if(albumImage != '') {
             HandleImageUpload()
-            .then(async imageUri => {
-                albumSongsList.map(x => x.trackImage = imageUri);
+            .then(async result => {
+                albumSongsList.map(x => x.trackImage = result.downloadURL);
                 let details = {
                     albumName: albumName,
-                    albumCover: imageUri,
+                    albumCover: result.downloadURL,
                     tracks: albumSongsList
                 }
                 

@@ -28,6 +28,7 @@ import { checkDob, checkPhoneNumber } from '../Authentication/checkFileds';
 import ModalStyle from '../Authentication/style/ModalStyle';
 import { getUserDataAction } from '../../store/actions/userActions';
 import { updateRegularProfile } from '../ApiCalls';
+import * as firebase from 'firebase';
 
 
 const EditRegularUserScreen = props => {
@@ -75,24 +76,31 @@ const EditRegularUserScreen = props => {
     }
     
 
+    // const HandleFileUpload = async () => {
+    //     let sourceuri = image;
+    //     let newFile = {
+    //         uri: sourceuri,
+    //         type: `test/${sourceuri.split(".")[1]}`,
+    //         name: `test.${sourceuri.split(".")[1]}`
+    //     }
+    //     const data = new FormData();
+    //     data.append('file', newFile);
+    //     data.append('upload_preset', 'MusicBoxRegularUsersProfileImage');
+    //     data.append('cloud_name', 'musicbox');
+    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
+    //         method: 'post',
+    //         body: data
+    //     });
+    //     const result = await res.json();  
+    //     return result.secure_url;
+    // }
+
     const HandleFileUpload = async () => {
-        let sourceuri = image;
-        let newFile = {
-            uri: sourceuri,
-            type: `test/${sourceuri.split(".")[1]}`,
-            name: `test.${sourceuri.split(".")[1]}`
-        }
-        const data = new FormData();
-        data.append('file', newFile);
-        data.append('upload_preset', 'MusicBoxRegularUsersProfileImage');
-        data.append('cloud_name', 'musicbox');
-        const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-            method: 'post',
-            body: data
-        });
-        const result = await res.json();  
-        return result.secure_url;
-    }
+        const response = await fetch(image);
+        const blob = await response.blob();
+        let ref = firebase.storage().ref().child("RegularUserProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`)
+        return ref.put(blob);
+      }
 
     let selectImageFromGallery = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -126,8 +134,8 @@ const EditRegularUserScreen = props => {
                 setIsLoading(true);
                 setIsVisble(true);
                 HandleFileUpload()
-                .then(imageUri => {
-                    detailsToUpdate.Avatar = imageUri;
+                .then(result => {
+                    detailsToUpdate.Avatar = result.downloadURL;
                     updateRegularProfile(dispatch,userToken, detailsToUpdate)
                     .then(result => {
                         setIsLoading(false);

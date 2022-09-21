@@ -13,6 +13,7 @@ import { uploadNewPostAction } from '../../../../store/actions/postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPosts, getArtistPostsById } from '../../../ApiCalls';
+import * as firebase from 'firebase';
 
 
 
@@ -94,44 +95,59 @@ const UploadPostModal = props => {
         } 
     };
 
-    const HandleVideoUpload = async video => {
-        let sourceuri = video;
-        let newFile = {
-            uri: sourceuri,
-            type: `test/${sourceuri.split(".")[1]}`,
-            name: `test.${sourceuri.split(".")[1]}`
-        }
-        const data = new FormData();
-        data.append('file', newFile);
-        data.append('upload_preset', 'postVideos');
-        data.append('cloud_name', 'musicbox');
-        console.log(data);
-        const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/video/upload', {
-            method: 'post',
-            body: data
-        });
-        const result = await res.json();  
-        return result.secure_url;
+
+    const HandleVideoUpload = async (video) => {
+        const response = await fetch(video);
+        const blob = await response.blob();
+        let ref = firebase.storage().ref().child("postVideos/" + `${video.split("/")[video.split("/").length - 1]}`)
+        return ref.put(blob);
     }
 
-    const HandleImageUpload = async image => {
-        let sourceuri = image;
-        let newFile = {
-            uri: sourceuri,
-            type: `test/${sourceuri.split(".")[1]}`,
-            name: `test.${sourceuri.split(".")[1]}`
-        }
-        const data = new FormData();
-        data.append('file', newFile);
-        data.append('upload_preset', 'postImages');
-        data.append('cloud_name', 'musicbox');
-        const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-            method: 'post',
-            body: data
-        });
-        const result = await res.json();  
-        return result.secure_url;
+    const HandleImageUpload = async (image) => {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        let ref = firebase.storage().ref().child("postImages/" + `${image.split("/")[image.split("/").length - 1]}`)
+        return ref.put(blob);
     }
+
+    // const HandleVideoUpload = async video => {
+    //     let sourceuri = video;
+    //     let newFile = {
+    //         uri: sourceuri,
+    //         type: `test/${sourceuri.split(".")[1]}`,
+    //         name: `test.${sourceuri.split(".")[1]}`
+    //     }
+    //     const data = new FormData();
+    //     data.append('file', newFile);
+    //     data.append('upload_preset', 'postVideos');
+    //     data.append('cloud_name', 'musicbox');
+    //     console.log(data);
+    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/video/upload', {
+    //         method: 'post',
+    //         body: data
+    //     });
+    //     const result = await res.json();  
+    //     return result.secure_url;
+    // }
+
+    // const HandleImageUpload = async image => {
+    //     let sourceuri = image;
+    //     let newFile = {
+    //         uri: sourceuri,
+    //         type: `test/${sourceuri.split(".")[1]}`,
+    //         name: `test.${sourceuri.split(".")[1]}`
+    //     }
+    //     const data = new FormData();
+    //     data.append('file', newFile);
+    //     data.append('upload_preset', 'postImages');
+    //     data.append('cloud_name', 'musicbox');
+    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
+    //         method: 'post',
+    //         body: data
+    //     });
+    //     const result = await res.json();  
+    //     return result.secure_url;
+    // }
 
 
     const uploadPost = async() => {
@@ -141,10 +157,10 @@ const UploadPostModal = props => {
         if(userToken) { 
             if(image.length > 0 && mediaState == 'pic') {
                 HandleImageUpload(image)
-                .then(async imageUri => {
+                .then(async result => {
                     let details = {
                         postContent: postContent,
-                        uri: imageUri,
+                        uri: result.downloadURL ,
                         format: 'image'
                     }
                     let action = uploadNewPostAction(userToken, details);
@@ -161,10 +177,10 @@ const UploadPostModal = props => {
             } else if(video.length > 0 && mediaState == 'video') {
                 console.log('test');
                 HandleVideoUpload(video)
-                .then(async videoUri => {                
+                .then(async result => {                
                     let details = {
                         postContent: postContent,
-                        uri: videoUri,
+                        uri: result.downloadURL,
                         format: 'video'
                     }
                     let action = uploadNewPostAction(userToken, details);
@@ -221,7 +237,7 @@ const UploadPostModal = props => {
                         value={postContent}
                         onChangeText={text => setPostContent(text)}
                         autoCorrect={false}
-                        autoComplete={false}
+                        autoComplete="off"
                     />
                     <View style={{width: '100%', marginTop:10}}>
                         <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', fontSize:16}}>Would you like to share media in your post?</Text> 
