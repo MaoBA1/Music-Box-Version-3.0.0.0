@@ -11,7 +11,7 @@ import { createNewPlaylistAction, getAllUserPlaylistsAction, addSongTouserPlayli
 import { useDispatch, useSelector } from 'react-redux';
 import {getUserData} from '../../../ApiCalls';
 import { storage } from '../../../../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 export const ThisModalHeader = ({
     newPlaylist,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,KeyboardAvoidingView,
     Text, TouchableOpacity, Image, ActivityIndicator,
@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPosts, getArtistPostsById, getArtistLatestRealeases, getAllArtistSongs } from '../../../ApiCalls';
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
 import { storage } from '../../../../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 
 
@@ -30,7 +30,7 @@ const UploadPostModal = props => {
     const artistSelector = useSelector(state => state.ArtistsReducer);
     const artistMainGener = artistSelector?.ArtistDataReducer?.mainGener;
     const artistId = artistSelector?.ArtistDataReducer?._id;
-
+    
     // const HandleVideoUpload = async video => {
     //     let sourceuri = video;
     //     let newFile = {
@@ -74,15 +74,15 @@ const UploadPostModal = props => {
         const response = await fetch(video);
         const blob = await response.blob();
         const imageRef = ref(storage, "songVideos/" + `${video.split("/")[video.split("/").length - 1]}`);
-        const uploadFile = await uploadBytes(imageRef, blob);
+        const uploadFile = await uploadBytesResumable(imageRef, blob);
         return getDownloadURL(uploadFile.ref);
     }
 
     const HandleImageUpload = async (image) => {
         const response = await fetch(image);
         const blob = await response.blob();
-        const imageRef = ref(storage, "songImages/" + `${image.split("/")[image.split("/").length - 1]}`);
-        const uploadFile = await uploadBytes(imageRef, blob);
+        const imageRefFile = ref(storage, "songImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const uploadFile = await uploadBytesResumable(imageRefFile, blob);
         return getDownloadURL(uploadFile.ref);
     }
 
