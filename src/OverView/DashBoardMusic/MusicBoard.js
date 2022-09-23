@@ -25,7 +25,8 @@ import {
     resumeSongAction,
     playNextSongAction,
     preperNextSongAction,
-    setPostAuthorProfileAction
+    setPostAuthorProfileAction,
+    handleSeeBarAction
 } from '../../../store/actions/appActions';
 
 
@@ -73,7 +74,7 @@ const MusicBoardScreen = props => {
             let songsByGeners = songsByUserFavoriteGeners?.map(x => x = x.songs);
             songsByGeners = [].concat.apply([],songsByGeners);
             let list = [];
-            for(let i = 0; list.length < 3 || i < playlist?.length; i ++) {
+            for(let i = 0; list.length < 3 && i < playlist?.length; i ++) {
                 list.push({
                     type:'playlist',
                     _id: playlist[i]?._id,
@@ -82,17 +83,19 @@ const MusicBoardScreen = props => {
                     tracks: playlist[i]?.songs,
                 })
             }
-            for(let i = 0; list.length < 3 || i < songsByGeners?.length; i++) {
-                list.push({
-                    type: 'song',
-                    _id:songsByGeners[i]?._id,
-                    artistName:songsByGeners[i]?.artistName,
-                    trackImage: songsByGeners[i]?.trackImage,
-                    trackLength: songsByGeners[i]?.trackLength,
-                    trackName: songsByGeners[i]?.trackName,
-                    trackUri: songsByGeners[i]?.trackUri 
+            for(let i = 0; list.length < 6 && i < songsByGeners?.length; i++) {
+                if(songsByGeners[i] !== undefined) {
+                    list.push({
+                        type: 'song',
+                        _id:songsByGeners[i]?._id,
+                        artistName:songsByGeners[i]?.artistName,
+                        trackImage: songsByGeners[i]?.trackImage,
+                        trackLength: songsByGeners[i]?.trackLength,
+                        trackName: songsByGeners[i]?.trackName,
+                        trackUri: songsByGeners[i]?.trackUri 
 
-                })
+                    })
+                }
             }
             list = list.sort((a, b) => 0.5 - Math.random()).slice(0,6);
             setTopList(list);
@@ -100,7 +103,54 @@ const MusicBoardScreen = props => {
         if(userPlaylists?.length > 0 && songsByUserFavoriteGeners?.length > 0){
             makeTopList();
         }
-    },[userPlaylists, songsByUserFavoriteGeners])
+
+        const onPlaybackStatusUpdate = async(playbackStatus) => {
+            if(playbackStatus.isLoaded && playbackStatus.isPlaying) {
+                dispatch(handleSeeBarAction({
+                    playbackPosition: playbackStatus.positionMillis,
+                    playbackDuration: playbackStatus.durationMillis
+                }))
+            }
+
+
+            if(playbackStatus.didJustFinish) {
+                try{
+                    const nextAudioIndex = (SongIndexReducer + 1) % SongOnBackGroundReducer?.length;
+                    const audio = SongOnBackGroundReducer[nextAudioIndex];
+                    dispatch(preperNextSongAction({
+                        currentAudio: audio,
+                        isPlaying: false,
+                        index: nextAudioIndex,
+                        isLoading: true
+                    }))
+                    const status = await playNext(playbackObj, audio.trackUri);
+                
+                    return dispatch(playNextSongAction({
+                        status: status,
+                        currentAudio: audio,
+                        isPlaying: true,
+                        index: nextAudioIndex,
+                        isLoading: false,
+                        MusicOnForGroundReducer: MusicOnForGroundReducer,
+                        list: SongOnBackGroundReducer 
+                    }))
+                }catch(error) {
+                    console.log(error.message);
+                }
+            }
+        }
+
+        if(playbackObj) {
+            playbackObj.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+        }
+    },[
+        userPlaylists,
+        songsByUserFavoriteGeners,
+        SongIndexReducer,
+        SongOnBackGroundReducer,                
+        playbackObj,        
+        MusicOnForGroundReducer
+    ])
     
 
     const handleAudioPress = async (audio, index, list) => {     
@@ -195,9 +245,19 @@ const MusicBoardScreen = props => {
         }        
     }
 
-    
-
-    
+   const getCountOfSongsOrArtist = (userLists, type) => {
+        switch(type){
+            case 'songs':
+                userLists = userLists.map(x => x = x.songs);
+                userLists = [].concat.apply([],userLists);
+                return userLists.length;
+            case 'artists':
+                userLists = userLists.map(x => x = x.artists);
+                userLists = [].concat.apply([],userLists);
+                return userLists.length;
+            default: return 0;
+        }
+    }
     
     return(
         <ImageBackground 
@@ -418,7 +478,7 @@ const MusicBoardScreen = props => {
                     </View>
                 </View>
                 {
-                    songsByUserFavoriteGeners && songsByUserFavoriteGeners?.length > 0 &&
+                    songsByUserFavoriteGeners && getCountOfSongsOrArtist(songsByUserFavoriteGeners, 'songs') > 0 && (
                     <>
                         <View style={{borderBottomWidth: 1, borderColor:'#fff', width:'70%', left:10}}>
                             <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:18}}>
@@ -496,10 +556,10 @@ const MusicBoardScreen = props => {
                                 }
                             </ScrollView>
                         </View>
-                    </>
+                    </>)
                 }
                 {
-                    artistsByUserFavoriteGeners && artistsByUserFavoriteGeners?.length > 0 &&
+                    artistsByUserFavoriteGeners && getCountOfSongsOrArtist(artistsByUserFavoriteGeners, 'artists') > 0 &&
                     <>
                         <View style={{borderBottomWidth: 1, borderColor:'#fff', width:'70%', left:10, marginTop:20}}>
                             <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:18}}>

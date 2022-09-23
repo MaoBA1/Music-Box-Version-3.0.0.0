@@ -99,7 +99,7 @@ const ArtistProfileScreen = props => {
    
 
     return(
-        <View style={Style.backgroundContainer}>
+        <ScrollView style={Style.backgroundContainer}>
         <GeneralHeader title={formatted_artistName} size={'short'} goBack={() => props.navigation.goBack(null)}/>
         {changeImageVisible && <ChangeImageModal details={changeImageDetails}/>}
         {changeDescriptionVisible && <ChangeDescriptionModal  desc={artistDescription} func={setChangeDescriptionVisible}/>}
@@ -204,7 +204,7 @@ const ArtistProfileScreen = props => {
         </View>
 
 
-        </View>
+        </ScrollView>
     )
 }
 

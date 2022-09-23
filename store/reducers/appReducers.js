@@ -8,7 +8,9 @@ import {
     HANDLE_SEE_BAR,
     SET_MUSIC_ON_FORGROUND,
     SWITCH_BETEEN_DASHBOARDS,
-    SET_POST_AUTHOR_PROFILE
+    SET_POST_AUTHOR_PROFILE,
+    SET_UPLOAD_COMPLETE,
+    SET_IS_WATING_FOR_UPLOAD
  } from '../actions/appActions';
 
 
@@ -25,7 +27,10 @@ const initialState = {
     isLoading: false,
     MusicOnForGroundReducer: false,
     main: true,
-    PostAuthorProfile: null
+    PostAuthorProfile: null,
+    isWaitingForUpload:false,
+    isUploadComplete:null,
+    uploadType: null,
 }
 
 
@@ -102,7 +107,21 @@ export default (state = initialState, action) => {
                 ...state,
                 PostAuthorProfile: action.profile
             }
+        case SET_IS_WATING_FOR_UPLOAD:
+            return {
+                ...state,
+                isWaitingForUpload: action.isWaiting,
+                uploadType: action.uploadType,
+            }
+        case SET_UPLOAD_COMPLETE:
+            return {
+                ...state,
+                isWaitingForUpload: action.isWaiting,
+                uploadType: action.uploadType,
+                isUploadComplete: action.isComplete
+            }
         default:
             return state;
     }
 }
+

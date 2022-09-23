@@ -6,7 +6,6 @@ import {
     getArtistPlaylistForDashBoardAction,
     cleanPlaylistReducerAction
 } from '../store/actions/artistActions';
-import { getUserDataAction, updateProfileAction } from '../store/actions/userActions';
 import { getGenersAction } from '../store/actions/genersActions';
 import { 
     getAllPostsAction,
@@ -30,9 +29,28 @@ import {
     getAllArtistAlbumsForDasboardProfileAction,
     cleanAlbumReducerAction
  } from '../store/actions/albumsActions';
+ import { getUserDataAction, updateProfileAction, getAllUserPlaylistsAction, getAllUserSubScribesAction, getAllSearchResultsAction } from '../store/actions/userActions';
+ import { getArtistsByUserFavoriteGenersAction } from '../store/actions/artistActions';
+ import { getSongsByUserFavoriteGenersAction } from '../store/actions/songActions';
+ import { setIsUploadCompleteAction, setIsWaitingForUploadAction } from '../store/actions/appActions';
 
+export const setIsUploadComplete = (dispatch, isComplete, isWaiting, type) => {
+    let action = setIsUploadCompleteAction(isComplete, isWaiting, type);
+    try {
+        dispatch(action);
+    }catch(error) {
+        console.log(error.message);
+    }
+}
 
-
+export const setIsWaitingForUpload = (dispatch, isWaiting, type) => {
+    let action = setIsWaitingForUploadAction(isWaiting, type);
+    try{
+        dispatch(action);
+    }catch(error) {
+        console.log(error.message);
+    }
+}
 
 
 export const getAllAppGeners = async(dispatch) => {
@@ -331,3 +349,66 @@ export const cleanAlbumReducer = (dispatch) => {
     }
 }
 
+
+
+export function cleanArtistProfilePageBeforeNextUse(dispatch){
+    try{
+        dispatch(setPostAuthorProfileAction(null));
+    } catch (error) {
+        console.log();
+    }
+}
+
+export async function getArtistDataAsync(dispatch, token, isSuperUser){
+    if(isSuperUser) {
+        getArtistData(dispatch, token);
+    }
+}
+
+
+export async function getAllUserSubScribes(dispatch, token) {
+    let action = getAllUserSubScribesAction(token);
+    try{
+        await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+export async function getAllUserPlaylist(dispatch, token){
+    let action = getAllUserPlaylistsAction(token);
+    try{
+        await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+export async function getSongsByUserFavoriteGeners(dispatch, token){
+    let action = getSongsByUserFavoriteGenersAction(token);
+    try{
+        await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+export async function getArtistsByUserFavoriteGeners(dispatch, token){
+    let action = getArtistsByUserFavoriteGenersAction(token);
+    try{
+        await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+export async function getAllSearchResults(dispatch, token){
+    let action = getAllSearchResultsAction(token);
+    try{
+        await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}

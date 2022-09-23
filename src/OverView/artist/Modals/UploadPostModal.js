@@ -12,9 +12,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { uploadNewPostAction } from '../../../../store/actions/postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getPosts, getArtistPostsById } from '../../../ApiCalls';
 import { storage } from '../../../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getPosts, getArtistPostsById, getSongsByUserFavoriteGeners, getAllSearchResults, getArtistLatestRealeases, getAllArtistSongs, setIsUploadComplete, setIsWaitingForUpload } from '../../../ApiCalls';
 
 
 
@@ -112,46 +112,6 @@ const UploadPostModal = props => {
         return getDownloadURL(uploadFile.ref);
     }
 
-    // const HandleVideoUpload = async video => {
-    //     let sourceuri = video;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'postVideos');
-    //     data.append('cloud_name', 'musicbox');
-    //     console.log(data);
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/video/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
-
-    // const HandleImageUpload = async image => {
-    //     let sourceuri = image;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'postImages');
-    //     data.append('cloud_name', 'musicbox');
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
-
-
     const uploadPost = async() => {
         setIsLoading(true);
         const jsonToken = await AsyncStorage.getItem('Token');        
@@ -177,7 +137,7 @@ const UploadPostModal = props => {
                     }            
                 })
             } else if(video.length > 0 && mediaState == 'video') {
-                console.log('test');
+                setIsWaitingForUpload(dispatch, true, 'post');
                 HandleVideoUpload(video)
                 .then(async result => {                
                     let details = {
@@ -190,12 +150,13 @@ const UploadPostModal = props => {
                         await dispatch(action);
                         getArtistPostsById(dispatch, userToken, artistId);
                         getPosts(dispatch,userToken);
+                        setIsUploadComplete(dispatch, true, true, 'song');
                         setIsLoading(false);
-                        props.close(false);
                     } catch(error) {
                         console.log(error.message);
                     }                
                 })
+                props.close(false);
             } else {  
                 let details = {postContent: postContent}
                 let action = uploadNewPostAction(userToken, details);

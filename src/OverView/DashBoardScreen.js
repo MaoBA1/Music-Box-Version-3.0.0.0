@@ -12,7 +12,15 @@ import Post from '../components/Post';
 import Header from '../components/Header';
 import Menu from './MenuScreen';
 import Comment from './CommentScreen';
-import { getArtistData } from '../ApiCalls';
+import { 
+    getAllSearchResults,
+    getArtistsByUserFavoriteGeners,
+    getSongsByUserFavoriteGeners,
+    getAllUserPlaylist,
+    getAllUserSubScribes,
+    getArtistDataAsync,
+    cleanArtistProfilePageBeforeNextUse 
+} from '../ApiCalls';
 import { getUserDataAction, getAllUserPlaylistsAction, getAllUserSubScribesAction, getAllSearchResultsAction } from '../../store/actions/userActions';
 import { getArtistsByUserFavoriteGenersAction } from '../../store/actions/artistActions';
 import { getSongsByUserFavoriteGenersAction } from '../../store/actions/songActions';
@@ -29,7 +37,7 @@ const DashBoardScreen = props => {
     const [commentParams, setCommentParams] = useState(null);
     const [songForPlaylist, setSongForPlaylist] = useState(null);
     const [addToPlaylistVisible, setAddToPlaylistVisible] = useState(false);
-
+    const [token, setToken] = useState(null);
     const closeAndOpenMenu = () => {
         setModalStatus('menu');
         setIsVisble(!isVisible);
@@ -51,87 +59,26 @@ const DashBoardScreen = props => {
     }
 
     useEffect(() => {
-        async function getArtistDataAsync(){
-            if(isSuperUser) {
-                const jsonToken = await AsyncStorage.getItem('Token');
-                const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
-                if(userToken) {
-                    getArtistData(dispatch, userToken);
-                }
-            }
-        }
-        async function getAllUserSubScribes() {
-            const jsonToken = await AsyncStorage.getItem('Token');
-            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
+        async function getToken(){
+            const jsonToken = await AsyncStorage.getItem('Token');        
+            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
             if(userToken) {
-                let action = getAllUserSubScribesAction(userToken);
-                try{
-                    await dispatch(action);
-                }catch (error) {
-                    console.log(error.message);
-                }
-            }
-        }   
-        async function getAllUserPlaylist(){
-            const jsonToken = await AsyncStorage.getItem('Token');
-            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
-            if(userToken) {
-                let action = getAllUserPlaylistsAction(userToken);
-                try{
-                    await dispatch(action);
-                }catch (error) {
-                    console.log(error.message);
-                }
+                setToken(userToken);
             }
         }
-        async function getSongsByUserFavoriteGeners(){
-            const jsonToken = await AsyncStorage.getItem('Token');
-            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
-            if(userToken) {
-                let action = getSongsByUserFavoriteGenersAction(userToken);
-                try{
-                    await dispatch(action);
-                }catch (error) {
-                    console.log(error.message);
-                }
-            }
+        if(!token) {
+            getToken();
         }
-        async function getArtistsByUserFavoriteGeners(){
-            const jsonToken = await AsyncStorage.getItem('Token');
-            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
-            if(userToken) {
-                let action = getArtistsByUserFavoriteGenersAction(userToken);
-                try{
-                    await dispatch(action);
-                }catch (error) {
-                    console.log(error.message);
-                }
-            }
+        else {
+            getAllSearchResults(dispatch, token);
+            getArtistsByUserFavoriteGeners(dispatch, token);
+            getSongsByUserFavoriteGeners(dispatch, token);
+            getAllUserPlaylist(dispatch, token);
+            getAllUserSubScribes(dispatch, token);
+            getArtistDataAsync(dispatch, token, isSuperUser);
+            cleanArtistProfilePageBeforeNextUse(dispatch); 
         }
-        async function getAllSearchResults(){
-            const jsonToken = await AsyncStorage.getItem('Token');
-            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;     
-            if(userToken) {
-                let action = getAllSearchResultsAction(userToken);
-                try{
-                    await dispatch(action);
-                }catch (error) {
-                    console.log(error.message);
-                }
-            }
-        }
-        getSongsByUserFavoriteGeners();
-        getAllUserPlaylist();
-        getArtistDataAsync(); 
-        getAllUserSubScribes();
-        getArtistsByUserFavoriteGeners();
-        getAllSearchResults();
-        try{
-            dispatch(setPostAuthorProfileAction(null));
-        } catch (error) {
-            console.log();
-        }
-    }, [])
+    }, [token])
     
     return(
         <View style={Style.backgroundContainer}>

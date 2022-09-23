@@ -8,6 +8,35 @@ export const HANDLE_SEE_BAR = "HANDLE_SEE_BAR";
 export const SET_MUSIC_ON_FORGROUND = "SET_MUSIC_ON_FORGROUND";
 export const SWITCH_BETEEN_DASHBOARDS = "SWITCH_BETEEN_DASHBOARDS";
 export const SET_POST_AUTHOR_PROFILE = "SET_POST_AUTHOR_PROFILE";
+export const SET_IS_WATING_FOR_UPLOAD = "SET_IS_WATING_FOR_UPLOAD";
+export const SET_UPLOAD_COMPLETE = "SET_UPLOAD_COMPLETE";
+
+
+export const setIsWaitingForUploadDispatch = (isWaiting, type) => {
+    return dispatch => {
+        dispatch({type: SET_IS_WATING_FOR_UPLOAD, isWaiting: isWaiting, uploadType: type})
+    }
+}
+
+export const setIsWaitingForUploadAction = (isWaiting, type) => {
+    return dispatch => {
+        dispatch(setIsWaitingForUploadDispatch(isWaiting, type));
+    }
+}
+
+export const setIsUploadCompleteDispatch = (isComplete, isWaiting, type) => {
+    return dispatch => {
+        dispatch({type: SET_UPLOAD_COMPLETE, isComplete, isWaiting, uploadType: type})
+    }
+}
+
+export const setIsUploadCompleteAction = (isComplete, isWaiting, type) => {
+    return dispatch => {
+        dispatch(setIsUploadCompleteDispatch(isComplete, isWaiting, type));
+    }
+}
+
+
 
 
 export const setMusicOnBackGroundDispatch = (boolean) => {

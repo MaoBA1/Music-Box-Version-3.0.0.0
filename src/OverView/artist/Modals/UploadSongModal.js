@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import {
-    View,KeyboardAvoidingView,
+    View,
     Text, TouchableOpacity, Image, ActivityIndicator,
-    FlatList, Modal, TextInput, Platform
+    Modal, TextInput, Platform
 } from 'react-native';
 import Colors from '../../../Utitilities/AppColors';
 import { Video } from 'expo-av';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as ImagePicker from 'expo-image-picker';
-import { uploadNewPostAction } from '../../../../store/actions/postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getPosts, getArtistPostsById, getArtistLatestRealeases, getAllArtistSongs } from '../../../ApiCalls';
+import { getSongsByUserFavoriteGeners, getAllSearchResults, getArtistLatestRealeases, getAllArtistSongs, setIsUploadComplete, setIsWaitingForUpload } from '../../../ApiCalls';
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
 import { storage } from '../../../../firebase';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-
+import { setIsWaitingForUploadAction, setIsUploadCompleteAction } from '../../../../store/actions/appActions';
 
 
 
@@ -30,51 +29,20 @@ const UploadPostModal = props => {
     const artistSelector = useSelector(state => state.ArtistsReducer);
     const artistMainGener = artistSelector?.ArtistDataReducer?.mainGener;
     const artistId = artistSelector?.ArtistDataReducer?._id;
-    
-    // const HandleVideoUpload = async video => {
-    //     let sourceuri = video;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'song Video');
-    //     data.append('cloud_name', 'musicbox');
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/video/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
 
-    // const HandleImageUpload = async image => {
-    //     let sourceuri = image;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'song images');
-    //     data.append('cloud_name', 'musicbox');
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
-
+    let detailsToUpload = {
+        trackName: songName,
+        trackLength: trackLength,
+        trackImage: null,
+        trackUri: null,
+        gener: artistMainGener
+    }
     
     const HandleVideoUpload = async (video) => {
         const response = await fetch(video);
         const blob = await response.blob();
         const imageRef = ref(storage, "songVideos/" + `${video.split("/")[video.split("/").length - 1]}`);
-        const uploadFile = await uploadBytesResumable(imageRef, blob);
+        const uploadFile = await uploadBytes(imageRef, blob);
         return getDownloadURL(uploadFile.ref);
     }
 
@@ -82,7 +50,7 @@ const UploadPostModal = props => {
         const response = await fetch(image);
         const blob = await response.blob();
         const imageRefFile = ref(storage, "songImages/" + `${image.split("/")[image.split("/").length - 1]}`);
-        const uploadFile = await uploadBytesResumable(imageRefFile, blob);
+        const uploadFile = await uploadBytes(imageRefFile, blob);
         return getDownloadURL(uploadFile.ref);
     }
 
@@ -187,69 +155,58 @@ const UploadPostModal = props => {
             setSongImage(pickerResult.uri);
         } 
     };
+    
 
     const uploadSong = async() => {
         setIsLoading(true);
-        if(songImage != '') {
-            HandleImageUpload(songImage)
-            .then(async image => {
-                HandleVideoUpload(song)
-                .then(async video => {
-                    let details = {
-                        trackName: songName,
-                        trackLength: trackLength,
-                        trackImage: image,
-                        trackUri: video,
-                        gener: artistMainGener
-                    }
-
-                    const jsonToken = await AsyncStorage.getItem('Token');        
-                    const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
-                    if(userToken) {
-                        let action = uploadNewSongAction(userToken, details);
+        const jsonToken = await AsyncStorage.getItem('Token');        
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+        if(userToken) {
+            setIsWaitingForUpload(dispatch, true, 'song');
+            if(songImage != '') {
+                HandleImageUpload(songImage)
+                .then(image => {
+                    detailsToUpload.trackImage = image;  
+                    HandleVideoUpload(song)
+                    .then(async video => {
+                        detailsToUpload.trackUri = video;  
+                        let action = uploadNewSongAction(userToken, detailsToUpload);
                         try{
                             await dispatch(action)
-                            .then(result => {
+                            .then(() => {
                                 getAllArtistSongs(dispatch, userToken, artistId);
                                 getArtistLatestRealeases(dispatch, userToken, artistId);
+                                getSongsByUserFavoriteGeners(dispatch, userToken);
+                                getAllSearchResults(dispatch, userToken);
                                 setIsLoading(false);
-                                props.close(false);
                             })
                         } catch(error){
                             console.log(error.message);
                         }
-                    }
-
+                    })
                 })
-            })
-        } else {
-            HandleVideoUpload(song)
-            .then(async video => {
-                let details = {
-                    trackName: songName,
-                    trackLength: trackLength,
-                    trackUri: video,
-                    gener: artistMainGener
-                }
-
-                const jsonToken = await AsyncStorage.getItem('Token');        
-                const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
-                if(userToken) {
-                    let action = uploadNewSongAction(userToken, details);
+            }else{
+                HandleVideoUpload(song)
+                .then(async video => {
+                    detailsToUpload.trackUri = video;
+                    let action = uploadNewSongAction(userToken, detailsToUpload);
                     try{
                         await dispatch(action)
-                        .then(result => {
+                        .then(() => {
                             getAllArtistSongs(dispatch, userToken, artistId);
                             getArtistLatestRealeases(dispatch, userToken, artistId);
+                            getSongsByUserFavoriteGeners(dispatch, userToken);
+                            getAllSearchResults(dispatch, userToken);
+                            setIsUploadComplete(dispatch, true, true, 'song');
                             setIsLoading(false);
-                            props.close(false);
                         })
                     } catch(error){
                         console.log(error.message);
                     }
-                }
-
-            })
+                })
+            }
+            
+            props.close(false);
         }
     }
 
@@ -425,3 +382,70 @@ const UploadPostModal = props => {
 }
 
 export default UploadPostModal;
+
+
+
+
+
+// let details = {
+//     trackName: songName,
+//     trackLength: trackLength,
+//     trackImage: '',
+//     trackUri: '',
+//     gener: artistMainGener
+// }
+
+// const HandleVideoUpload = async (video) => {
+//     const response = await fetch(video);
+//     const blob = await response.blob();
+//     const imageRef = ref(storage, "songVideos/" + `${video.split("/")[video.split("/").length - 1]}`);
+//     const uploadFile = uploadBytesResumable(imageRef, blob);
+//     uploadFile.on('state_changed', (snapshot) => {
+//         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//         console.log('====================================');
+//         console.log(snapshot.state);
+//         console.log('====================================');
+//         console.log('video progress: ' + progress);
+//         if(snapshot.bytesTransferred === snapshot.totalBytes) {
+//             getDownloadURL(uploadFile.snapshot.ref).then(async downloadURL => {
+//                 details.trackUri = downloadURL;
+//                 const jsonToken = await AsyncStorage.getItem('Token');        
+//                     const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+//                     if(userToken) {
+//                         let action = uploadNewSongAction(userToken, details);
+//                         try{
+//                             await dispatch(action)
+//                             .then(result => {
+//                                 getAllArtistSongs(dispatch, userToken, artistId);
+//                                 getArtistLatestRealeases(dispatch, userToken, artistId);
+//                                 setIsLoading(false);
+//                                 props.close(false);
+//                             })
+//                         } catch(error){
+//                             console.log(error.message);
+//                         }
+//                     }
+//             })
+//         }
+//     }),(error) => {console.log(error)}
+// }
+
+// const HandleImageUpload = async (image) => {
+//     const response = await fetch(image);
+//     const blob = await response.blob();
+//     const imageRefFile = ref(storage, "songImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+//     const uploadFile = uploadBytesResumable(imageRefFile, blob);
+//     uploadFile.on('state_changed', (snapshot) => {
+//         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//         console.log('image progress: ' + progress);
+//         if(snapshot.bytesTransferred === snapshot.totalBytes) {
+//             getDownloadURL(uploadFile.snapshot.ref).then(downloadURL => {
+//                 console.log(downloadURL);
+//                 details.trackImage = downloadURL;
+//                 HandleVideoUpload(song);
+//             })
+//         }
+        
+//     })
+    
+// }

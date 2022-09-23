@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View, 
     TouchableOpacity,
     Text,
     ImageBackground,
-    Platform
+    Platform,
+    ActivityIndicator
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMusicOnBackGroundAction } from './store/actions/appActions'
@@ -20,8 +21,11 @@ import {
     resumeSongAction,
     playNextSongAction,
     preperNextSongAction,
-    setMusicOnForGroundAction
+    setMusicOnForGroundAction,
+    setIsUploadCompleteAction,
+    setIsWaitingForUploadAction
 } from './store/actions/appActions';
+import { setIsWaitingForUpload, setIsUploadComplete } from './src/ApiCalls';
 import { Image } from "react-native";
 
 export const SongBar = props => {
@@ -37,7 +41,9 @@ export const SongBar = props => {
         playbackObj,
         MusicOnForGroundReducer,
         isPlaying,
-        currentAudio
+        currentAudio,
+        isWaitingForUpload,
+        isUploadComplete
     } = appSelector;
     const songDetails = currentAudio;
     const artistName = songDetails?.artistName;
@@ -178,7 +184,7 @@ export const SongBar = props => {
 
     return(
         <>
-            <TouchableOpacity onPress={openMusicScreen} style={{width:'100%', alignItems: 'center', position:'absolute', zIndex:1, top:Platform.OS === 'ios'? 690 : 665}}>
+            <TouchableOpacity onPress={openMusicScreen} style={{width:'100%', alignItems: 'center', position:'absolute', zIndex:1, top:Platform.OS === 'ios'? (isUploadComplete || isWaitingForUpload ? 650 : 690): (isUploadComplete || isWaitingForUpload ? 670 : 657)}}>
                 <View style={{
                     width:'100%',
                     backgroundColor:'#fff',
@@ -328,19 +334,59 @@ export const SideSongBar = props => {
     )
 }
 
+export const UploadBarStatus = ({}) => {
+    const dispatch = useDispatch();
+    const appSelector = useSelector(state => state.AppReducer);
+    const { isWaitingForUpload, uploadType, isUploadComplete } = appSelector;
+
+    const closeUploadBar = setTimeout(() =>{
+        setIsUploadComplete(dispatch, null, null, null);
+    },2000);
+
+    useEffect(() => {
+        if(isUploadComplete){
+            closeUploadBar;
+        }
+    },[isUploadComplete])
+
+    return(
+        <View style={{
+            width:'100%',
+            borderWidth:2,
+            padding:10,
+            backgroundColor:Colors.red3
+        }}>
+            <View style={{flexDirection:'row', paddingHorizontal:10, marginBottom:2}}>
+                <ActivityIndicator color='#fff'/>
+                <View style={{left:20}}>
+                    <Text>
+                        {isWaitingForUpload && !isUploadComplete && `Your ${uploadType} is uploading....`}
+                        {isUploadComplete && 'Upload Completed'}
+                    </Text>
+                </View>
+            </View>
+        </View>
+    )
+}
+
 const AppBackGround = props => {
     const appSelector = useSelector(state => state.AppReducer);
     const backgrounMusicBarVisible = appSelector.MusicOnBackGroundReducer;
     const {
         MusicOnForGroundReducer,
-        soundObj
-    } = appSelector
+        soundObj,
+        isWaitingForUpload,
+        isUploadComplete
+    } = appSelector;
+    
+    
     return(
         <NavigationContainer>
             <AppNavigator/>
             {backgrounMusicBarVisible && <SongBar/>}
             {MusicOnForGroundReducer && <MusicScreenModal/>}
             {!backgrounMusicBarVisible && soundObj && <SideSongBar/>}
+            {(isWaitingForUpload === true || isUploadComplete === true) && <UploadBarStatus/>}
         </NavigationContainer>
     )
 }
