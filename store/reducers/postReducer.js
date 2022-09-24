@@ -3,7 +3,8 @@ import {
     GET_POST_COMMENTS,
     GET_ALL_ARTIST_POST_BY_ID,
     GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE ,
-    CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE
+    CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE,
+    SET_POST_AUTHOR_PROFILE
 } from '../actions/postActions';
 
 const initialState = {
@@ -40,6 +41,11 @@ export default (state = initialState, action) => {
             return{
                 ...state,
                 DashBoardProfilePostReducer: null
+            }
+        case SET_POST_AUTHOR_PROFILE:
+            return{
+                ...state, 
+                ArtistPostsReducer:action.profile
             }
         default:
             return state;

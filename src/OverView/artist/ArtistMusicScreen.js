@@ -20,7 +20,8 @@ import {
     getAllArtistSongs,
     getArtistTop5,
     getArtistLatestRealeases,
-    getArtistPlayLists
+    getArtistPlayLists,
+    getAllArtistAlbums
 } from '../../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
@@ -76,12 +77,7 @@ const ArtistMusicScreen = props => {
             getArtistTop5(dispatch, userToken, artistId);
             getArtistLatestRealeases(dispatch, userToken, artistId);
             getArtistPlayLists(dispatch, userToken);
-            try{
-                dispatch(getAllArtistAlbumsAction(userToken, artistId));
-            }catch(error){
-                console.log(error.message);
-            }
-            
+            getAllArtistAlbums(dispatch, userToken, artistId);
         }
     }
 
@@ -125,13 +121,12 @@ const ArtistMusicScreen = props => {
         if(playbackObj) {
             playbackObj.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
         }
-
         getArtistSongs();
     },[
         SongIndexReducer,
         SongOnBackGroundReducer,                
         playbackObj,        
-        MusicOnForGroundReducer
+        MusicOnForGroundReducer,
     ])
      
 
@@ -216,10 +211,6 @@ const ArtistMusicScreen = props => {
              
         }
     }
-    
-    console.log('====================================');
-    console.log(artistTop5);
-    console.log('====================================');
     
     return(
         <ImageBackground 
@@ -571,24 +562,19 @@ const ArtistMusicScreen = props => {
                             )
                             :
                             (
-                                <View style={{width:'100%', justifyContent: 'center'}}>
-                                    <FlatList
-                                        horizontal
-                                        data={allArtistPlaylist}
-                                        keyExtractor={item => item._id}
-                                        renderItem={playlist => 
-                                            <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
-                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: playlist.item.tracks, screenName: playlist.item.playlistName})}>
-                                                    <Image
-                                                        source={{uri:playlist.item.playlistImage}}
-                                                        style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
-                                                    />                                                
-                                                </TouchableOpacity>
-                                                <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{playlist.item.playlistName}</Text>
-                                            </View>
-                                        }
-                                    />
-                                </View>
+                                <ScrollView horizontal style={{width:'100%'}}>
+                                    {allArtistPlaylist?.map((item, index) =>
+                                        <View key={index} style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
+                                            <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.playlistName, optionToDelete: true, deletFrom:'playlist', artistId: artistId})}>
+                                                <Image
+                                                    source={{uri:item.playlistImage}}
+                                                    style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
+                                                />                                                
+                                            </TouchableOpacity>
+                                            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Medium', color:'#fff', marginTop:5}}>{item.playlistName}</Text>
+                                        </View>
+                                    )}
+                                </ScrollView>
                             )
                         }
                     </View>
@@ -615,7 +601,7 @@ const ArtistMusicScreen = props => {
                                         keyExtractor={item => item._id}
                                         renderItem={({item, index}) => 
                                             <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
-                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.albumName})}>
+                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.albumName, optionToDelete: true, deletFrom:'album'})}>
                                                     <Image
                                                         source={{uri:item.albumCover}}
                                                         style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
@@ -791,7 +777,7 @@ const ArtistMusicScreen = props => {
                                             )
                                         
                                     )}
-                                    <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: allArtistSongs, screenName:"Singels"})} style={{top:10 ,paddingHorizontal:10, widht:'20%', alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: allArtistSongs, screenName:"Singels", optionToDelete: true, deletFrom:'singels'})} style={{top:10 ,paddingHorizontal:10, widht:'20%', alignItems: 'center'}}>
                                         <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:12}}>See all singles</Text>
                                         <Feather
                                             name="more-horizontal"

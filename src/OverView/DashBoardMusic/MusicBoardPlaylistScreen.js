@@ -1,6 +1,6 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, ScrollView, ImageBackground, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, ImageBackground, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
 import MusicGeneralHeader from '../../OverView/artist/components/MusicGeneralHeder';
 import Colors from '../../Utitilities/AppColors';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,18 @@ import {
     preperNextSongAction,
     setPostAuthorProfileAction
 } from '../../../store/actions/appActions';
+import {
+    getAllUserPlaylist,
+    getSongsByUserFavoriteGeners,
+    getAllSearchResults,
+    getArtistPlayLists,
+    getArtistLatestRealeases,
+    getArtistTop5,
+    getAllArtistSongs,
+    getAllArtistAlbums
+} from '../../ApiCalls';
+import { deleteSongByArtistChosenAction } from '../../../store/actions/artistActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -22,7 +34,11 @@ import {
 const MusicBoardPlaylistScreen = (props) => {
     const dispatch = useDispatch();
     const { screenName, songsList } = props.route.params;
+    const optionToDelete = props.route.params.optionToDelete;
+    const deletFrom = props.route.params.deletFrom;
     const appBackGroundSelector = useSelector(state => state.AppReducer);
+    const [deletPostVisible, setDeletePostVisible] = useState(false);
+    const [songToDelete, setSongToDelete] = useState(null);
     const {
         SongIndexReducer,
         SongOnBackGroundReducer,
@@ -35,7 +51,6 @@ const MusicBoardPlaylistScreen = (props) => {
         isLoading,
         MusicOnForGroundReducer
     } = appBackGroundSelector;
-    
     
     const handleAudioPress = async (audio, index, list) => { 
         if(isLoading) {
@@ -122,10 +137,70 @@ const MusicBoardPlaylistScreen = (props) => {
         }
     }
 
+    const openDeleteModal = (song) => {
+        setSongToDelete(song);
+        setDeletePostVisible(true);
+    }
+
+    const deleteSongFromArtistList = async() => {
+        const jsonToken = await AsyncStorage.getItem('Token');        
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+        if(userToken) {
+            let action = deleteSongByArtistChosenAction(userToken, songToDelete.artistId || props.route.params.artistId, songToDelete._id, deletFrom);
+            try {
+                await dispatch(action)
+                .then(() => {
+                    if(deletFrom === 'playlist') {
+                        getArtistPlayLists(dispatch, userToken);
+                    } else {
+                        getAllUserPlaylist(dispatch, userToken);
+                        getSongsByUserFavoriteGeners(dispatch, userToken);
+                        getAllSearchResults(dispatch, userToken);
+                        getAllArtistSongs(dispatch, userToken, songToDelete.artistId);
+                        getArtistTop5(dispatch, userToken, songToDelete.artistId);
+                        getArtistLatestRealeases(dispatch, userToken, songToDelete.artistId);
+                        getArtistPlayLists(dispatch, userToken);
+                        getAllArtistAlbums(dispatch, userToken, songToDelete.artistId);
+                    }
+                    props.navigation.goBack(null);
+                })
+            }catch(error) {
+                console.log(error.message);
+            }
+        }
+    }
+
+    
 
     return (
         <View style={{flex: 1, backgroundColor:Colors.grey1}}>
             <MusicGeneralHeader goBack={() => props.navigation.goBack(null)} title={screenName}/>
+            <Modal
+                visible={deletPostVisible}
+                transparent={true}
+                animationType='fade'
+            >
+                <View style={{flex:1, padding:10, alignItems: 'center', justifyContent:'center'}}>
+                    <View style={{
+                        width:'80%',
+                        alignItems: 'center',
+                        borderRadius:10,
+                        backgroundColor: Colors.red3
+                    }}>
+                        <View style={{padding:20}}>
+                            <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Are you sure you want delete this song?</Text>
+                        </View>
+                        <View style={{flexDirection:'row'}}>
+                            <TouchableOpacity onPress={() => setDeletePostVisible(false)} style={{width:'50%', borderRightWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={deleteSongFromArtistList} style={{width:'50%', borderLeftWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Yes</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView>
                 {
                     songsList.map((item, index) =>
@@ -180,7 +255,7 @@ const MusicBoardPlaylistScreen = (props) => {
                                 }
         
                             </ImageBackground>
-                            <View style={{width:'65%', alignItems: 'flex-start', justifyContent: 'center'}}>
+                            <View style={{width: optionToDelete === true ? '50%' : '65%', alignItems: 'flex-start', justifyContent: 'center'}}>
                                 <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:16, left:10}}>
                                     {item.trackName}
                                 </Text>
@@ -193,81 +268,25 @@ const MusicBoardPlaylistScreen = (props) => {
                                     {item.trackLength}
                                 </Text>
                             </View>
+                            {
+                                optionToDelete === true && 
+                                <TouchableOpacity style={{
+                                    backgroundColor:Colors.red3,
+                                    width:55,
+                                    height:25,
+                                    alignSelf:'center',
+                                    borderRadius:10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    right:5
+                                }} onPress={() => openDeleteModal(item)}>
+                                    <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Delete</Text>
+                                </TouchableOpacity>
+                            }
                         </TouchableOpacity>
                     )
                 }
             </ScrollView>
-            {/* <FlatList
-                data={songsList}
-                keyExtractor={item => item._id}
-                renderItem={({item, index}) => 
-                <TouchableOpacity style={{
-                    width: '100%',
-                    padding: 10,
-                    borderBottomWidth: 0.5,
-                    borderColor: Colors.grey3,
-                    flexDirection:'row',
-                }} onPress={() => handleAudioPress(item, index, songsList)}>
-                    <ImageBackground
-                        style={{width: 70, height: 70, alignItems: 'center', justifyContent: 'center'}}
-                        imageStyle={{resizeMode:'stretch'}}
-                        source={{uri: item?.trackImage}}
-                    >
-
-                    {
-                            item._id === currentAudio._id &&
-                            <>
-                                {
-                                    isPlaying?
-                                    (
-                                        <FontAwesome5
-                                            name="pause"
-                                            size={20}
-                                            color={Colors.red3}
-                                        />
-                                    )
-                                    :
-                                    (
-                                        <>
-                                            {
-                                                isLoading?
-                                                (
-                                                    <ActivityIndicator color={Colors.red3}/>
-                                                )
-                                                :
-                                                (
-                                                    <FontAwesome5
-                                                        name="play"
-                                                        size={20}
-                                                        color={Colors.red3}
-                                                    />
-                                                )
-                                            }
-                                            
-                                        </>
-                                    )
-                                }
-                                
-                            </>
-                        }
-
-                    </ImageBackground>
-                    <View style={{width:'65%', alignItems: 'flex-start', justifyContent: 'center'}}>
-                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:16, left:10}}>
-                            {item.trackName}
-                        </Text>
-                        <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:14, left:10}}>
-                            {item?.artist?.artistName}
-                        </Text>
-                    </View>
-                    <View style={{width:'19%', alignItems: 'center', justifyContent: 'center'}}>
-                        <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:14}}>
-                            {item.trackLength}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            }
-            /> */}
         </View>
     );
 };

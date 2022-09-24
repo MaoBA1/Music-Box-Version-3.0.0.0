@@ -7,6 +7,7 @@ export const UPLOAD_NEW_POST = "UPLOAD_NEW_POST";
 export const GET_ALL_ARTIST_POST_BY_ID = "GET_ALL_ARTIST_POST_BY_ID";
 export const GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE = "GET_ALL_ARTIST_POST_FOR_DASHBOARD_PROFILE";
 export const CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE = "CLEAN_ARTIST_POST_FOR_DASHBOARD_PROFILE";
+export const DELETE_ARTIST_POST ="DELETE_ARTIST_POST";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -257,3 +258,29 @@ export const cleanArtistPostsForDashBoardProfileAction = () => {
     }
 
 } 
+
+export const deleteArtistPostDispatch = (data) => {
+    return dispatch => {
+        dispatch({type: DELETE_ARTIST_POST, data});
+    }
+}
+
+export const deleteArtistPostAction = (token, postId) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/post/deletePost/' + postId, {
+            method: 'DELETE',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+
+        const data = await response.json();
+        if(data) {
+            dispatch(deleteArtistPostDispatch(data));
+        } else{
+            throw new Error('Something went wrong'); 
+        }
+
+    }
+}

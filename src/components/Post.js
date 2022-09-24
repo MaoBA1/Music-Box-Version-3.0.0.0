@@ -14,7 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Colors from '../Utitilities/AppColors';
 import Style from './Style/PostStyle';
 import { Video, Audio } from 'expo-av';
-import { getPosts, giveLikeToPost, unLikeToPost, getPostComment, getArtistPostsById } from '../ApiCalls';
+import { getPosts, giveLikeToPost, unLikeToPost, getPostComment, getArtistPostsById, setPostAuthorProfile } from '../ApiCalls';
 import { SwitchBetweenDashBoardStacksAction, setPostAuthorProfileAction } from '../../store/actions/appActions';
 
 
@@ -63,6 +63,8 @@ const Post = props => {
                     <Video
                         style={{width:'100%', height:250, resizeMode: 'cover'}}
                         source={{ uri: post?.postMedia?.uri }}
+                        resizeMode="cover"
+                        posterStyle={{alignSelf:'stretch'}}
                         useNativeControls 
                     />
                 )
@@ -87,6 +89,7 @@ const Post = props => {
                 .then(result => {
                     getPosts(dispatch, userToken);
                     getArtistPostsById(dispatch, userToken, artistId);
+                    setPostAuthorProfile(dispatch, postAuthor);
                     amILikeThisPost();
                     likeStatus = true;
                 })
@@ -106,6 +109,7 @@ const Post = props => {
                 .then(result => {
                     getPosts(dispatch, userToken);
                     getArtistPostsById(dispatch, userToken, artistId);
+                    setPostAuthorProfile(dispatch, postAuthor);
                     amILikeThisPost();
                 })
             }
@@ -156,7 +160,7 @@ const Post = props => {
 
     const openPostAuthorProfileScreen = () => {
         try {
-            dispatch(setPostAuthorProfileAction(postAuthor))
+            setPostAuthorProfile(dispatch, postAuthor);
             moveToPostAuthorProfile();
         }catch(error) {
             console.log(error.message);

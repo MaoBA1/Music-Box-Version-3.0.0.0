@@ -290,6 +290,7 @@ const UploadPostModal = props => {
                                                 <Video
                                                     style={{width:'100%', height:120, borderRadius:20, resizeMode:'stretch'}}
                                                     source={{ uri: video }}
+                                                    resizeMode="cover"
                                                     useNativeControls 
                                                 />
                                             )

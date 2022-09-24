@@ -3,7 +3,8 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Image, ImageBackground
+    Image, ImageBackground,
+    Modal
 } from 'react-native';
 import Colors from '../../../Utitilities/AppColors';
 import { Video } from 'expo-av';
@@ -11,6 +12,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPosts, giveLikeToPost, unLikeToPost, getPostComment, getArtistPostsById } from '../../../ApiCalls';
+import {deleteArtistPostAction} from '../../../../store/actions/postActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -22,6 +24,7 @@ const ArtistPost = props => {
     let likeStatus = false;
     const artistSelector = useSelector(state => state.ArtistsReducer);
     const artistId = artistSelector?.ArtistDataReducer?._id;
+    const [deletPostVisible, setDeletePostVisible] = useState(false);
 
 
     const amILikeThisPost = async () => {
@@ -47,6 +50,7 @@ const ArtistPost = props => {
             if(userToken){            
                 await giveLikeToPost(dispatch, userToken, post?._id)
                 .then(result => {
+                    getPosts(dispatch, userToken);
                     getArtistPostsById(dispatch, userToken, artistId);
                     amILikeThisPost();
                 })
@@ -89,7 +93,26 @@ const ArtistPost = props => {
             })
         }
     }
+
+    const deleteArtistPost = async() => {
+        const jsonToken = await AsyncStorage.getItem('Token');
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+        if(userToken){
+            let action = deleteArtistPostAction(userToken, post._id);
+            try {
+                await dispatch(action);
+                getPosts(dispatch, userToken);
+                getArtistPostsById(dispatch, userToken, artistId);
+            }catch (error) {
+                console.log(error.message);
+            }
+        }
+        
+    }
     
+    const checkLanguage = sentence => {
+        return sentence[0] >= 'א' && sentence[0] <= 'ת';
+    }
 
     return(
         <ImageBackground 
@@ -98,20 +121,63 @@ const ArtistPost = props => {
             style={{marginTop:5, width:'100%', borderTopWidth:1, borderColor: Colors.grey3}}
             imageStyle={{opacity:0.5}}
         >
-            <View style={{width:'100%', flexDirection:'row', padding:15}}>
-                <View style={{borderRadius:50, borderWidth:2, borderColor:Colors.red3, width:55, height:55}}>
-                    <Image
-                        source={{uri:props.artist.profileImage}}
-                        style={{width:50, height:50, borderRadius:50}}
-                    />
+            <Modal
+                visible={deletPostVisible}
+                transparent={true}
+                animationType='fade'
+            >
+                <View style={{flex:1, padding:10, alignItems: 'center', justifyContent:'center'}}>
+                    <View style={{
+                        width:'80%',
+                        alignItems: 'center',
+                        borderRadius:10,
+                        backgroundColor: Colors.red3
+                    }}>
+                        <View style={{padding:20}}>
+                            <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Are you sure you want delete this post?</Text>
+                        </View>
+                        <View style={{flexDirection:'row'}}>
+                            <TouchableOpacity onPress={() => setDeletePostVisible(false)} style={{width:'50%', borderRightWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={deleteArtistPost} style={{width:'50%', borderLeftWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Yes</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-                <View style={{justifyContent: 'center', left:10}}>
-                    <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:16}}>{formatted_artistName}</Text>
-                    <Text style={{fontFamily:'Baloo2-Regular', color: Colors.grey3, fontSize:12}}>{new Date(props.post.creatAdt).toDateString()}</Text>
+            </Modal>
+            <View style={{width:'100%', flexDirection:'row', padding:15, justifyContent:'space-between'}}>
+                <View style={{flexDirection:'row',}}>
+                    <View style={{borderRadius:50, borderWidth:2, borderColor:Colors.red3, width:55, height:55}}>
+                        <Image
+                            source={{uri:props?.artist?.profileImage}}
+                            style={{width:50, height:50, borderRadius:50}}
+                        />
+                    </View>
+                    <View style={{justifyContent: 'center', left:10}}>
+                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:16}}>{formatted_artistName}</Text>
+                        <Text style={{fontFamily:'Baloo2-Regular', color: Colors.grey3, fontSize:12}}>{new Date(props.post.creatAdt).toDateString()}</Text>
+                    </View>
                 </View>
+                <TouchableOpacity style={{
+                    width:70,
+                    height:25, 
+                    backgroundColor:Colors.red3,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius:10
+                }} onPress={() => setDeletePostVisible(true)}>
+                    <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:12}}>Delete</Text>
+                </TouchableOpacity>
             </View>
-            <View style={{left:15}}>
-                <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', fontSize:16}}>{props.post.postContent}</Text>
+            <View style={{paddingHorizontal:15}}>
+                <Text style={{
+                    fontFamily:'Baloo2-Medium', color:'#fff',
+                    fontSize:16, 
+                }}>
+                    {props.post.postContent}
+                </Text>
             </View>
             <View style={{width:'100%', marginTop:10}}>                
                 <View>
@@ -121,6 +187,9 @@ const ArtistPost = props => {
                             <Video
                                 source={{uri:props?.post?.postMedia?.uri}}
                                 style={{width:'100%', height:250}}
+                                posterSource={{uri:props?.post?.postMedia?.uri}}
+                                posterStyle={{alignSelf:'stretch'}}
+                                resizeMode="cover"
                                 useNativeControls
                             />
                         )

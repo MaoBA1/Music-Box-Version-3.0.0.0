@@ -296,8 +296,7 @@ export const AddToExistPlaylist = ({
         creatAdt: track.creatAdt
     }
     
-
-    const getUserPlaylists = async() => {
+   const getUserPlaylists = async() => {
         const jsonToken = await AsyncStorage.getItem('Token');
         const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
         if(userToken) {
@@ -556,25 +555,6 @@ const AddSongFromPostToPlaylist = props => {
         
     }
     
-    // const HandleImageUpload = async () => {
-    //     let sourceuri = playlistImage;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'playlistImage');
-    //     data.append('cloud_name', 'musicbox');
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
-
     const HandleImageUpload = async () => {
         const response = await fetch(playlistImage);
         const blob = await response.blob();

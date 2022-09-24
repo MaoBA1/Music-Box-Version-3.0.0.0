@@ -10,7 +10,8 @@ import {
     cleanArtistPostsForDashboardProfil,
     cleanSongReducers ,
     cleanPlaylistReducer,
-    cleanAlbumReducer
+    cleanAlbumReducer,
+    getArtistPostsById
 } from '../../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Post from '../../components/Post';
@@ -131,7 +132,7 @@ const FeedScreen = props => {
     const artistName = appSelector?.PostAuthorProfile?.artistName || appSelector?.PostAuthorProfile?.name;
     const description = appSelector?.PostAuthorProfile?.description;
     const postSelector = useSelector(state => state.Post);
-    const artistPosts = postSelector.DashBoardProfilePostReducer;
+    const artistPosts = postSelector.ArtistPostsReducer;
     const [commentParams, setCommentParams] = useState(null);
     const [songForPlaylist, setSongForPlaylist] = useState(null);
     const [addToPlaylistVisible, setAddToPlaylistVisible] = useState(false);
@@ -139,7 +140,6 @@ const FeedScreen = props => {
     const [modalStatus, setModalStatus] = useState('');
     const [genersVisible, setGenersVisible] = useState(false);
     const [skillsVisible, setSkillsVisible] = useState(false);
-    
     let [isUserSubscribe, setIsUserSubscribe] = useState(false);
     const backToHomePage = () => {
         props.navigation.goBack(null);
@@ -154,7 +154,7 @@ const FeedScreen = props => {
     }
 
     function isUserSub(){
-        userSubsCribes.forEach(sub => {
+        userSubsCribes?.forEach(sub => {
             if(sub._id.toString() === _id.toString()) {
                 return setIsUserSubscribe(true);
             }
@@ -181,6 +181,7 @@ const FeedScreen = props => {
             const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
             if(userToken) {
                 getArtistPostsForDashboardProfileById(dispatch, userToken, _id);
+                getArtistPostsById(dispatch, userToken, _id);
             }
         }
         getArtistPostsAsync();
@@ -323,29 +324,47 @@ const FeedScreen = props => {
                             }}
                             imageStyle={{resizeMode:'stretch'}}
                         >
-                            
-                            <View
-                                style={{
-                                    width:'100%',
-                                    padding:10,
-                                    justifyContent:'space-between',
-                                }}
-                            >
-                                <Text style={{
-                                    fontFamily: 'Baloo2-ExtraBold',
-                                    color: Colors.red3,
-                                    fontSize:20,
-                                }}>
-                                    {artistName}
-                                </Text>
+                            <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+                                <View
+                                    style={{
+                                        width:'100%',
+                                        padding:10,
+                                        justifyContent:'space-between',
+                                    }}
+                                >
+                                    <Text style={{
+                                        fontFamily: 'Baloo2-ExtraBold',
+                                        color: Colors.red3,
+                                        fontSize:20,
+                                    }}>
+                                        {artistName}
+                                    </Text>
 
-                                <Text style={{
-                                    fontFamily: 'Baloo2-ExtraBold',
-                                    color: Colors.grey2,
-                                    fontSize:14,
+                                    <Text style={{
+                                        fontFamily: 'Baloo2-ExtraBold',
+                                        color: Colors.grey2,
+                                        fontSize:14,
+                                    }}>
+                                        {artistSubs?.length} Subscribers
+                                    </Text>
+                                </View>
+                                <View style={{
+                                    borderRadius:50,
+                                    borderWidth:2,
+                                    width:75,
+                                    height:75,
+                                    marginLeft:10,
+                                    borderColor: Colors.grey6,
+                                    right:8,
+                                    position: 'absolute',
+                                    zIndex:1,
+                                    top:30
                                 }}>
-                                    {artistSubs?.length} Subscribers
-                                </Text>
+                                    <Image
+                                        source={{uri:profileImage}}
+                                        style={{width:70, height:70, borderRadius:50}}
+                                    />
+                                </View>
                             </View>
                         </ImageBackground>
                         <View style={{width:'78%', backgroundColor:Colors.grey4, padding:10, alignItems: 'flex-start'}}>
@@ -383,25 +402,6 @@ const FeedScreen = props => {
                                         Artists Skills
                                     </Text>
                                 </TouchableOpacity>
-                            </View>
-                            <View style={{
-                                borderRadius:50,
-                                borderWidth:2,
-                                width:75,
-                                height:75,
-                                marginLeft:10,
-                                borderColor: Colors.grey6,
-                                bottom:40,
-                                right:8,
-                                zindex:1,
-                                position: 'absolute',
-                                zIndex:1,
-                                bottom: 70
-                            }}>
-                                <Image
-                                    source={{uri:profileImage}}
-                                    style={{width:70, height:70, borderRadius:50}}
-                                />
                             </View>
                         </View>
                         {genersVisible && <GenersModal close={() => setGenersVisible(false)}/>}

@@ -27,12 +27,13 @@ import {
  } from '../store/actions/songActions';
  import {
     getAllArtistAlbumsForDasboardProfileAction,
-    cleanAlbumReducerAction
+    cleanAlbumReducerAction,
+    getAllArtistAlbumsAction
  } from '../store/actions/albumsActions';
  import { getUserDataAction, updateProfileAction, getAllUserPlaylistsAction, getAllUserSubScribesAction, getAllSearchResultsAction } from '../store/actions/userActions';
  import { getArtistsByUserFavoriteGenersAction } from '../store/actions/artistActions';
  import { getSongsByUserFavoriteGenersAction } from '../store/actions/songActions';
- import { setIsUploadCompleteAction, setIsWaitingForUploadAction } from '../store/actions/appActions';
+ import { setIsUploadCompleteAction, setIsWaitingForUploadAction, setPostAuthorProfileAction } from '../store/actions/appActions';
 
 export const setIsUploadComplete = (dispatch, isComplete, isWaiting, type) => {
     let action = setIsUploadCompleteAction(isComplete, isWaiting, type);
@@ -408,6 +409,25 @@ export async function getAllSearchResults(dispatch, token){
     let action = getAllSearchResultsAction(token);
     try{
         await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const getAllArtistAlbums = async(dispatch, token, artistId) => {
+    let action = getAllArtistAlbumsAction(token, artistId);
+    try {
+         await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const setPostAuthorProfile = (dispatch, artist) => {
+    console.log(artist);
+    let action = setPostAuthorProfileAction(artist);
+    try {
+        dispatch(action);
     }catch (error) {
         console.log(error.message);
     }

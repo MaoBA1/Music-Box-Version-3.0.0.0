@@ -41,15 +41,18 @@ const UploadPostModal = props => {
     const HandleVideoUpload = async (video) => {
         const response = await fetch(video);
         const blob = await response.blob();
-        const imageRef = ref(storage, "songVideos/" + `${video.split("/")[video.split("/").length - 1]}`);
-        const uploadFile = await uploadBytes(imageRef, blob);
-        return getDownloadURL(uploadFile.ref);
+        const imageRef = ref(storage, "songVideos/" + songName);
+        const downloadURL =
+         await uploadBytes(imageRef, blob).then(snapshot => {
+            return getDownloadURL(snapshot.ref);
+         })
+        return downloadURL;
     }
 
     const HandleImageUpload = async (image) => {
         const response = await fetch(image);
         const blob = await response.blob();
-        const imageRefFile = ref(storage, "songImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const imageRefFile = ref(storage, "songImages/" + songName);
         const uploadFile = await uploadBytes(imageRefFile, blob);
         return getDownloadURL(uploadFile.ref);
     }
@@ -302,6 +305,7 @@ const UploadPostModal = props => {
                                             <Video
                                                 source={{uri:song}}
                                                 style={{width:150, height:120, borderRadius:20}}
+                                                resizeMode="cover"
                                             />
                                         )
                                     }

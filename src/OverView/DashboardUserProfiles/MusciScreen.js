@@ -432,7 +432,7 @@ const MusicScreen = props => {
                                         }}>
                                             {
                                                 allArtistPlaylist.map((item, index) => 
-                                                    <TouchableOpacity key={item._id} style={{
+                                                    <TouchableOpacity key={index} style={{
                                                         margin:10,
                                                         alignItems: 'center',
                                                         top:5,
@@ -484,7 +484,7 @@ const MusicScreen = props => {
                                         }}>
                                             {
                                                 allArtistAlbums.map((item, index) => 
-                                                    <TouchableOpacity key={item._id} style={{
+                                                    <TouchableOpacity key={index} style={{
                                                         margin:10,
                                                         alignItems: 'center',
                                                         top:5,

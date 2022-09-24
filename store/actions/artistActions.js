@@ -14,6 +14,7 @@ export const GET_ARTIST_PLAYLISTS_FOR_DASHBOARD_PROFILE = "GET_ARTIST_PLAYLISTS_
 export const CLEAN_PLAYLIST_REDUCER = "CLEAN_PLAYLIST_REDUCER";
 export const GET_ARTIST_SUBS = "GET_ARTIST_SUBS";
 export const GET_ARTISTS_BY_USER_FAVORITE_GANERS = "GET_ARTISTS_BY_USER_FAVORITE_GANERS";
+export const DELETE_SONG_BY_ARTIST_CHOSEN = "DELETE_SONG_BY_ARTIST_CHOSEN";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -456,6 +457,35 @@ export const getArtistsByUserFavoriteGenersAction = token => {
         if(data){
             dispatch(getArtistsByUserFavoriteGenersDispatch(data));
             return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+
+
+export const deleteSongByArtistChosenDispatch = (data) => {
+    return dispatch => {
+        dispatch({type: DELETE_SONG_BY_ARTIST_CHOSEN, data});
+    }
+}
+
+export const deleteSongByArtistChosenAction = (token, artistId, songId, chosen) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/deleteSongByArtistChosen/' + artistId + '/' + songId, {
+            method:'DELETE',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({chosen})
+        })
+
+        const data = await response.json();
+        if(data) {
+            dispatch(deleteSongByArtistChosenDispatch(data));
+            return true;
         } else {
             throw new Error('Something went wrong');
         }

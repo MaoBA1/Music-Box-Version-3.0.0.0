@@ -373,22 +373,17 @@ const EditRegularUserScreen = props => {
                         {
                             isFiledFull() ?
                             (
-                                <TouchableOpacity onPress={updateAccount} style={{padding:15, borderWidth:2, borderRadius:50, borderColor:'#fff', backgroundColor:Colors.red3}}>
+                                <TouchableOpacity onPress={updateAccount} style={{padding:10, borderWidth:2, borderRadius:50, borderColor:'#fff', backgroundColor:Colors.red3}}>
                                     <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Update your Account</Text>
                                 </TouchableOpacity>
                             )
                             :
                             (
-                                <View style={{padding:15, borderWidth:2, borderRadius:50, borderColor:'#fff', backgroundColor:Colors.red3, opacity:0.7}}>
+                                <View style={{padding:10, borderWidth:2, borderRadius:50, borderColor:'#fff', backgroundColor:Colors.red3, opacity:0.7}}>
                                     <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Update your Account</Text>
                                 </View>
                             )
-                        }
-
-                        <TouchableOpacity style={{padding:15, borderWidth:2, borderRadius:50, borderColor:'#fff', backgroundColor:Colors.red3}}>
-                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Upgrade your Account</Text>
-                        </TouchableOpacity>
-                        
+                        }                        
                     </View>
             </KeyboardAvoidingView>
 
