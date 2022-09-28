@@ -12,7 +12,6 @@ import Colors from '../../Utitilities/AppColors';
 
 const SongItem = props => {
     const [isClicked, setIsClicked] = useState(false);
-    
     const hendelClick = () => {
         if(isClicked) {
             setIsClicked(false);

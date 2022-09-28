@@ -15,6 +15,10 @@ export const CLEAN_PLAYLIST_REDUCER = "CLEAN_PLAYLIST_REDUCER";
 export const GET_ARTIST_SUBS = "GET_ARTIST_SUBS";
 export const GET_ARTISTS_BY_USER_FAVORITE_GANERS = "GET_ARTISTS_BY_USER_FAVORITE_GANERS";
 export const DELETE_SONG_BY_ARTIST_CHOSEN = "DELETE_SONG_BY_ARTIST_CHOSEN";
+export const DELETE_ARTIST_ALBUM = "DELETE_ARTIST_ALBUM";
+export const DELETE_ARTIST_PLAYLIST = "DELETE_ARTIST_PLAYLIST";
+export const ADD_ADDITOINAL_SONGS_TO_ARTIST_PLAYLIST = "ADD_ADDITOINAL_SONGS_TO_ARTIST_PLAYLIST";
+export const ADD_ADDITOINAL_SONGS_TO_ARTIST_ALBUM = "ADD_ADDITOINAL_SONGS_TO_ARTIST_ALBUM";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -485,6 +489,113 @@ export const deleteSongByArtistChosenAction = (token, artistId, songId, chosen) 
         const data = await response.json();
         if(data) {
             dispatch(deleteSongByArtistChosenDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const deleteArtistAlbumDispatch = (data) => {
+    return dispatch => {
+        dispatch({type:DELETE_ARTIST_ALBUM, data});
+    }
+}
+
+export const deleteArtistAlbumAction = (token, artistId, albumId) => {
+    console.log(albumId);
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/deleteArtistAlbum/' + artistId + '/' + albumId, {
+            method:'DELETE',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+        const data = await response.json();
+        console.log(data);
+        if(data) {
+            dispatch(deleteArtistAlbumDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+
+export const deleteArtistPlaylistDispatch = (data) => {
+    return dispatch => {
+        dispatch({type:DELETE_ARTIST_PLAYLIST, data});
+    }
+}
+
+export const deleteArtistPlaylistAction = (token, artistId, playlistId) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/deleteArtistPlaylist/' + artistId + '/' + playlistId, {
+            method:'DELETE',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+        const data = await response.json();
+        if(data) {
+            dispatch(deleteArtistPlaylistDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const addAdditionalSongsToArtistPlaylistDispatch = (data) => {
+    return dispatch => {
+        dispatch({type:ADD_ADDITOINAL_SONGS_TO_ARTIST_PLAYLIST, data});
+    }
+}
+
+export const addAdditionalSongsToArtistPlaylistAction = (token, artistId, playlistId, songs) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/addAdditionalSongsToArtistPlaylist/' + artistId + '/' + playlistId, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({songs})
+        })
+
+        const data = await response.json();
+        if(data) {
+            dispatch(addAdditionalSongsToArtistPlaylistDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const addAdditionalSongsToArtistAlbumDispatch = (data) => {
+    return dispatch => {
+        dispatch({type:ADD_ADDITOINAL_SONGS_TO_ARTIST_ALBUM, data});
+    }
+}
+
+export const addAdditionalSongsToArtistAlbumAction = (token, artistId, albumId, songs) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/superUser/addAdditionalSongsToArtistAlbum/' + artistId + '/' + albumId, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({songs})
+        })
+
+        const data = await response.json();
+        if(data) {
+            dispatch(addAdditionalSongsToArtistAlbumDispatch(data));
             return true;
         } else {
             throw new Error('Something went wrong');

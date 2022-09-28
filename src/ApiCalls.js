@@ -4,7 +4,12 @@ import {
     getArtistDataAction,
     getArtistPlaylistAction,
     getArtistPlaylistForDashBoardAction,
-    cleanPlaylistReducerAction
+    cleanPlaylistReducerAction,
+    deleteArtistAlbumAction,
+    deleteArtistPlaylistAction,
+    addAdditionalSongsToArtistPlaylistAction,
+    getArtistsByUserFavoriteGenersAction,
+    addAdditionalSongsToArtistAlbumAction
 } from '../store/actions/artistActions';
 import { getGenersAction } from '../store/actions/genersActions';
 import { 
@@ -31,7 +36,6 @@ import {
     getAllArtistAlbumsAction
  } from '../store/actions/albumsActions';
  import { getUserDataAction, updateProfileAction, getAllUserPlaylistsAction, getAllUserSubScribesAction, getAllSearchResultsAction } from '../store/actions/userActions';
- import { getArtistsByUserFavoriteGenersAction } from '../store/actions/artistActions';
  import { getSongsByUserFavoriteGenersAction } from '../store/actions/songActions';
  import { setIsUploadCompleteAction, setIsWaitingForUploadAction, setPostAuthorProfileAction } from '../store/actions/appActions';
 
@@ -429,6 +433,46 @@ export const setPostAuthorProfile = (dispatch, artist) => {
     try {
         dispatch(action);
     }catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+
+
+export const deleteArtistAlbum = async(dispatch, token, artistId, albumId) => {
+    let action = deleteArtistAlbumAction(token, artistId, albumId);
+    try {
+        await dispatch(action);
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+export const deleteArtistPlaylist = async(dispatch, token, artistId, playlistId) => {
+    let action = deleteArtistPlaylistAction(token, artistId, playlistId);
+    try {
+        await dispatch(action);
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const addAdditionalSongsToArtistPlaylist = async(dispatch, token, artistId, playlistId, songs) => {
+    let action = addAdditionalSongsToArtistPlaylistAction(token, artistId, playlistId, songs);
+    try{
+        await dispatch(action);
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const addAdditionalSongsToArtistAlbum = async(dispatch, token, artistId, albumId, songs) => {
+    let action = addAdditionalSongsToArtistAlbumAction(token, artistId, albumId, songs);
+    try{
+        await dispatch(action);
+    } catch (error) {
         console.log(error.message);
     }
 }

@@ -26,7 +26,11 @@ import {
     setIsWaitingForUploadAction
 } from './store/actions/appActions';
 import { setIsWaitingForUpload, setIsUploadComplete } from './src/ApiCalls';
-import { Image } from "react-native";
+import { Image, Dimensions } from "react-native";
+
+export const { height } = Dimensions.get('window');
+
+
 
 export const SongBar = props => {
     const dispatch = useDispatch();
@@ -182,9 +186,28 @@ export const SongBar = props => {
         }
     }
 
+    const locate = () => {
+        switch(Platform.OS) {
+            case 'ios':
+                if(isUploadComplete || isWaitingForUpload) {
+                    return height - height + 100;
+                } else {
+                    return height - height + 86
+                }
+            
+            case 'android':
+                if(isUploadComplete || isWaitingForUpload) {
+                    return height - height + 100;
+                } else {
+                    return height - height + 54;
+                }
+            default: return;
+        }
+    }
+
     return(
         <>
-            <TouchableOpacity onPress={openMusicScreen} style={{width:'100%', alignItems: 'center', position:'absolute', zIndex:1, top:Platform.OS === 'ios'? (isUploadComplete || isWaitingForUpload ? 650 : 690): (isUploadComplete || isWaitingForUpload ? 670 : 657)}}>
+            <TouchableOpacity onPress={openMusicScreen} style={{width:'100%', alignItems: 'center', position:'absolute', zIndex:1, bottom:locate()}}>
                 <View style={{
                     width:'100%',
                     backgroundColor:'#fff',

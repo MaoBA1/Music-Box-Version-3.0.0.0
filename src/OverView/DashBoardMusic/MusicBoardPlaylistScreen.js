@@ -23,7 +23,9 @@ import {
     getArtistLatestRealeases,
     getArtistTop5,
     getAllArtistSongs,
-    getAllArtistAlbums
+    getAllArtistAlbums,
+    deleteArtistPlaylist,
+    deleteArtistAlbum
 } from '../../ApiCalls';
 import { deleteSongByArtistChosenAction } from '../../../store/actions/artistActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -146,26 +148,49 @@ const MusicBoardPlaylistScreen = (props) => {
         const jsonToken = await AsyncStorage.getItem('Token');        
         const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
         if(userToken) {
-            let action = deleteSongByArtistChosenAction(userToken, songToDelete.artistId || props.route.params.artistId, songToDelete._id, deletFrom);
-            try {
-                await dispatch(action)
-                .then(() => {
-                    if(deletFrom === 'playlist') {
-                        getArtistPlayLists(dispatch, userToken);
-                    } else {
-                        getAllUserPlaylist(dispatch, userToken);
-                        getSongsByUserFavoriteGeners(dispatch, userToken);
-                        getAllSearchResults(dispatch, userToken);
-                        getAllArtistSongs(dispatch, userToken, songToDelete.artistId);
-                        getArtistTop5(dispatch, userToken, songToDelete.artistId);
-                        getArtistLatestRealeases(dispatch, userToken, songToDelete.artistId);
-                        getArtistPlayLists(dispatch, userToken);
-                        getAllArtistAlbums(dispatch, userToken, songToDelete.artistId);
-                    }
-                    props.navigation.goBack(null);
-                })
-            }catch(error) {
-                console.log(error.message);
+            if(songsList.length <= 1 && deletFrom != 'singels') {
+                switch(deletFrom) {
+                    case 'album':
+                        deleteArtistAlbum(dispatch, userToken, songToDelete.artistId || props.route.params.artistId, props.route.params?.albumId)
+                        .then(() => {
+                            getAllArtistAlbums(dispatch, userToken, songToDelete.artistId || props.route.params.artistId);
+                            return props.navigation.goBack(null);
+                        })
+                        
+                        break;
+                    case 'playlist':
+                        deleteArtistPlaylist(dispatch, userToken, songToDelete.artistId || props.route.params.artistId, props.route.params?.playlistId)
+                        .then(() => {
+                            getArtistPlayLists(dispatch, userToken);
+                            return props.navigation.goBack(null);
+                        })
+                        
+                        break;
+                    default: return;
+                }
+                
+            } else {
+                let action = deleteSongByArtistChosenAction(userToken, songToDelete.artistId || props.route.params.artistId, songToDelete._id, deletFrom);
+                try {
+                    await dispatch(action)
+                    .then(() => {
+                        if(deletFrom === 'playlist') {
+                            getArtistPlayLists(dispatch, userToken);
+                        } else {
+                            getAllUserPlaylist(dispatch, userToken);
+                            getSongsByUserFavoriteGeners(dispatch, userToken);
+                            getAllSearchResults(dispatch, userToken);
+                            getAllArtistSongs(dispatch, userToken, songToDelete.artistId);
+                            getArtistTop5(dispatch, userToken, songToDelete.artistId);
+                            getArtistLatestRealeases(dispatch, userToken, songToDelete.artistId);
+                            getArtistPlayLists(dispatch, userToken);
+                            getAllArtistAlbums(dispatch, userToken, songToDelete.artistId);
+                        }
+                        props.navigation.goBack(null);
+                    })
+                }catch(error) {
+                    console.log(error.message);
+                }
             }
         }
     }

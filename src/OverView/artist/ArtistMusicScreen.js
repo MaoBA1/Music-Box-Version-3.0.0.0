@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     FlatList,
     ScrollView,
+    Modal
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Style from './style/ArtistFeedStyle';
@@ -21,7 +22,10 @@ import {
     getArtistTop5,
     getArtistLatestRealeases,
     getArtistPlayLists,
-    getAllArtistAlbums
+    getAllArtistAlbums,
+    getAllSearchResults,
+    deleteArtistPlaylist,
+    deleteArtistAlbum
 } from '../../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
@@ -39,6 +43,7 @@ import MusicHeader from './components/MusicHeader';
 import UploadSongModal from './Modals/UploadSongModal';
 import CreateNewPlaylistModal from './Modals/CreateNewPlaylistModal';
 import CreateNewAlbumModal from './Modals/CreateNewAlbumModal';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const ArtistMusicScreen = props => {
@@ -55,6 +60,7 @@ const ArtistMusicScreen = props => {
     const artistLatestRealeases = artistSongsSelector?.ArtistLatestReleasesReducer;
     const allArtistSongs = artistSongsSelector?.ArtistSongsReducer;
     const allArtistPlaylist = artistSelector?.ArtistPlaylistsReducer;
+    const [deletPostVisible, setDeletePostVisible] = useState(false);
     const appBackGroundSelector = useSelector(state => state.AppReducer);
     const {
         SongIndexReducer,
@@ -211,7 +217,51 @@ const ArtistMusicScreen = props => {
              
         }
     }
-    
+    const [deleteFrom, setDeleteFrom] = useState('');
+    const [itemId, setItemId] = useState(null);
+    const openDeleteModal = (deleteFrom, itemId) => {
+        setDeleteFrom(deleteFrom);
+        setItemId(itemId);
+        setDeletePostVisible(true);
+    }
+    const deleteAlbumOrPlaylist = () => {
+        switch(deleteFrom) {
+            case 'album':
+                deleteAlbum(itemId);
+                setDeletePostVisible(false);
+            case 'playlist':
+                deletePlaylist(itemId);
+                setDeletePostVisible(false);
+            default: return;
+        }
+    }
+
+    const deletePlaylist = async(playlistId) => {
+        const jsonToken = await AsyncStorage.getItem('Token');        
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+        if(userToken) {
+            deleteArtistPlaylist(dispatch, userToken, artistId, playlistId)
+            .then(() => {
+                getArtistPlayLists(dispatch, userToken);
+                getAllSearchResults(dispatch, userToken);
+            })
+        }
+    }
+
+
+    const deleteAlbum = async(albumId) => {
+        const jsonToken = await AsyncStorage.getItem('Token');        
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+        if(userToken) {
+            deleteArtistAlbum(dispatch, userToken, artistId, albumId)
+            .then(() => {
+                getAllArtistAlbums(dispatch, userToken, artistId);
+                getAllSearchResults(dispatch, userToken);
+            })
+        }
+    }
+
+
     return(
         <ImageBackground 
                 source={ require('../../../assets/AppAssets/Logo.png') }
@@ -223,30 +273,65 @@ const ArtistMusicScreen = props => {
             {uploadSongModalVisible && <UploadSongModal close={setUploadSongModalVisible}/>}
             {createNewPlaylistModalVisible && <CreateNewPlaylistModal close={setCreateNewPlaylistModalVisible}/>}
             {createNewAlbumModalVisible && <CreateNewAlbumModal close={setCreateNewAlbumModalVisible}/>}
+            <Modal
+                visible={deletPostVisible}
+                transparent={true}
+                animationType='fade'
+            >
+                <View style={{flex:1, padding:10, alignItems: 'center', justifyContent:'center'}}>
+                        <View style={{
+                            width:'80%',
+                            alignItems: 'center',
+                            borderRadius:10,
+                            backgroundColor: Colors.red3
+                        }}>
+                            <View style={{padding:20}}>
+                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Are you sure you want delete this {deleteFrom}?</Text>
+                            </View>
+                            <View style={{flexDirection:'row'}}>
+                                <TouchableOpacity onPress={() => setDeletePostVisible(false)} style={{width:'50%', borderRightWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Cancel</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={deleteAlbumOrPlaylist} style={{width:'50%', borderLeftWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Yes</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                </View>
+            </Modal>
             
             <View style={{width:'100%', flexDirection:'row', borderBottomWidth:2, borderColor:Colors.grey3}}>
-                <TouchableOpacity onPress={() => setCreateNewAlbumModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/3}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => setCreateNewAlbumModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/3}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', borderRightWidth:1, borderColor: Colors.grey3}}>
                     <MaterialIcons
                         name='album'
-                        size={18}
-                        color={Colors.red3}                    
+                        size={25}
+                        color={Colors.red3}
+                        style={{right:4}}                    
                     />
-                    <Text style={{left:2, fontFamily:'Baloo2-Bold', color: '#fff'}}>Create Album</Text>
+                    <View>
+                        <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:12}}>Create Album/</Text>
+                        <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:12}}>Add to Album</Text>
+                    </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setCreateNewPlaylistModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/3}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => setCreateNewPlaylistModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/2.5}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
                     <MaterialCommunityIcons
                         name='playlist-music'
-                        size={18}
-                        color={Colors.red3}                    />
-                    <Text style={{left:2, fontFamily:'Baloo2-Bold', color: '#fff'}}>Create Playlist</Text>
+                        size={25}
+                        color={Colors.red3}                    
+                        style={{right:4}}
+                    />
+                    <View>
+                        <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:12}}>Create Playlist/</Text>
+                        <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:12}}>Add to Playlist</Text>
+                    </View>    
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setUploadSongModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/3}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => setUploadSongModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/4}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', borderLeftWidth:1, borderColor:Colors.grey3}}>
                     <MaterialIcons
                         name='music-note'
-                        size={18}
+                        size={25}
                         color={Colors.red3}                    
                     />
-                    <Text style={{left:2, fontFamily:'Baloo2-Bold', color: '#fff'}}>Upload Song</Text>
+                    <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:12}}>Upload Song</Text>
                 </TouchableOpacity>
             </View>
 
@@ -565,7 +650,14 @@ const ArtistMusicScreen = props => {
                                 <ScrollView horizontal style={{width:'100%'}}>
                                     {allArtistPlaylist?.map((item, index) =>
                                         <View key={index} style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
-                                            <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.playlistName, optionToDelete: true, deletFrom:'playlist', artistId: artistId})}>
+                                            <Ionicons
+                                                name='close'
+                                                size={15}
+                                                color={'#fff'}
+                                                style={{backgroundColor:Colors.grey3, borderRadius:50, position: 'absolute', zIndex:1, bottom:65, right:55}}
+                                                onPress={() => openDeleteModal('playlist', item._id)}
+                                            />
+                                            <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.playlistName, optionToDelete: true, deletFrom:'playlist', artistId: artistId, playlistId: item._id})}>
                                                 <Image
                                                     source={{uri:item.playlistImage}}
                                                     style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}
@@ -601,7 +693,14 @@ const ArtistMusicScreen = props => {
                                         keyExtractor={item => item._id}
                                         renderItem={({item, index}) => 
                                             <View style={{width:80, margin:5, alignItems: 'center', justifyContent: 'center'}}>
-                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.albumName, optionToDelete: true, deletFrom:'album'})}>
+                                                <Ionicons
+                                                    name='close'
+                                                    size={15}
+                                                    color={'#fff'}
+                                                    style={{backgroundColor:Colors.grey3, borderRadius:50, position: 'absolute', zIndex:1, bottom:65, right:55}}
+                                                    onPress={() => openDeleteModal('album', item._id)}
+                                                />
+                                                <TouchableOpacity onPress={() => props.navigation.navigate("AllSingels", {songsList: item.tracks, screenName: item.albumName, optionToDelete: true, deletFrom:'album', albumId: item._id})}>
                                                     <Image
                                                         source={{uri:item.albumCover}}
                                                         style={{width:50, height:50, borderRadius:20, resizeMode:'stretch'}}

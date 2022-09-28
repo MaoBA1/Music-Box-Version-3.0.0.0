@@ -13,7 +13,16 @@ import SongReducers from './store/reducers/songReducer';
 import AppReducers from './store/reducers/appReducers';
 import AlbumReducers from './store/reducers/albumReducer';
 import * as SplashScreen from 'expo-splash-screen';
+import { I18nManager, Text, TextInput } from 'react-native';
 
+
+I18nManager.forceRTL(false);
+I18nManager.allowRTL(false);
+
+if (Text.defaultProps == null) Text.defaultProps = {};
+if (TextInput.defaultProps == null) TextInput.defaultProps = {};
+Text.defaultProps.allowFontScaling = false;
+TextInput.defaultProps.allowFontScaling = false
 
 const rootReducer = combineReducers({
     UserReducer: GetUserDataReducer,
@@ -62,7 +71,7 @@ export default function App() {
         setAppIsReady(true);
       }
     }
-
+    
     prepare();
   }, []);
 
