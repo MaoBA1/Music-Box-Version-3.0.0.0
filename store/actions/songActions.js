@@ -8,6 +8,7 @@ export const GET_ARTIST_TOP5_SONGS_FOR_DASHBOARD_PROFILE = "GET_ARTIST_TOP5_SONG
 export const GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE = "GET_ARTIST_LATEST_REALEASES_FOR_DASHBOARD_PROFILE";
 export const CLEAN_SONGS_REDUCERS = "CLEAN_SONGS_REDUCERS";
 export const GET_SONGS_BY_USER_FAVORITE_GANERS = "GET_SONGS_BY_USER_FAVORITE_GANERS";
+export const GET_ALL_SONGS = "GET_ALL_SONGS";
 
 import baseIpRequest from '../../src/ServerDev';
 
@@ -273,6 +274,31 @@ export const getSongsByUserFavoriteGenersAction = token => {
         const data = await response.json(); 
         if(data){
             dispatch(getSongsByUserFavoriteGenersDispatch(data));
+            return data;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+export const getAllSongsDispatch = (data) => {
+    return dispatch => {
+        dispatch({type: GET_ALL_SONGS, data});
+    }
+}
+
+export const getAllSongsAction = (token) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/song/getAllSongs', {
+            method:'GET',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        const data = await response.json(); 
+        if(data){
+            dispatch(getAllSongsDispatch(data));
             return data;
         } else {
             throw new Error('Something went wrong');

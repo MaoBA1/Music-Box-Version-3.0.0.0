@@ -28,7 +28,8 @@ import {
      getAllArtistSongsForDashBoardProfileAction,
      getArtistTop5SongsForDashBoardProfileAction,
      getArtistLatestRealeasesForDashBoardProfileAction,
-     cleanSongReducerAction
+     cleanSongReducerAction,
+     getAllSongsAction
  } from '../store/actions/songActions';
  import {
     getAllArtistAlbumsForDasboardProfileAction,
@@ -497,3 +498,11 @@ export const deleteSongFromUserPlaylist = async(dispatch, token, playlistId, son
     }
 }
 
+export const getAllAppSongs = async(dispatch, token) => {
+    let action = getAllSongsAction(token);
+    try {
+        await dispatch(action);
+    } catch (error) {
+        console.log(error.message);
+    }
+}

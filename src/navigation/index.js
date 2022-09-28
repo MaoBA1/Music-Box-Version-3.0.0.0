@@ -39,6 +39,7 @@ import MusicBoardPlaylistScreen from '../OverView/DashBoardMusic/MusicBoardPlayl
 import HistoryScreen, {screenOptions as HistoryScreenOptions} from '../OverView/HistoryScreen';
 import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/Library/LibraryScreen';
 import SearchScreen, {screenOptions as SearchScreenOptions} from '../OverView/Search/SearchScreen';
+import SearchToImportScreen from '../OverView/Search/SearchToImportScreen';
 import ProfileScreen, {screenOptions as ProfileScreenOptions} from '../OverView/ProfileScreen';
 import EditRegularUserScreen, {screenOptions as EditRegularUserScreenOptions} from '../OverView/EditRegularUserScreen';
 import CreatArtistScreen, {screenOptions as CreatArtistScreenOptions} from '../OverView/CreateArtistScreen';
@@ -229,6 +230,7 @@ export const ProfileStack = () => {
             <profileStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileTopBar} options={{headerShown: false}}/>
             <profileStackNavigator.Screen name="AllSingels" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
             <profileStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
+            <profileStackNavigator.Screen name="SearchScreen" component={SearchToImportScreen} options={{headerShown: false}}/>
         </profileStackNavigator.Navigator>
     )
 }

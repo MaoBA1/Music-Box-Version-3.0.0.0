@@ -74,7 +74,7 @@ const MusicScreenModal = props => {
     const amILikeThisSong = () => {
         if(userFavoriteSongs?.length > 0) {
             userFavoriteSongs[0]?.songs?.forEach(x => {
-                if(x._id.toString() === currentAudio?._id.toString()) {
+                if(x._id.toString() === currentAudio?._id?.toString()) {
                     return setIsUserLikeThisSong(true);
                 }
             });

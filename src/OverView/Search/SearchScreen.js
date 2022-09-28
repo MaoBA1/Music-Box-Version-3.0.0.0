@@ -25,7 +25,8 @@ import {
     resumeSongAction,
     playNextSongAction,
     preperNextSongAction,
-    setPostAuthorProfileAction
+    setPostAuthorProfileAction,
+    handleSeeBarAction
 } from '../../../store/actions/appActions';
 
 
@@ -74,6 +75,53 @@ export const Song = ({item}) => {
         isLoading,
         MusicOnForGroundReducer
     } = appBackGroundSelector;
+
+    useEffect(() => {
+        const onPlaybackStatusUpdate = async(playbackStatus) => {
+            if(playbackStatus.isLoaded && playbackStatus.isPlaying) {
+                dispatch(handleSeeBarAction({
+                    playbackPosition: playbackStatus.positionMillis,
+                    playbackDuration: playbackStatus.durationMillis
+                }))
+            }
+
+
+            if(playbackStatus.didJustFinish) {
+                try{
+                    const nextAudioIndex = (SongIndexReducer + 1) % SongOnBackGroundReducer?.length;
+                    const audio = SongOnBackGroundReducer[nextAudioIndex];
+                    dispatch(preperNextSongAction({
+                        currentAudio: audio,
+                        isPlaying: false,
+                        index: nextAudioIndex,
+                        isLoading: true
+                    }))
+                    const status = await playNext(playbackObj, audio.trackUri);
+                
+                    return dispatch(playNextSongAction({
+                        status: status,
+                        currentAudio: audio,
+                        isPlaying: true,
+                        index: nextAudioIndex,
+                        isLoading: false,
+                        MusicOnForGroundReducer: MusicOnForGroundReducer,
+                        list: SongOnBackGroundReducer 
+                    }))
+                }catch(error) {
+                    console.log(error.message);
+                }
+            }
+        }
+
+        if(playbackObj) {
+            playbackObj.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+        }
+    },[
+        SongIndexReducer,
+        SongOnBackGroundReducer,                
+        playbackObj,        
+        MusicOnForGroundReducer
+    ])
     const handleAudioPress = async (audio, index, list) => {     
         if(soundObj === null) {
             try{

@@ -210,7 +210,9 @@ const ProfileScreen = props => {
                 <View style={{width:'100%', marginVertical:10}}>
                     <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between', paddingHorizontal:10}}>
                             <Text style={{color:'#fff', fontFamily: 'Baloo2-Bold', fontSize:16}}>My Faforite Artists</Text>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => props.navigation.navigate("SearchScreen", {typeOfSearch:'artist'})}
+                            >
                                 <AntDesign
                                     name='pluscircle'
                                     color={Colors.grey3}
@@ -255,7 +257,9 @@ const ProfileScreen = props => {
                 <View style={{width:'100%', marginVertical:10}}>
                     <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between', paddingHorizontal:10}}>
                             <Text style={{color:'#fff', fontFamily: 'Baloo2-Bold', fontSize:16}}>My Playlists</Text>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => props.navigation.navigate("SearchScreen", {typeOfSearch:'song'})}
+                            >
                                 <AntDesign
                                     name='pluscircle'
                                     color={Colors.grey3}
