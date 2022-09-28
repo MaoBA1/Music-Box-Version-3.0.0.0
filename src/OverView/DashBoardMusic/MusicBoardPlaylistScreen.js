@@ -25,9 +25,11 @@ import {
     getAllArtistSongs,
     getAllArtistAlbums,
     deleteArtistPlaylist,
-    deleteArtistAlbum
+    deleteArtistAlbum,
+    deleteSongFromUserPlaylist,
+    deleteUserPlaylist,
 } from '../../ApiCalls';
-import { deleteSongByArtistChosenAction } from '../../../store/actions/artistActions';
+import { deleteSongByArtistChosenAction, deleteUserPlaylistAction, deleteSongFromUserPlaylistAction } from '../../../store/actions/artistActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -37,6 +39,7 @@ const MusicBoardPlaylistScreen = (props) => {
     const dispatch = useDispatch();
     const { screenName, songsList } = props.route.params;
     const optionToDelete = props.route.params.optionToDelete;
+    const isRegularUserPlaylist = props.route.params.isRegularUserPlaylist;
     const deletFrom = props.route.params.deletFrom;
     const appBackGroundSelector = useSelector(state => state.AppReducer);
     const [deletPostVisible, setDeletePostVisible] = useState(false);
@@ -195,7 +198,25 @@ const MusicBoardPlaylistScreen = (props) => {
         }
     }
 
-    
+    const deleteFromUserPlaylist = async() => {
+        const jsonToken = await AsyncStorage.getItem('Token');        
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+        if(userToken) {
+            if(songsList.length <= 1) {
+                deleteUserPlaylist(dispatch, userToken, props.route.params.playlistId)
+                .then(() => {
+                    getAllUserPlaylist(dispatch, userToken);
+                })
+                
+            } else {
+                deleteSongFromUserPlaylist(dispatch, userToken, props.route.params.playlistId, songToDelete.trackName)
+                .then(() => {
+                    getAllUserPlaylist(dispatch, userToken);
+                })
+            }
+            return props.navigation.goBack(null);
+        }
+    }
 
     return (
         <View style={{flex: 1, backgroundColor:Colors.grey1}}>
@@ -219,7 +240,7 @@ const MusicBoardPlaylistScreen = (props) => {
                             <TouchableOpacity onPress={() => setDeletePostVisible(false)} style={{width:'50%', borderRightWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
                                 <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Cancel</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={deleteSongFromArtistList} style={{width:'50%', borderLeftWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                            <TouchableOpacity onPress={isRegularUserPlaylist? deleteFromUserPlaylist : deleteSongFromArtistList} style={{width:'50%', borderLeftWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
                                 <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Yes</Text>
                             </TouchableOpacity>
                         </View>

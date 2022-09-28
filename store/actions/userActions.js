@@ -11,6 +11,8 @@ export const GET_ALL_USER_FAVORITE_SONGS = "GET_ALL_USER_FAVORITE_SONGS";
 export const LIKE_TO_SONG = "LIKE_TO_SONG";
 export const UNLIKE_TO_SONG = "UNLIKE_TO_SONG";
 export const GET_ALL_SEARCH_RESULTS = "GET_ALL_SEARCH_RESULTS";
+export const DELETE_USER_PLAYLIST = "DELETE_USER_PLAYLIST";
+export const DELETE_SONG_FROM_USER_PLAYLIST = "DELETE_SONG_FROM_USER_PLAYLIST";
 
 
 import baseIpRequest from '../../src/ServerDev';
@@ -390,3 +392,57 @@ export const getAllSearchResultsAction = (token) => {
         }
     }
 }
+
+
+export const deleteUserPlaylistDispatch = (data) => {
+    return dispatch => {
+        dispatch({type:DELETE_USER_PLAYLIST, data});
+    }
+}
+
+export const deleteUserPlaylistAction = (token, playlistId) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/deletUserPlaylist/' + playlistId, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token                    
+            }
+        })
+    
+        const data = await response.json();
+        if(data) {
+            dispatch(deleteUserPlaylistDispatch(data));
+        } else {
+            throw new Error(data.message);
+        }
+    }
+}
+
+export const deleteSongFromUserPlaylistDispatch = (data) => {
+    return dispatch => {
+        dispatch({type:DELETE_SONG_FROM_USER_PLAYLIST, data});
+    }
+}
+
+export const deleteSongFromUserPlaylistAction = (token, playlistId, songName) => {
+    return async dispatch => {
+        const response = await fetch(baseIpRequest.ServerAddress + '/accounts/deleteSongFromUserPlaylist/' + playlistId + '/' + songName, {
+            method:'PUT',
+            headers:{
+                'Content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+
+        const data = await response.json();
+        if(data) {
+            dispatch(deleteSongFromUserPlaylistDispatch(data));
+            return true;
+        } else {
+            throw new Error('Something went wrong');
+        }
+    }
+}
+
+

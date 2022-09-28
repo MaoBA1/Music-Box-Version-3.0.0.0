@@ -38,6 +38,7 @@ import {
  import { getUserDataAction, updateProfileAction, getAllUserPlaylistsAction, getAllUserSubScribesAction, getAllSearchResultsAction } from '../store/actions/userActions';
  import { getSongsByUserFavoriteGenersAction } from '../store/actions/songActions';
  import { setIsUploadCompleteAction, setIsWaitingForUploadAction, setPostAuthorProfileAction } from '../store/actions/appActions';
+ import { deleteUserPlaylistAction, deleteSongFromUserPlaylistAction } from '../store/actions/userActions';
 
 export const setIsUploadComplete = (dispatch, isComplete, isWaiting, type) => {
     let action = setIsUploadCompleteAction(isComplete, isWaiting, type);
@@ -476,3 +477,23 @@ export const addAdditionalSongsToArtistAlbum = async(dispatch, token, artistId, 
         console.log(error.message);
     }
 }
+
+
+export const deleteUserPlaylist = async(dispatch, token, playlistId) => {
+    let action = deleteUserPlaylistAction(token, playlistId);
+    try{
+        await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const deleteSongFromUserPlaylist = async(dispatch, token, playlistId, songName) => {
+    let action = deleteSongFromUserPlaylistAction(token, playlistId, songName);
+    try{
+        await dispatch(action);
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+
