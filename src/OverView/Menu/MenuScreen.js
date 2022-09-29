@@ -17,7 +17,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Colors from '../../Utitilities/AppColors';
 import Style from '../Style/MenuStyle';
-import { playInTheFirstTimeAction } from '../../../store/actions/appActions'
+import { playInTheFirstTimeAction } from '../../../store/actions/appActions';
+import { getAllUserFavoriteSongsAction } from '../../../store/actions/userActions'
 
 
 
@@ -32,7 +33,9 @@ const MenuScreen = props => {
     const isSuperUser = userDataSelector?.UserReducer?.account?.isSuperUser;
     const[isLoading, setIsLoading] = useState(false);
     const [profileOptionsVisible, setProfileOptionVisible] = useState(false);
-
+    const userFavoriteSongsSelector = useSelector(state => state.UserReducer?.UserFavoritesSongs);
+    const userFavoriteSongs = userFavoriteSongsSelector?.Playlist;
+    
     const logout = async() => {
         await AsyncStorage.removeItem('Token');
         await AsyncStorage.removeItem('IsItFirstUse');
@@ -68,6 +71,23 @@ const MenuScreen = props => {
         props.navigation.navigate('CreateArtistPage');
         setProfileOptionVisible(false);
     }
+
+    async function getAllUserFavoriteSongs() {
+        const jsonToken = await AsyncStorage.getItem('Token');        
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+        if(userToken) {
+            let action = getAllUserFavoriteSongsAction(userToken);
+            try {
+                await dispatch(action);
+            }catch(error){
+                console.log(error.message);
+            }   
+        }
+    }
+
+    useEffect(() => {
+        getAllUserFavoriteSongs();
+    },[])
     
     return(
         <ImageBackground 
@@ -333,18 +353,35 @@ const MenuScreen = props => {
                                 <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Your Favorite</Text>
                                 <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Artists</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
-                                
-                            >
-                                <FontAwesome5   
-                                    name="music"
-                                    size={40}
-                                    color={Colors.grey6}
-                                />
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Your Favorite</Text>
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Songs</Text>
-                            </TouchableOpacity>
+                            {
+                                userFavoriteSongs?.songs?.length > 0 ?
+                                (
+                                    <TouchableOpacity 
+                                        style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
+                                        onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: userFavoriteSongs?.songs, screenName: 'Your Favorite Songs', optionToDelete: false, isRegularUserPlaylist: true, playlistId: userFavoriteSongs?._id})}
+                                    >
+                                        <FontAwesome5   
+                                            name="music"
+                                            size={40}
+                                            color={Colors.grey6}
+                                        />
+                                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Your Favorite</Text>
+                                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Songs</Text>
+                                    </TouchableOpacity>
+                                )
+                                :
+                                (
+                                    <View style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center', opacity:0.7}}>
+                                        <FontAwesome5   
+                                            name="music"
+                                            size={40}
+                                            color={Colors.grey6}
+                                        />
+                                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>0 Liked songs</Text>
+                                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>for now</Text>
+                                    </View>
+                                )
+                            }
                     </View>
                 </>
             }

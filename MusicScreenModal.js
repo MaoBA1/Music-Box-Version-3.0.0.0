@@ -76,8 +76,8 @@ const MusicScreenModal = props => {
     }
 
     const amILikeThisSong = () => {
-        if(userFavoriteSongs?.length > 0) {
-            const likedSong = userFavoriteSongs[0]?.songs?.find(x => x._id.toString() === currentAudio?._id?.toString())
+        if(userFavoriteSongs && userFavoriteSongs?.songs?.length > 0) {
+            const likedSong = userFavoriteSongs?.songs?.find(x => x._id.toString() === currentAudio?._id?.toString())
             setIsUserLikeThisSong(likedSong != null);
         }
     }
