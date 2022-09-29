@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Style from './Style/DashBoardStyle';
 import Post from '../components/Post';
 import Header from '../components/Header';
-import Menu from './MenuScreen';
+import Menu from './Menu/MenuScreen';
 import Comment from './CommentScreen';
 import { 
     getAllSearchResults,
@@ -92,7 +92,7 @@ const DashBoardScreen = props => {
             </Modal>
             {addToPlaylistVisible && <AddSongFromPostToPlaylist close={setAddToPlaylistVisible} track={songForPlaylist}/>}
 
-            <Header func={closeAndOpenMenu}/>
+            <Header func={() => props.navigation.jumpTo('Menu')}/>
             <View style={Style.mainContainer}>                
                 
                 {

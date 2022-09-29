@@ -266,6 +266,8 @@ const MusicBoardPlaylistScreen = (props) => {
         }
     }
 
+    
+
     return (
         <View style={{flex: 1, backgroundColor:Colors.grey1}}>
             <MusicGeneralHeader goBack={() => props.navigation.goBack(null)} title={screenName}/>

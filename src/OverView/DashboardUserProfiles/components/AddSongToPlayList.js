@@ -229,20 +229,19 @@ export const AddToExistPlaylist = ({
     trackName,
     track,
     trackLength,
-    close
+    close,
+    artist
 }) => {
     const dispatch = useDispatch();
     const playlistsSelector = useSelector(state => state.UserReducer.UserPlaylists);
     const userPlaylists = playlistsSelector?.Playlists;
-    console.log('====================================');
-    console.log(playlistsSelector);
-    console.log('====================================');
+    
 
     let song = {
         trackName: trackName,
         trackUri: track?.trackUri,
         trackLength: trackLength,
-        artist: track?.artist,
+        artist: artist,
         creatAdt: track?.creatAdt,
         trackImage: track?.trackImage
     }
@@ -464,25 +463,6 @@ const AddSongFromPostToPlaylist = props => {
         
     }
     
-    // const HandleImageUpload = async () => {
-    //     let sourceuri = playlistImage;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'playlistImage');
-    //     data.append('cloud_name', 'musicbox');
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
-
     const HandleImageUpload = async () => {
         const response = await fetch(playlistImage);
         const blob = await response.blob();
@@ -533,7 +513,7 @@ const AddSongFromPostToPlaylist = props => {
         
     }
 
-    console.log(props);
+    
 
     return (
         <Modal
@@ -556,8 +536,8 @@ const AddSongFromPostToPlaylist = props => {
                             track={props.song}
                             playlistImage={playlistImage}
                             playlistName={playlistName}
-                            trackName={props.song.trackName}
-                            trackLength={props.song.trackLength}
+                            trackName={props?.song?.trackName}
+                            trackLength={props?.song?.trackLength}
                             setPlaylistImage={setPlaylistImage}
                             setPlaylistName={setPlaylistName}
                             
@@ -568,10 +548,11 @@ const AddSongFromPostToPlaylist = props => {
                         <AddToExistPlaylist
                             isLoading={isLoading}
                             setIsLoading={setIsLoading}
-                            trackName={props.song.trackName}
-                            track={props.song}
-                            trackLength={props.song.trackLength}
-                            close={props.close}
+                            trackName={props?.song?.trackName}
+                            track={props?.song}
+                            artist={props?.artist}
+                            trackLength={props?.song?.trackLength}
+                            close={props?.close}
                         />
                     )
                 }

@@ -296,8 +296,8 @@ const MusicBoardScreen = props => {
                 <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginVertical: 20 }}>
                     <View style={{width:'49%'}}>
                         {
-                            topList.length > 0
-                            && topList.slice(0, topList.length/2)
+                            topList?.length > 0
+                            && topList?.slice(0, topList.length/2)
                             .map((item, index) => 
                                 <View key={index}>
                                     {
@@ -333,7 +333,7 @@ const MusicBoardScreen = props => {
                                             >
 
                                             {
-                                                    item._id === currentAudio._id &&
+                                                    item._id === currentAudio?._id &&
                                                     <>
                                                         {
                                                             isPlaying?
@@ -387,8 +387,8 @@ const MusicBoardScreen = props => {
                     </View>
                     <View style={{width:'49%'}}>
                         {
-                            topList.length > 0
-                            && topList.slice(topList.length/2, topList.length)
+                            topList?.length > 0
+                            && topList?.slice(topList?.length/2, topList?.length)
                             .map((item, index) => 
                                 <View key={index}>
                                     {
@@ -424,7 +424,7 @@ const MusicBoardScreen = props => {
                                             >
 
                                             {
-                                                    item._id === currentAudio._id &&
+                                                    item._id === currentAudio?._id &&
                                                     <>
                                                         {
                                                             isPlaying?

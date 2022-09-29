@@ -35,6 +35,7 @@ import FeedScreen from '../OverView/DashboardUserProfiles/FeedScreen';
 import MusciScreen from '../OverView/DashboardUserProfiles/MusciScreen';
 import PlayListScreen from '../OverView/DashboardUserProfiles/PlayListScreen';
 import MusicBoardPlaylistScreen from '../OverView/DashBoardMusic/MusicBoardPlaylistScreen';
+import MenuScreen, {screenOptions as MenuScreenOptions} from '../OverView/Menu/MenuScreen';
 
 import HistoryScreen, {screenOptions as HistoryScreenOptions} from '../OverView/HistoryScreen';
 import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/Library/LibraryScreen';
@@ -258,6 +259,17 @@ export const SearchStack = () => {
     )
 }
 
+const MenuStackNavigator = createStackNavigator();
+const MenuStack = () => {
+    return(
+        <MenuStackNavigator.Navigator>
+            <MenuStackNavigator.Screen name="MenuScreen" component={MenuScreen} options={{headerShown: false}}/>
+            <MenuStackNavigator.Screen name="EditRegularUserPage" component={EditRegularUserScreen} options={EditRegularUserScreenOptions}/>
+            <MenuStackNavigator.Screen name="CreateArtistPage" component={CreatArtistScreen} options={CreatArtistScreenOptions}/>
+            <MenuStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileTopBar} options={{headerShown: false}}/>
+        </MenuStackNavigator.Navigator>
+    )
+}
 
 
 const OverViewBottomStackNavigator = createMaterialBottomTabNavigator();
@@ -268,6 +280,11 @@ export const OverViewStack = () => {
     
     return(
         <OverViewBottomStackNavigator.Navigator initialRouteName='Home' barStyle={{backgroundColor:Colors.grey4}}>
+            <OverViewBottomStackNavigator.Screen
+                name='Menu'
+                component={MenuStack}
+                options={MenuScreenOptions}
+            />
             <OverViewBottomStackNavigator.Screen
                 options = {{
                     tabBarIcon:({focused,color,size}) => {
@@ -303,13 +320,8 @@ export const OverViewStack = () => {
                 options = {ProfileScreenOptions} 
                 name='Profile'
                 component={ProfileStack}
-            />            
-
-            <OverViewBottomStackNavigator.Screen
-                options = {HistoryScreenOptions} 
-                name='History'
-                component={HistoryScreen}
-            />                       
+            />  
+                                   
     </OverViewBottomStackNavigator.Navigator>
     )
 }

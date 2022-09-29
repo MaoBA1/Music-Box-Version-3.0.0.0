@@ -26,6 +26,7 @@ import {
 import { getAllUserFavoriteSongsAction, likeUserSongAction, unlikeUserSongAction } from './store/actions/userActions';
 import { play, pause, resume, playNext } from './audioController';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getAllUserPlaylist} from './src/ApiCalls';
 
 const { width, height } = Dimensions.get('window');
 
@@ -55,67 +56,72 @@ const MusicScreenModal = props => {
     const songImage = songDetails?.trackImage;
     const [currentPosition, setCurrentPosition] = useState(0);
     let [isUserLikeThisSong, setIsUserLikeThisSong] = useState(false);
+    const [token, setToken] = useState(null);
 
-
-   async function getUserFavoritesSongs() {
+    async function getToken(){
         const jsonToken = await AsyncStorage.getItem('Token');
         const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
         if(userToken) {
-            let action = getAllUserFavoriteSongsAction(userToken);
-            try{
-                await dispatch(action);
-            }catch(error){
-                console.log(error.message);
-            }
+            setToken(userToken);
         }
-        
+    }
+
+   async function getUserFavoritesSongs() {
+        let action = getAllUserFavoriteSongsAction(token);
+        try{
+            await dispatch(action);
+        }catch(error){
+            console.log(error.message);
+        }
     }
 
     const amILikeThisSong = () => {
         if(userFavoriteSongs?.length > 0) {
-            userFavoriteSongs[0]?.songs?.forEach(x => {
-                if(x._id.toString() === currentAudio?._id?.toString()) {
-                    return setIsUserLikeThisSong(true);
-                }
-            });
-
+            const likedSong = userFavoriteSongs[0]?.songs?.find(x => x._id.toString() === currentAudio?._id?.toString())
+            setIsUserLikeThisSong(likedSong != null);
         }
     }
 
     const like = async() => {
-        const jsonToken = await AsyncStorage.getItem('Token');
-        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
-        if(userToken) {
-            let action = likeUserSongAction(userToken, currentAudio?._id);
-            try{
-                await dispatch(action);
-                await getUserFavoritesSongs();
+        let action = likeUserSongAction(token, currentAudio?._id);
+        try{
+            await dispatch(action)
+            .then(() => {
+                getUserFavoritesSongs();
+                getAllUserPlaylist(dispatch, token);
                 setIsUserLikeThisSong(true);
-            }catch(error) {
-                console.log(error.message);
-            }
+            })
+            
+        }catch(error) {
+            console.log(error.message);
         }
     }
 
     const unlike = async() => {
-        const jsonToken = await AsyncStorage.getItem('Token');
-        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
-        if(userToken) {
-            let action = unlikeUserSongAction(userToken, currentAudio?._id);
-            try{
-                await dispatch(action);
-                await getUserFavoritesSongs();
+        let action = unlikeUserSongAction(token, currentAudio?._id);
+        try{
+            await dispatch(action)
+            .then(() => {
+                getUserFavoritesSongs();
+                getAllUserPlaylist(dispatch, token);
                 setIsUserLikeThisSong(false);
-            }catch(error) {
-                console.log(error.message);
-            }
+            })
+            
+        }catch(error) {
+            console.log(error.message);
         }
     }
 
     useEffect(() => {
+        if(!token) {
+            getToken();
+        }
         getUserFavoritesSongs();
-        amILikeThisSong();
-    },[])
+        if(userFavoriteSongs) {
+            amILikeThisSong();
+        }
+        
+    },[userFavoriteSongs, token])
 
     
     
@@ -169,6 +175,7 @@ const MusicScreenModal = props => {
         if(isLoading) {
             return;
         }
+        
         try{
             const nextAudioIndex = (SongIndexReducer + 1) % SongOnBackGroundReducer?.length;
             const audio = SongOnBackGroundReducer[nextAudioIndex];
@@ -298,7 +305,7 @@ const MusicScreenModal = props => {
                                 name="hearto"
                                 color={Colors.red3}
                                 size={30}
-                                onPress={like}
+                                onPress={!isLoading && like}
                             />
                         )
                     }
