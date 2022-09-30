@@ -19,7 +19,7 @@ import Colors from '../../Utitilities/AppColors';
 import Style from '../Style/MenuStyle';
 import { playInTheFirstTimeAction } from '../../../store/actions/appActions';
 import { getAllUserFavoriteSongsAction } from '../../../store/actions/userActions'
-
+import { pause } from '../../../audioController';
 
 
 const MenuScreen = props => {
@@ -35,26 +35,32 @@ const MenuScreen = props => {
     const [profileOptionsVisible, setProfileOptionVisible] = useState(false);
     const userFavoriteSongsSelector = useSelector(state => state.UserReducer?.UserFavoritesSongs);
     const userFavoriteSongs = userFavoriteSongsSelector?.Playlist;
+    const appBackGroundSelector = useSelector(state => state.AppReducer);
+    const { playbackObj } = appBackGroundSelector;
     
     const logout = async() => {
         await AsyncStorage.removeItem('Token');
         await AsyncStorage.removeItem('IsItFirstUse');
-        dispatch(playInTheFirstTimeAction({
-            playbackObj: null,
-            status: null,
-            currentAudio: {},
-            isPlaying: false,
-            index: null,
-            list: null,
-            musicOnBackGround: false,
-            isLoading: false,
-            MusicOnForGroundReducer: false
-        }))
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            props.navigation.navigate('auth');
-        },3000)
+        await pause(playbackObj).
+        then(() => {
+            dispatch(playInTheFirstTimeAction({
+                playbackObj: null,
+                status: null,
+                currentAudio: {},
+                isPlaying: false,
+                index: null,
+                list: null,
+                musicOnBackGround: false,
+                isLoading: false,
+                MusicOnForGroundReducer: false
+            }))
+            setIsLoading(true);
+            setTimeout(() => {
+                setIsLoading(false);
+                props.navigation.navigate('auth');
+            },3000)
+        })
+        
     }
 
     const moveToArtistProfile = () => {

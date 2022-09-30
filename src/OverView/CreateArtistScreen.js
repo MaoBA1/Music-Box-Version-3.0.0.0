@@ -311,7 +311,7 @@ const CreatArtistScreen = props => {
                                 <View style={{marginLeft:90, backgroundColor:'#fff', borderRadius:20}}>
                                     <Image
                                         source={ profileImage.length > 0 ? {uri: profileImage} : require('../../assets/AppAssets/Logo.png') }
-                                        style={{width:100, height:80, borderRadius:20}}
+                                        style={{width:120, height:80, borderRadius:20, resizeMode:'stretch'}}
                                     />
                                 </View>
                             </View>
@@ -338,7 +338,7 @@ const CreatArtistScreen = props => {
                                 <View style={{marginLeft:90, backgroundColor:'#fff', borderRadius:20}}>
                                     <Image
                                         source={ profileSeconderyImage.length > 0 ? {uri: profileSeconderyImage} : require('../../assets/AppAssets/Logo.png') }
-                                        style={{width:100, height:80, borderRadius:20}}
+                                        style={{width:120, height:80, borderRadius:20, resizeMode:'stretch'}}
                                     />
                                 </View>
                             </View>

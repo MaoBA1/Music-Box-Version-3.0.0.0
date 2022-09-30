@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import baseIpRequest from '../../ServerDev';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserData } from '../../ApiCalls';
+import { getUserData, getArtistsByUserFavoriteGeners, getSongsByUserFavoriteGeners } from '../../ApiCalls';
 
 
 
@@ -46,7 +46,9 @@ const GenerItem = props => {
             
             const response = await request.json();
             console.log(response);
-            if(response.status){        
+            if(response.status){    
+                getArtistsByUserFavoriteGeners(dispatch, userToken);
+                getSongsByUserFavoriteGeners(dispatch, userToken);    
                 setIsClicked(response.status);
                 getUserData(dispatch, userToken)
                 if(userFavoriteGenersIDs.length > 1) {
@@ -82,6 +84,8 @@ const GenerItem = props => {
             })
             const response = await request.json();
             if(response.status){
+                getArtistsByUserFavoriteGeners(dispatch, userToken);
+                getSongsByUserFavoriteGeners(dispatch, userToken);   
                 setIsClicked(!response.status);
                 getUserData(dispatch, userToken);
                 props.showNote(false);
