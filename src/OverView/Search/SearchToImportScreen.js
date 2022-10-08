@@ -22,8 +22,8 @@ import {
 
 
 
-import OptionsModal from '../DashboardUserProfiles/components/OptionsModal';
-import AddSongToPlayList from '../DashboardUserProfiles/components/AddSongToPlayList';
+import OptionsModal from '../DashBoards/DashboardUserProfiles/components/OptionsModal';
+import AddSongToPlayList from '../DashBoards/DashboardUserProfiles/components/AddSongToPlayList';
 
 
 const SearchToImportScreen = (props) => {

@@ -29,15 +29,19 @@ import FirstUseScreen, {screenOptions as FirstUseScreenOptions} from '../FirstUs
 //OverView
 
     // DashBoard
-import DashBoardScreen, {screenOptions as DashBoardScreenOptions} from '../OverView/DashBoardScreen';
-import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/DashBoardMusic/MusicBoard';
-import FeedScreen from '../OverView/DashboardUserProfiles/FeedScreen';
-import MusciScreen from '../OverView/DashboardUserProfiles/MusciScreen';
-import PlayListScreen from '../OverView/DashboardUserProfiles/PlayListScreen';
-import MusicBoardPlaylistScreen from '../OverView/DashBoardMusic/MusicBoardPlaylistScreen';
+import DashBoardScreen, {screenOptions as DashBoardScreenOptions} from '../OverView/DashBoards/MainDashBoard/DashBoardScreen';
+import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/DashBoards/DashBoardMusic/MusicBoard';
+import FeedScreen from '../OverView/DashBoards/DashboardUserProfiles/FeedScreen';
+import MusciScreen from '../OverView/DashBoards/DashboardUserProfiles/MusciScreen';
+import PlayListScreen from '../OverView/DashBoards/DashboardUserProfiles/PlayListScreen';
+import MusicBoardPlaylistScreen from '../OverView/DashBoards/DashBoardMusic/MusicBoardPlaylistScreen';
 import MenuScreen, {screenOptions as MenuScreenOptions} from '../OverView/Menu/MenuScreen';
+import CommentScreen, {screenOptions as CommentScreenOptions} from '../OverView/CommentScreen';
 
-import HistoryScreen, {screenOptions as HistoryScreenOptions} from '../OverView/HistoryScreen';
+
+import UserChatsScreen, { screenOptions as UserChatsScreenOptions} from '../OverView/DashBoards/Chat/UserChatsScreen';
+
+
 import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/Library/LibraryScreen';
 import SearchScreen, {screenOptions as SearchScreenOptions} from '../OverView/Search/SearchScreen';
 import SearchToImportScreen from '../OverView/Search/SearchToImportScreen';
@@ -50,7 +54,7 @@ import ArtistMusicScreen, {screenOptions as ArtistMusicScreenOptions} from '../O
 import AllArtistSingels from '../OverView/artist/Modals/AllArtistSingels';
 
 //comment
-import CommentScreen, {screenOptions as CommentScreenOptions} from '../OverView/CommentScreen';
+
 
 
 
@@ -213,10 +217,13 @@ export const ArtistProfileTopBar = () => {
 const DashBoardContainerStackNavigator = createStackNavigator();
 export const DashBoardContainerStack = () => {
     return(
-        <DashBoardContainerStackNavigator.Navigator>
-            <DashBoardContainerStackNavigator.Screen name="HomeStack" component={DashBoardTopBarStack} options={{headerShown: false}}/>
+        <DashBoardContainerStackNavigator.Navigator initialRouteName='Feed'>
+            <DashBoardContainerStackNavigator.Screen name='Feed' component={DashBoardScreen} options={DashBoardScreenOptions}/>
+            <DashBoardContainerStackNavigator.Screen name='Music Board' component={MusicBoard} options={MusicBoardScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
             <DashBoardContainerStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+            <DashBoardContainerStackNavigator.Screen name="CommentScreen" component={CommentScreen} options={CommentScreenOptions}/>
+            <DashBoardContainerStackNavigator.Screen name="UserChatScreen" component={UserChatsScreen} options={UserChatsScreenOptions}/>
         </DashBoardContainerStackNavigator.Navigator>
     )
 }

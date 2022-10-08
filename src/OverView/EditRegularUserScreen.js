@@ -77,25 +77,6 @@ const EditRegularUserScreen = props => {
     }
     
 
-    // const HandleFileUpload = async () => {
-    //     let sourceuri = image;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'MusicBoxRegularUsersProfileImage');
-    //     data.append('cloud_name', 'musicbox');
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
-
     const HandleFileUpload = async () => {
         const response = await fetch(image);
         const blob = await response.blob();

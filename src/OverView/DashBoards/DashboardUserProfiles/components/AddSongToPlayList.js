@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, FlatList, TextInput, TouchableOpacity } from 'react-native';
 import { View, Text, Platform, Modal, Image } from 'react-native';
-import Colors from '../../../Utitilities/AppColors';
+import Colors from '../../../../Utitilities/AppColors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as ImagePicker from 'expo-image-picker';
-import {Audio} from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createNewPlaylistAction, getAllUserPlaylistsAction, addSongTouserPlaylistAction, getUserDataAction } from '../../../../store/actions/userActions'
+import { createNewPlaylistAction, getAllUserPlaylistsAction, addSongTouserPlaylistAction, getUserDataAction } from '../../../../../store/actions/userActions'
 import { useDispatch, useSelector } from 'react-redux';
-import {getUserData} from '../../../ApiCalls';
-import { storage } from '../../../../firebase';
+import {getUserData} from '../../../../ApiCalls';
+import { storage } from '../../../../../firebase';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 export const ThisModalHeader = ({
@@ -212,7 +211,7 @@ export const CreateNewPlaylist = ({
                         </View>
                         <View style={{width:'70%', alignItems: 'center', justifyContent: 'center', padding:10}}>
                             <Image
-                                source={playlistImage == ''? require('../../../../assets/noimage.jpg') : {uri:playlistImage}}
+                                source={playlistImage == ''? require('../../../../../assets/noimage.jpg') : {uri:playlistImage}}
                                 style={{width:150, height:120, borderRadius:20}}
                             />
                         </View>

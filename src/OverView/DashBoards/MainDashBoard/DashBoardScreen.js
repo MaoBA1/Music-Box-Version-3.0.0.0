@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { 
     View,
     Text,
-    Modal, 
-    FlatList, ImageBackground
+    FlatList, 
+    ImageBackground,
+    TouchableOpacity
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Style from './Style/DashBoardStyle';
-import Post from '../components/Post';
-import Header from '../components/Header';
-import Menu from './Menu/MenuScreen';
-import Comment from './CommentScreen';
+import Style from '../../Style/DashBoardStyle';
+import Post from '../../../components/Post';
 import { 
     getAllSearchResults,
     getArtistsByUserFavoriteGeners,
@@ -20,42 +18,26 @@ import {
     getAllUserSubScribes,
     getArtistDataAsync,
     cleanArtistProfilePageBeforeNextUse 
-} from '../ApiCalls';
-import { getUserDataAction, getAllUserPlaylistsAction, getAllUserSubScribesAction, getAllSearchResultsAction } from '../../store/actions/userActions';
-import { getArtistsByUserFavoriteGenersAction } from '../../store/actions/artistActions';
-import { getSongsByUserFavoriteGenersAction } from '../../store/actions/songActions';
-import AddSongFromPostToPlaylist from '../components/AddSongFromPostToPlaylist';
+} from '../../../ApiCalls';
+import AddSongFromPostToPlaylist from '../../../components/AddSongFromPostToPlaylist';
+import Colors from '../../../Utitilities/AppColors';
+import { Avatar } from 'react-native-elements';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
-const DashBoardScreen = props => {
+const DashBoardScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const userDataSelector = useSelector(state => state.UserReducer);
+    const userAvatar = userDataSelector?.UserReducer?.account?.Avatar;
     const isSuperUser = userDataSelector?.UserReducer?.account?.isSuperUser;
-    const [isVisible, setIsVisble] = useState(false);
     const postSelector = useSelector(state => state.Post);
     const post = postSelector?.PostReducer;
-    const [modalStatus, setModalStatus] = useState('');
-    const [commentParams, setCommentParams] = useState(null);
     const [songForPlaylist, setSongForPlaylist] = useState(null);
     const [addToPlaylistVisible, setAddToPlaylistVisible] = useState(false);
     const [token, setToken] = useState(null);
-    const closeAndOpenMenu = () => {
-        setModalStatus('menu');
-        setIsVisble(!isVisible);
-    }
-
-    const logout = async () =>{
-        try {
-            closeAndOpenMenu();
-            props.navigation.navigate('auth');
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
+    
+    
     const CloseAndOpenCommentScreen = (params) => {
-        setCommentParams(params);
-        setModalStatus('comment');
-       setIsVisble(!isVisible);
+        navigation.navigate("CommentScreen", {params: params});
     }
 
     useEffect(() => {
@@ -82,17 +64,8 @@ const DashBoardScreen = props => {
     
     return(
         <View style={Style.backgroundContainer}>
-            <Modal
-                visible={isVisible}
-                animationType='slide'   
-
-            >
-               { modalStatus == 'menu' && <Menu func={closeAndOpenMenu} logout={logout}/>}
-               {modalStatus == 'comment' && <Comment func={CloseAndOpenCommentScreen} params={commentParams}/>}
-            </Modal>
             {addToPlaylistVisible && <AddSongFromPostToPlaylist close={setAddToPlaylistVisible} track={songForPlaylist}/>}
 
-            <Header func={() => props.navigation.jumpTo('Menu')}/>
             <View style={Style.mainContainer}>                
                 
                 {
@@ -109,7 +82,7 @@ const DashBoardScreen = props => {
                                     openCommentScreen={CloseAndOpenCommentScreen} 
                                     openAddToPlaylist={() => setAddToPlaylistVisible(true)}
                                     setSongForPlaylist={setSongForPlaylist}
-                                    moveToPostAuthorProfile={() => props.navigation.navigate("ProfileStack")}
+                                    moveToPostAuthorProfile={() => navigation.navigate("ProfileStack")}
                                 />
                             }
                             
@@ -118,7 +91,7 @@ const DashBoardScreen = props => {
                     :
                     (
                         <ImageBackground 
-                                source={ require('../../assets/AppAssets/Logo.png') }
+                                source={ require('../../../../assets/Logo.png') }
                                 resizeMode="cover" 
                                 style={{flex:1, width:'100%', height:'100%', alignItems: 'center', justifyContent:'center'}}
                                 imageStyle={{opacity: 0.3}}
@@ -137,10 +110,74 @@ const DashBoardScreen = props => {
 
 
 
-export const screenOptions = navData => {
+export const screenOptions = ({navigation}) => {
+    const userDataSelector = useSelector(state => state.UserReducer);
+    const userAvatar = userDataSelector?.UserReducer?.account?.Avatar;
+
+    const logout = async () =>{
+        try {
+            navigation.navigate('auth');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const moveToMusicBoard = () => {
+        navigation.navigate('Music Board');
+    }
+
+    const moveToUserChats = () => {
+        navigation.navigate("UserChatScreen");
+    }
     return {        
         gestureEnabled:false,
-        tabBarLabel:'Feed',
+        title:'Feed',
+        headerStyle:{backgroundColor:Colors.grey1, height:Platform.OS === 'ios' ? 110 : 90, borderBottomWidth:2, borderBottomColor:Colors.grey3},
+        headerTitleStyle:{
+            color:"#FFFFFF",
+            fontFamily:"Baloo2-ExtraBold",
+            fontSize:25
+        },
+        
+        headerTitleAlign: 'center',
+        headerLeft: () => {
+            return  <View style={{ 
+                marginLeft: 10,
+                marginBottom:10,
+                flexDirection: 'row',
+                justifyContent: "space-between",
+                width:80,
+                alignItems: 'center'
+            }}>
+                <TouchableOpacity 
+                    onPress={logout}
+                    style={{ alignItems: 'center' }}
+                >
+                    <Avatar 
+                        rounded
+                        source={{ uri: userAvatar}}
+                    />
+                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:10, color:'#fff'}}>Logout</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={moveToUserChats}>
+                    <Ionicons name="chatbox-ellipses" size={24} color={Colors.grey3}/>
+                </TouchableOpacity>
+            </View>
+        },
+        headerRight: () => {
+            return  <View style={{ marginRight: 20, marginBottom:10 }}>
+               <TouchableOpacity 
+                    onPress={moveToMusicBoard}
+                    style={{ alignItems: 'center' }}
+                >
+                    <Avatar 
+                        rounded
+                        source={ require('../../../../assets/Logo.png') }
+                    />
+                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:10, color:'#fff'}}>Music Board</Text>
+                </TouchableOpacity>
+            </View>
+        }
+        
     }
 }
 

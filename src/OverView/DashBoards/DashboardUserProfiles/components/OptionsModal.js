@@ -1,9 +1,7 @@
-//import liraries
-import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
-import Colors from '../../../Utitilities/AppColors';
+import Colors from '../../../../Utitilities/AppColors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-// create a component
+
 const OptionsModal = ({
     currentAudio,
     backGroundCurrentAudio,

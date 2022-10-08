@@ -4,21 +4,16 @@ import {
     Text,
     TouchableOpacity,
     ImageBackground,
-    Modal, Platform,
     ActivityIndicator,
     Image,
     ScrollView,
-    FlatList
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
-import Colors from '../../Utitilities/AppColors';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Colors from '../../../Utitilities/AppColors';
 import { Audio } from 'expo-av';
-import { play, pause, resume, playNext } from '../../../audioController';
+import { play, pause, resume, playNext } from '../../../../audioController';
 import { 
     playInTheFirstTimeAction,
     pauseSongAction,
@@ -27,7 +22,7 @@ import {
     preperNextSongAction,
     setPostAuthorProfileAction,
     handleSeeBarAction
-} from '../../../store/actions/appActions';
+} from '../../../../store/actions/appActions';
 
 
 
@@ -55,18 +50,7 @@ const MusicBoardScreen = props => {
         MusicOnForGroundReducer
     } = appBackGroundSelector;
     
-    const blessing = () => {
-        const currentTime = new Date().getHours();
-        if(currentTime >= 5 && currentTime<12) {
-            return "Good Morning";
-        } else if(currentTime >= 12 && currentTime<18) {
-            return "Good After Noon";
-        } else if(currentTime >= 18 && currentTime<22) {
-            return "Good Evening";
-        } else {
-            return "Good Night";
-        }
-    }
+    
 
     useEffect(() => {
         function makeTopList(){
@@ -260,39 +244,10 @@ const MusicBoardScreen = props => {
     }
     
     return(
-        <ImageBackground 
-                source={ require('../../../assets/AppAssets/Logo.png') }
-                resizeMode="cover" 
-                style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:Colors.grey1}}
-                imageStyle={{opacity: 0.3}}
+        <View 
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:Colors.grey1}}
         >
             <ScrollView style={{flex:1, width: '100%',}}>
-                <View style={{
-                    width: '60%',
-                    paddingTop:10,
-                    left:10,
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    backgroundColor:Colors.grey4,
-                    borderBottomLeftRadius:50,
-                    borderBottomRightRadius:50,
-                    borderBottomWidth:2,
-                    borderLeftWidth:2,
-                    borderRightWidth:2,
-                    borderColor:'#fff'
-                }}>
-                    <Text style={{
-                        fontFamily: 'Baloo2-ExtraBold',
-                        color: '#fff',
-                        textShadowColor: Colors.red3,
-                        textShadowOffset: {width: 0, height:3},
-                        textShadowRadius:3,
-                        fontSize:18
-                    }}>
-                        Hi {user?.firstName}
-                    </Text>
-                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:16, color:Colors.red3}}>Have a {blessing()}</Text>
-                </View>
                 <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginVertical: 20 }}>
                     <View style={{width:'49%'}}>
                         {
@@ -601,17 +556,70 @@ const MusicBoardScreen = props => {
                 }
             </ScrollView>
             
-        </ImageBackground>
+        </View>
     )
 }
 
 
 
 
-export const screenOptions = navData => {
+export const screenOptions = ({navigation}) => {
+    
+    const blessing = () => {
+        const currentTime = new Date().getHours();
+        if(currentTime >= 5 && currentTime<12) {
+            return "Good Morning";
+        } else if(currentTime >= 12 && currentTime<18) {
+            return "Good After Noon";
+        } else if(currentTime >= 18 && currentTime<22) {
+            return "Good Evening";
+        } else {
+            return "Good Night";
+        }
+    }
+    
+    const moveToFeed = () => {
+        navigation.navigate('Feed');
+    }
+
+    const moveToUserChats = () => {
+        navigation.navigate("UserChatScreen");
+    }
+
     return {        
-        gestureEnabled:false,
-        tabBarLabel:'Music Board',
+        title:'Music Board',
+        headerStyle:{backgroundColor:Colors.grey1, height:110, borderBottomWidth:2},
+        headerTitleStyle:{
+            color:"#FFFFFF",
+            fontFamily:"Baloo2-ExtraBold",
+            fontSize:25
+        },
+        headerTitleAlign: 'center',
+        headerLeft: () => {
+            return  <View style={{ marginLeft: 20 }}>
+                <TouchableOpacity 
+                    onPress={moveToFeed}
+                    style={{ alignItems: 'center' }}
+                >
+                    <FontAwesome5
+                        name="newspaper"
+                        size={24}
+                        color={Colors.red3}
+                    />
+                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:10, color:'#fff'}}>Feed</Text>
+                </TouchableOpacity>
+            </View>
+        },
+        headerRight: () => {
+            return  <View style={{ marginRight: 10, alignItems: 'center' }}>
+                <Text numberOfLines={2} style={{ fontFamily:'Baloo2-Bold', fontSize:13, color: Colors.red3, bottom:20 }}>{blessing()}</Text>
+                <TouchableOpacity style={{ bottom:10 }} onPress={moveToUserChats}>
+                    <Ionicons name="chatbox-ellipses" size={24} color={Colors.grey3}/>
+                </TouchableOpacity>
+                
+            </View>
+        }
+        
     }
 }
 

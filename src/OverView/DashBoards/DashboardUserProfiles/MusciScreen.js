@@ -6,31 +6,19 @@ import {
     ImageBackground,
     TouchableOpacity,
     Image,
-    ActivityIndicator
 } from 'react-native';
 import { useDispatch, useSelector} from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import { 
-    cleanArtistPostsForDashboardProfil,
-    cleanSongReducers ,
-    cleanPlaylistReducer,
-    cleanAlbumReducer
-} from '../../ApiCalls';
-import { SwitchBetweenDashBoardStacksAction, setPostAuthorProfileAction } from '../../../store/actions/appActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Colors from '../../Utitilities/AppColors';
+import Colors from '../../../Utitilities/AppColors';
 import { 
     getArtistLatestRealeasesForDashBoardProfil,
     getArtistTop5ForDashBoardProfil,
     getAllArtistSongsForDashBoardProfil,
     getArtistPlayListsForDashBoardProfile,
     getAllArtistAlbumsForDashBoardProfile
-} from '../../ApiCalls';
-import { getAllArtistAlbumsAction } from '../../../store/actions/albumsActions';
+} from '../../../ApiCalls';
 import { 
     playInTheFirstTimeAction,
     pauseSongAction,
@@ -38,9 +26,9 @@ import {
     playNextSongAction,
     preperNextSongAction,
     handleSeeBarAction
-} from '../../../store/actions/appActions';
+} from '../../../../store/actions/appActions';
 import { Audio } from 'expo-av';
-import { play, pause, resume, playNext } from '../../../audioController';
+import { play, pause, resume, playNext } from '../../../../audioController';
 
 
 
@@ -279,7 +267,7 @@ const MusicScreen = props => {
                 && (!allArtistSongs || allArtistSongs?.length === 0) ?
                 ( 
                     <ImageBackground
-                        source={require('../../../assets/AppAssets/Logo.png')}
+                        source={require('../../../../assets/AppAssets/Logo.png')}
                         style={{flex: 1, backgroundColor:Colors.grey1, alignItems: 'center', justifyContent: 'center'}}
                         imageStyle={{opacity: 0.3}}
                     >

@@ -8,11 +8,10 @@ import {
     Image,
     ActivityIndicator
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Colors from '../../../Utitilities/AppColors';
+import Colors from '../../../../Utitilities/AppColors';
 
 
 const AudioListItemRow = ({

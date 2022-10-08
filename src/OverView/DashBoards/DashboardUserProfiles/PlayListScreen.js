@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
-import MusicGeneralHeader from '../../OverView/artist/components/MusicGeneralHeder';
-import Colors from '../../Utitilities/AppColors';
+import MusicGeneralHeader from '../../../OverView/artist/components/MusicGeneralHeder';
+import Colors from '../../../Utitilities/AppColors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector} from 'react-redux';
 import { Audio } from 'expo-av';
-import { play, pause, resume, playNext } from '../../../audioController';
+import { play, pause, resume, playNext } from '../../../../audioController';
 import { 
     playInTheFirstTimeAction,
     pauseSongAction,
@@ -15,7 +15,7 @@ import {
     playNextSongAction,
     preperNextSongAction,
     handleSeeBarAction
-} from '../../../store/actions/appActions';
+} from '../../../../store/actions/appActions';
 
 import AddSongToPlayList from './components/AddSongToPlayList';
 import OptionsModal from './components/OptionsModal';

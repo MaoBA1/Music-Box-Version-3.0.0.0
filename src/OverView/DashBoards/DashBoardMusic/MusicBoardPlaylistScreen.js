@@ -1,12 +1,12 @@
 //import liraries
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, ImageBackground, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
-import MusicGeneralHeader from '../../OverView/artist/components/MusicGeneralHeder';
-import Colors from '../../Utitilities/AppColors';
+import MusicGeneralHeader from '../../../OverView/artist/components/MusicGeneralHeder';
+import Colors from '../../../Utitilities/AppColors';
 import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Audio } from 'expo-av';
-import { play, pause, resume, playNext } from '../../../audioController';
+import { play, pause, resume, playNext } from '../../../../audioController';
 import { 
     playInTheFirstTimeAction,
     pauseSongAction,
@@ -15,7 +15,7 @@ import {
     preperNextSongAction,
     setPostAuthorProfileAction,
     handleSeeBarAction,
-} from '../../../store/actions/appActions';
+} from '../../../../store/actions/appActions';
 import {
     getAllUserPlaylist,
     getSongsByUserFavoriteGeners,
@@ -29,8 +29,8 @@ import {
     deleteArtistAlbum,
     deleteSongFromUserPlaylist,
     deleteUserPlaylist,
-} from '../../ApiCalls';
-import { deleteSongByArtistChosenAction, deleteUserPlaylistAction, deleteSongFromUserPlaylistAction } from '../../../store/actions/artistActions';
+} from '../../../ApiCalls';
+import { deleteSongByArtistChosenAction, deleteUserPlaylistAction, deleteSongFromUserPlaylistAction } from '../../../../store/actions/artistActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 

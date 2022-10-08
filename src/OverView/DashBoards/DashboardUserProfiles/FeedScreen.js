@@ -1,10 +1,10 @@
 //import liraries
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Image, Modal, ImageBackground, TouchableOpacity } from 'react-native';
-import Colors from '../../Utitilities/AppColors';
+import Colors from '../../../Utitilities/AppColors';
 import { useDispatch, useSelector} from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { subscribeToArtistPageAction, getAllUserSubScribesAction, unsubscribeToArtistPageAction } from '../../../store/actions/userActions';
+import { subscribeToArtistPageAction, getAllUserSubScribesAction, unsubscribeToArtistPageAction } from '../../../../store/actions/userActions';
 import { 
     getArtistPostsForDashboardProfileById,
     cleanArtistPostsForDashboardProfil,
@@ -12,14 +12,13 @@ import {
     cleanPlaylistReducer,
     cleanAlbumReducer,
     getArtistPostsById
-} from '../../ApiCalls';
+} from '../../../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Post from '../../components/Post';
-import Comment from '../CommentScreen';
-import AddSongFromPostToPlaylist from '../../components/AddSongFromPostToPlaylist';
+import Post from '../../../components/Post';
+import AddSongFromPostToPlaylist from '../../../components/AddSongFromPostToPlaylist';
 import { ActivityIndicator } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { getArtistSubsAction } from '../../../store/actions/artistActions';
+import { getArtistSubsAction } from '../../../../store/actions/artistActions';
 
 
 export const GenersModal = ({close}) => {
@@ -192,9 +191,7 @@ const FeedScreen = props => {
     
 
     const CloseAndOpenCommentScreen = (params) => {
-        setCommentParams(params);
-        setModalStatus('comment');
-        setIsVisble(!isVisible);
+        props.navigation.navigate("CommentScreen", {params: params});
     }
 
     const openModals = (type) => {
@@ -251,13 +248,6 @@ const FeedScreen = props => {
                         flex: 1,
                         backgroundColor:Colors.grey1
                     }}>
-                        <Modal
-                            visible={isVisible}
-                            animationType='slide'   
-        
-                        >               
-                        {modalStatus == 'comment' && <Comment func={CloseAndOpenCommentScreen} params={commentParams}/>}
-                        </Modal>
                         {addToPlaylistVisible && <AddSongFromPostToPlaylist close={setAddToPlaylistVisible} track={songForPlaylist}/>}
                         <View style={{
                             position: 'absolute',
@@ -431,7 +421,7 @@ const FeedScreen = props => {
                         !artistPosts &&
                         (
                             <ImageBackground 
-                                    source={ require('../../../assets/AppAssets/Logo.png') }
+                                    source={ require('../../../../assets/Logo.png') }
                                     resizeMode="cover" 
                                     style={{
                                         flex: 0.8,
@@ -451,7 +441,7 @@ const FeedScreen = props => {
         } else {
             return(
                 <ImageBackground 
-                        source={ require('../../../assets/AppAssets/Logo.png') }
+                        source={ require('../../../../assets/Logo.png') }
                         resizeMode="cover" 
                         style={{flex:1, alignItems: 'center', justifyContent: 'center'}}
                         imageStyle={{opacity: 0.3}}
