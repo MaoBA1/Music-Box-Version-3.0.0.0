@@ -180,7 +180,7 @@ const CommentScreen = ({navigation, route}) => {
                                         autoCorrect={false}
                                         value={commentText}
                                         onChangeText={text => setCommentText(text)}
-                                        onSubmitEditing={sendComment}
+                                        onSubmitEditing={!commentText.length === 0 && sendComment}
                                     />
                                 </View>
                                 <TouchableOpacity style={{ marginRight: 10 }} disabled={commentText.length === 0} onPress={sendComment}>
