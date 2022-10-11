@@ -40,7 +40,8 @@ import CommentScreen, {screenOptions as CommentScreenOptions} from '../OverView/
 
 
 import UserChatsScreen, { screenOptions as UserChatsScreenOptions} from '../OverView/DashBoards/Chat/UserChatsScreen';
-
+import CreateNewSingleChatScreen, { screenOptions as CreateNewSingleChatScreenOptions} from '../OverView/DashBoards/Chat/CreateNewSingleChatScreen';
+import SingleChatScreen, {screenOptions as SingleChatScreenOptions} from '../OverView/DashBoards/Chat/SingleChatScreen';
 
 import LibraryScreen, {screenOptions as LibraryScreenOptions} from '../OverView/Library/LibraryScreen';
 import SearchScreen, {screenOptions as SearchScreenOptions} from '../OverView/Search/SearchScreen';
@@ -224,6 +225,8 @@ export const DashBoardContainerStack = () => {
             <DashBoardContainerStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
             <DashBoardContainerStackNavigator.Screen name="CommentScreen" component={CommentScreen} options={CommentScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name="UserChatScreen" component={UserChatsScreen} options={UserChatsScreenOptions}/>
+            <DashBoardContainerStackNavigator.Screen name="CreateNewSingleChatScreen" component={CreateNewSingleChatScreen} options={CreateNewSingleChatScreenOptions}/>
+            <DashBoardContainerStackNavigator.Screen name="SingleChatScreen" component={SingleChatScreen} options={SingleChatScreenOptions}/>
         </DashBoardContainerStackNavigator.Navigator>
     )
 }

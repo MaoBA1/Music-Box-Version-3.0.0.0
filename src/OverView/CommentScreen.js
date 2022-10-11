@@ -74,7 +74,7 @@ const CommentScreen = ({navigation, route}) => {
                 <SafeAreaView style={{flex:1, backgroundColor:Colors.grey1}}>
                 <KeyboardAvoidingView
                     behavior="height"
-                    keyboardVerticalOffset={ 80 }
+                    keyboardVerticalOffset={ Platform.OS === "ios" ? 100 : 90 }
                     style={{flex:1}}
                 >
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
