@@ -455,6 +455,7 @@ export const screenOptions = ({navigation}) => {
             fontFamily:"Baloo2-ExtraBold",
             fontSize:25
         },
+        presentation:"transparentModal",
         header: () => {
             return <View style={{
                 backgroundColor:Colors.grey1,

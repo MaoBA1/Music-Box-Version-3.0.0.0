@@ -243,7 +243,9 @@ export const ProfileStack = () => {
             <profileStackNavigator.Screen name="CreateArtistPage" component={CreatArtistScreen} options={CreatArtistScreenOptions}/>
             <profileStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileTopBar} options={{headerShown: false}}/>
             <profileStackNavigator.Screen name="AllSingels" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
-            <profileStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
+            <profileStackNavigator.Screen name='ArtistFeed' component={FeedScreen} options={FeedScreenOptions}/>
+            <profileStackNavigator.Screen name='ArtistMusicBoard' component={MusciScreen} options={MusciScreenOptions}/>
+            <profileStackNavigator.Screen name="ArtistPlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>
             <profileStackNavigator.Screen name="SearchScreen" component={SearchToImportScreen} options={{headerShown: false}}/>
         </profileStackNavigator.Navigator>
     )

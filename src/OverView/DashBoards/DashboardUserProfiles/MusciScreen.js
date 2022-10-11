@@ -571,6 +571,7 @@ export const screenOptions = ({navigation}) => {
             fontFamily:"Baloo2-ExtraBold",
             fontSize:25
         },
+        presentation:"transparentModal",
         header: () => {
             return <View style={{
                 backgroundColor:Colors.grey1,
@@ -584,7 +585,7 @@ export const screenOptions = ({navigation}) => {
                     justifyContent: "flex-end",
                     paddingBottom:10,
                     paddingLeft: 10
-                }} onPress={() => navigation.navigate("Feed")}>
+                }} onPress={navigation.goBack}>
                     <Entypo 
                         name={'home'}
                         color={"#fff"}
