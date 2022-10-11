@@ -23,6 +23,9 @@ import {
     setPostAuthorProfileAction,
     handleSeeBarAction
 } from '../../../../store/actions/appActions';
+import { Avatar } from 'react-native-elements';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 
@@ -223,7 +226,7 @@ const MusicBoardScreen = props => {
     const openToArtistScreen = (artist) => {
         try {
             dispatch(setPostAuthorProfileAction(artist))
-            props.navigation.navigate("ProfileStack");
+            props.navigation.navigate("ArtistFeed");
         }catch(error) {
             console.log(error.message);
         }        
@@ -245,11 +248,11 @@ const MusicBoardScreen = props => {
     
     return(
         <View 
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:Colors.grey1}}
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:Colors.grey4}}
         >
             <ScrollView style={{flex:1, width: '100%',}}>
                 <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginVertical: 20 }}>
-                    <View style={{width:'49%'}}>
+                    <View style={{width:'47%'}}>
                         {
                             topList?.length > 0
                             && topList?.slice(0, topList.length/2)
@@ -259,31 +262,29 @@ const MusicBoardScreen = props => {
                                         item.type === 'playlist' &&
                                         <TouchableOpacity 
                                             onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.tracks, screenName: item.playlistName})} 
-                                            key={index} style={{borderRadius:10, margin:2, backgroundColor:Colors.grey4, flexDirection:'row', alignItems: 'center', widht:'45%'}}
+                                            key={index} style={{borderRadius:5, margin:2, backgroundColor:Colors.grey3, flexDirection:'row', alignItems: 'center', widht:'45%'}}
                                         >
                                             <View style={{width:'29%'}}>
                                                 <Image
                                                     source={{uri: item?.playlistImage}}
-                                                    style={{width: 50, height: 50, borderTopLeftRadius:10, borderBottomLeftRadius:10}}
+                                                    style={{width: 50, height: 50, borderTopLeftRadius:5, borderBottomLeftRadius:5}}
                                                 />
                                             </View>
-                                            <View style={{width:'65%', alignItems:'flex-start'}}>
+                                            <View style={{width:'60%', alignItems:'flex-start', marginLeft:5}}>
                                                 <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', fontSize:15}} numberOfLines={1}>
                                                     {item.playlistName}
                                                 </Text>
-                                                <View style={{margin:5}}>
-                                                    <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:12}}>{item?.tracks?.length} tracks</Text>
-                                                </View>
+                                                <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey2, fontSize:12}}>{item?.tracks?.length} tracks</Text>
                                             </View>
                                         </TouchableOpacity>
                                     }
                                     {
                                         item.type === 'song' &&
-                                        <TouchableOpacity onPress={() => handleAudioPress(item, index, [item])} key={index} style={{borderRadius:10, margin:2, backgroundColor:Colors.grey4, flexDirection:'row', alignItems: 'center', widht:'45%'}}>
+                                        <TouchableOpacity onPress={() => handleAudioPress(item, index, [item])} key={index} style={{borderRadius:5, margin:2, backgroundColor:Colors.grey3, flexDirection:'row', alignItems: 'center', widht:'45%'}}>
                                             <View style={{width:'29%'}}>
                                             <ImageBackground
                                                 style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}
-                                                imageStyle={{borderTopLeftRadius:10, borderBottomLeftRadius:10}}
+                                                imageStyle={{borderTopLeftRadius:5, borderBottomLeftRadius:5, resizeMode:"cover"}}
                                                 source={{uri: item?.trackImage}}
                                             >
 
@@ -326,13 +327,11 @@ const MusicBoardScreen = props => {
 
                                             </ImageBackground>
                                             </View>
-                                            <View style={{width:'65%', alignItems: 'flex-start'}}>
+                                            <View style={{width:'60%', alignItems: 'flex-start', marginLeft:5}}>
                                                 <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', fontSize:15}} numberOfLines={1}>
                                                     {item.trackName}
                                                 </Text>
-                                                <View style={{margin:5}}>
-                                                    <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:12}}>{item?.artistName}</Text>
-                                                </View>
+                                                <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey2, fontSize:12}}>{item?.artistName}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     }
@@ -340,7 +339,7 @@ const MusicBoardScreen = props => {
                             )
                         }
                     </View>
-                    <View style={{width:'49%'}}>
+                    <View style={{width:'47%'}}>
                         {
                             topList?.length > 0
                             && topList?.slice(topList?.length/2, topList?.length)
@@ -350,31 +349,29 @@ const MusicBoardScreen = props => {
                                         item.type === 'playlist' &&
                                         <TouchableOpacity 
                                             onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.tracks, screenName: item.playlistName})}
-                                            key={index} style={{borderRadius:10, margin:2, backgroundColor:Colors.grey4, flexDirection:'row', alignItems: 'center', widht:'45%'}}
+                                            key={index} style={{borderRadius:5, margin:2, backgroundColor:Colors.grey3, flexDirection:'row', alignItems: 'center', widht:'45%'}}
                                         >
                                             <View style={{width:'29%'}}>
                                                 <Image
                                                     source={{uri: item?.playlistImage}}
-                                                    style={{width: 50, height: 50, borderTopLeftRadius:10, borderBottomLeftRadius:10}}
+                                                    style={{width: 50, height: 50, borderTopLeftRadius:5, borderBottomLeftRadius:5}}
                                                 />
                                             </View>
-                                            <View style={{width:'65%', alignItems: 'flex-start'}}>
+                                            <View style={{width:'60%', alignItems: 'flex-start', marginLeft:5}}>
                                                 <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', fontSize:15}} numberOfLines={1}>
                                                     {item.playlistName}
                                                 </Text>
-                                                <View style={{margin:5}}>
-                                                    <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:12}}>{item?.tracks?.length} tracks</Text>
-                                                </View>
+                                                <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey2, fontSize:12}}>{item?.tracks?.length} tracks</Text>
                                             </View>
                                         </TouchableOpacity>
                                     }
                                     {
                                         item.type === 'song' &&
-                                        <TouchableOpacity onPress={() => handleAudioPress(item, index, [item])} key={index} style={{borderRadius:10, margin:2, backgroundColor:Colors.grey4, flexDirection:'row', alignItems: 'center', widht:'45%'}}>
+                                        <TouchableOpacity onPress={() => handleAudioPress(item, index, [item])} key={index} style={{borderRadius:5, margin:2, backgroundColor:Colors.grey3, flexDirection:'row', alignItems: 'center', widht:'45%'}}>
                                             <View style={{width:'29%'}}>
                                             <ImageBackground
                                                 style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}
-                                                imageStyle={{borderTopLeftRadius:10, borderBottomLeftRadius:10}}
+                                                imageStyle={{borderTopLeftRadius:5, borderBottomLeftRadius:5, resizeMode:"cover"}}
                                                 source={{uri: item?.trackImage}}
                                             >
 
@@ -417,13 +414,11 @@ const MusicBoardScreen = props => {
 
                                             </ImageBackground>
                                             </View>
-                                            <View style={{width:'65%', alignItems: 'flex-start'}}>
+                                            <View style={{width:'60%', alignItems: 'flex-start', marginLeft:5}}>
                                                 <Text style={{fontFamily:'Baloo2-Medium', color:'#fff', fontSize:15}} numberOfLines={1}>
                                                     {item.trackName}
                                                 </Text>
-                                                <View style={{margin:5}}>
-                                                    <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey3, fontSize:12}}>{item?.artistName}</Text>
-                                                </View>
+                                                <Text style={{fontFamily:'Baloo2-Medium', color:Colors.grey2, fontSize:12}} numberOfLines={1}>{item?.artistName}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     }
@@ -431,12 +426,14 @@ const MusicBoardScreen = props => {
                             )
                         }
                     </View>
+                    
                 </View>
+                <View style={{ marginTop: 25 }}/>
                 {
                     songsByUserFavoriteGeners && getCountOfSongsOrArtist(songsByUserFavoriteGeners, 'songs') > 0 && (
                     <>
-                        <View style={{borderBottomWidth: 1, borderColor:'#fff', width:'70%', left:10}}>
-                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:18}}>
+                        <View style={{ left:10 }}>
+                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>
                                 Songs from your favorite genres
                             </Text>
                         </View>
@@ -446,20 +443,20 @@ const MusicBoardScreen = props => {
                                     songsByUserFavoriteGeners?.map((item, index) =>
                                         item?.songs?.length > 0 &&
                                         <View key={index}>
-                                            <Text style={{fontFamily:'Baloo2-Bold', color:Colors.red3, left:10, margin:10, fontSize:16}}>
+                                            <Text style={{fontFamily:'Baloo2-Bold', color:Colors.red3, left:10, marginTop:10, fontSize:18}}>
                                                 {item?.gener?.generName}
                                             </Text>
-                                            <ScrollView horizontal style={{backgroundColor: Colors.grey4, paddingTop:10}}>
+                                            <ScrollView horizontal>
                                                 {
                                                     item?.songs?.map((item, index, list) =>
                                                         <TouchableOpacity onPress={() => handleAudioPress(item, index, list)} key={index} style={{
-                                                            margin: 5,
-                                                            width:90,
+                                                            margin: 10,
+                                                            width:140,
                                                             alignItems: 'center'
                                                         }}>
                                                             <ImageBackground
-                                                                style={{width:80, height:80, alignItems: 'center', justifyContent: 'center'}}
-                                                                imageStyle={{resizeMode:'stretch'}}
+                                                                style={{width:140, height:140, alignItems: 'center', justifyContent: 'center'}}
+                                                                imageStyle={{resizeMode:"cover", borderRadius:10}}
                                                                 source={{uri: item?.trackImage}}
                                                             >
 
@@ -513,11 +510,12 @@ const MusicBoardScreen = props => {
                         </View>
                     </>)
                 }
+                <View style={{ marginTop: 25 }}/>
                 {
                     artistsByUserFavoriteGeners && getCountOfSongsOrArtist(artistsByUserFavoriteGeners, 'artists') > 0 &&
                     <>
-                        <View style={{borderBottomWidth: 1, borderColor:'#fff', width:'70%', left:10, marginTop:20}}>
-                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:18}}>
+                        <View style={{ left:10, marginTop:20 }}>
+                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>
                                 Artists from your favorite genres
                             </Text>
                         </View>
@@ -527,20 +525,20 @@ const MusicBoardScreen = props => {
                                     artistsByUserFavoriteGeners?.map((item, index) =>
                                         item?.artists?.length > 0 &&
                                         <View key={index}>
-                                            <Text style={{fontFamily:'Baloo2-Bold', color:Colors.red3, left:10, margin:10, fontSize:16}}>
+                                            <Text style={{fontFamily:'Baloo2-Bold', color:Colors.red3, left:10, marginTop:10, fontSize:18}}>
                                                 {item?.gener?.generName}
                                             </Text>
                                             <ScrollView horizontal style={{backgroundColor: Colors.grey4, paddingTop:10}}>
                                                 {
                                                     item?.artists?.map((item, index) =>
                                                         <TouchableOpacity onPress={() => openToArtistScreen(item)} key={index} style={{
-                                                            margin: 5,
-                                                            width:90,
+                                                            margin: 10,
+                                                            width:140,
                                                             alignItems: 'center'
                                                         }}>
                                                             <Image
                                                                 source={{uri: item?.profileImage}}
-                                                                style={{width:80, height:80, resizeMode:'stretch'}}
+                                                                style={{width:140, height:140, resizeMode:'stretch', borderRadius:10}}
                                                             />
                                                             <Text numberOfLines={1} style={{marginTop:5, fontFamily:'Baloo2-Bold', color:'#fff'}}>{item?.artistName}</Text>
                                                         </TouchableOpacity>
@@ -565,19 +563,6 @@ const MusicBoardScreen = props => {
 
 export const screenOptions = ({navigation}) => {
     
-    const blessing = () => {
-        const currentTime = new Date().getHours();
-        if(currentTime >= 5 && currentTime<12) {
-            return "Good Morning";
-        } else if(currentTime >= 12 && currentTime<18) {
-            return "Good After Noon";
-        } else if(currentTime >= 18 && currentTime<22) {
-            return "Good Evening";
-        } else {
-            return "Good Night";
-        }
-    }
-    
     const moveToFeed = () => {
         navigation.navigate('Feed');
     }
@@ -594,32 +579,70 @@ export const screenOptions = ({navigation}) => {
             fontFamily:"Baloo2-ExtraBold",
             fontSize:25
         },
-        headerTitleAlign: 'center',
-        headerLeft: () => {
-            return  <View style={{ marginLeft: 20 }}>
-                <TouchableOpacity 
-                    onPress={moveToFeed}
-                    style={{ alignItems: 'center' }}
-                >
-                    <FontAwesome5
-                        name="newspaper"
-                        size={24}
-                        color={Colors.red3}
+        header: () => {
+            return <View style={{
+                backgroundColor:Colors.grey1,
+                height:Platform.OS === 'ios' ? 100 : 80,
+                borderBottomWidth:2,
+                borderBottomColor:Colors.grey3,
+                flexDirection:'row',
+            }}>
+                <View style={{
+                    alignItems: "center",
+                    width: '35%',
+                    paddingLeft:10,
+                    paddingTop: Platform.OS === 'ios' ? 30 : 10,
+                    flexDirection: 'row',
+                }}>
+                    <Avatar
+                        rounded
+                        source={ require('../../../../assets/Logo.png') }
+                        size={35}
                     />
-                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:10, color:'#fff'}}>Feed</Text>
-                </TouchableOpacity>
-            </View>
-        },
-        headerRight: () => {
-            return  <View style={{ marginRight: 10, alignItems: 'center' }}>
-                <Text numberOfLines={2} style={{ fontFamily:'Baloo2-Bold', fontSize:13, color: Colors.red3, bottom:20 }}>{blessing()}</Text>
-                <TouchableOpacity style={{ bottom:10 }} onPress={moveToUserChats}>
-                    <Ionicons name="chatbox-ellipses" size={24} color={Colors.grey3}/>
-                </TouchableOpacity>
-                
+                    <Text style={{
+                        fontFamily: 'Baloo2-ExtraBold',
+                        fontSize:20,
+                        color: Colors.red3,
+                        top:2.5
+                    }}>Music Box</Text>
+                </View>
+                <View style={{
+                    width:"30%",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    paddingBottom:5
+                }}>
+                    <Text style={{
+                        fontFamily: 'Baloo2-Bold',
+                        color: "#fff",
+                        fontSize:16
+                    }}>Music Board</Text>
+                </View>
+                <View style={{
+                    width:"35%",
+                    flexDirection: 'row',
+                    alignItems: "center",
+                    justifyContent:"flex-end",
+                    paddingRight:10,
+                    paddingTop: Platform.OS === 'ios' ? 30 : 10,
+                }}>
+                    <Ionicons 
+                        name="chatbox-ellipses"
+                        size={24}
+                        color={Colors.grey3}
+                        onPress={moveToUserChats}
+                        style={{margin:5}}
+                    />
+                    <MaterialCommunityIcons
+                        name="newspaper-variant-multiple"
+                        size={24}
+                        style={{margin:5}}
+                        color={Colors.red3}
+                        onPress={moveToFeed}
+                    />
+                </View>
             </View>
         }
-        
     }
 }
 

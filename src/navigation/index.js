@@ -31,8 +31,8 @@ import FirstUseScreen, {screenOptions as FirstUseScreenOptions} from '../FirstUs
     // DashBoard
 import DashBoardScreen, {screenOptions as DashBoardScreenOptions} from '../OverView/DashBoards/MainDashBoard/DashBoardScreen';
 import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/DashBoards/DashBoardMusic/MusicBoard';
-import FeedScreen from '../OverView/DashBoards/DashboardUserProfiles/FeedScreen';
-import MusciScreen from '../OverView/DashBoards/DashboardUserProfiles/MusciScreen';
+import FeedScreen, {screenOptions as FeedScreenOptions} from '../OverView/DashBoards/DashboardUserProfiles/FeedScreen';
+import MusciScreen, {screenOptions as MusciScreenOptions} from '../OverView/DashBoards/DashboardUserProfiles/MusciScreen';
 import PlayListScreen from '../OverView/DashBoards/DashboardUserProfiles/PlayListScreen';
 import MusicBoardPlaylistScreen from '../OverView/DashBoards/DashBoardMusic/MusicBoardPlaylistScreen';
 import MenuScreen, {screenOptions as MenuScreenOptions} from '../OverView/Menu/MenuScreen';
@@ -146,42 +146,43 @@ export const DashBoardTopBarStack = () => {
     )
 }
 
-const DashBoardProfileTopStackNavigator = createMaterialTopTabNavigator();
-export const DashBoardProfileTopBarStack = () => {
-    return(
-        <DashBoardProfileTopStackNavigator.Navigator>
-            <DashBoardProfileTopStackNavigator.Group screenOptions={{
-            tabBarLabelStyle: {
-                fontFamily: 'Baloo2-Bold',
-                fontSize:16,            
-            },
-            tabBarStyle:{
-                backgroundColor:Colors.grey1,
-                paddingTop:Platform.OS == 'ios' ? 30 : 10,
+// const DashBoardArtistProfileStackNavigator = createStackNavigator();
+// export const DashBoardArtistProfileStack = () => {
+//     return(
+//         <DashBoardArtistProfileStackNavigator.Navigator>
+//             <DashBoardArtistProfileStackNavigator.Group screenOptions={{
+//             tabBarLabelStyle: {
+//                 fontFamily: 'Baloo2-Bold',
+//                 fontSize:16,            
+//             },
+//             tabBarStyle:{
+//                 backgroundColor:Colors.grey1,
+//                 paddingTop:Platform.OS == 'ios' ? 30 : 10,
                 
-            },
+//             },
             
-            tabBarIndicatorStyle:{backgroundColor:Colors.red3},
-            tabBarActiveTintColor:Colors.red3,
-            tabBarInactiveTintColor:Colors.grey3,
-            tabBarPressColor:Colors.red3,
-            indicatorStyle:{backgroundColor:Colors.red1}
-        }}>
-                <DashBoardProfileTopStackNavigator.Screen name='Feed' component={FeedScreen}/>
-                <DashBoardProfileTopStackNavigator.Screen name='Music Board' component={MusciScreen}/>
-            </DashBoardProfileTopStackNavigator.Group>
-        </DashBoardProfileTopStackNavigator.Navigator>
-    )
-}
-const profiledashBoardStackNavigator = createStackNavigator();
-export const ProfiledashBoardStack = () => {
-    return(
-        <profiledashBoardStackNavigator.Navigator>
-            <profiledashBoardStackNavigator.Screen name="DashBoardProfile" component={DashBoardProfileTopBarStack} options={{headerShown: false}}/> 
-            <profiledashBoardStackNavigator.Screen name="PlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>                        
-        </profiledashBoardStackNavigator.Navigator>
-    )
-}
+//             tabBarIndicatorStyle:{backgroundColor:Colors.red3},
+//             tabBarActiveTintColor:Colors.red3,
+//             tabBarInactiveTintColor:Colors.grey3,
+//             tabBarPressColor:Colors.red3,
+//             indicatorStyle:{backgroundColor:Colors.red1}
+//         }}>
+//                 <DashBoardArtistProfileStackNavigator.Screen name='Feed' component={FeedScreen}/>
+//                 <DashBoardArtistProfileStackNavigator.Screen name='Music Board' component={MusciScreen}/>
+//             </DashBoardArtistProfileStackNavigator.Group>
+//         </DashBoardArtistProfileStackNavigator.Navigator>
+//     )
+// }
+// const profiledashBoardStackNavigator = createStackNavigator();
+// export const ProfiledashBoardStack = () => {
+//     return(
+//         <profiledashBoardStackNavigator.Navigator>
+//             <profiledashBoardStackNavigator.Screen name='Feed' component={FeedScreen}/>
+//             <profiledashBoardStackNavigator.Screen name='Music Board' component={MusciScreen}/> 
+//             <profiledashBoardStackNavigator.Screen name="PlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>                        
+//         </profiledashBoardStackNavigator.Navigator>
+//     )
+// }
 
 
 const ArtistProfileTopStackNavigator = createMaterialTopTabNavigator();
@@ -221,7 +222,9 @@ export const DashBoardContainerStack = () => {
         <DashBoardContainerStackNavigator.Navigator initialRouteName='Feed'>
             <DashBoardContainerStackNavigator.Screen name='Feed' component={DashBoardScreen} options={DashBoardScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name='Music Board' component={MusicBoard} options={MusicBoardScreenOptions}/>
-            <DashBoardContainerStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
+            <DashBoardContainerStackNavigator.Screen name='ArtistFeed' component={FeedScreen} options={FeedScreenOptions}/>
+            <DashBoardContainerStackNavigator.Screen name='ArtistMusicBoard' component={MusciScreen} options={MusciScreenOptions}/>
+            <DashBoardContainerStackNavigator.Screen name="ArtistPlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>
             <DashBoardContainerStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
             <DashBoardContainerStackNavigator.Screen name="CommentScreen" component={CommentScreen} options={CommentScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name="UserChatScreen" component={UserChatsScreen} options={UserChatsScreenOptions}/>

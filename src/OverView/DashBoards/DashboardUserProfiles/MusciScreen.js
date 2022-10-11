@@ -29,7 +29,8 @@ import {
 } from '../../../../store/actions/appActions';
 import { Audio } from 'expo-av';
 import { play, pause, resume, playNext } from '../../../../audioController';
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
 import AudioListItemRow from './components/AudioListItemRow';
@@ -227,19 +228,6 @@ const MusicScreen = props => {
 
     return (
         <>
-        <View style={{backgroundColor: Colors.grey4}}>
-            <Entypo
-                name="arrow-left"
-                style={{
-                    left:8,
-                    shadowColor:'#000', shadowOffset:{width:0, height:3},
-                    shadowOpacity:0.5, 
-                }}
-                size={35}
-                color={Colors.red3}
-                onPress={backToHomePage}
-            />
-        </View>
         {
             optionIsVisible && 
             <OptionsModal
@@ -570,6 +558,74 @@ const MusicScreen = props => {
     );
     
 };
+
+export const screenOptions = ({navigation}) => {
+    const moveToFeedScreen = () => {
+        navigation.navigate("ArtistFeed")
+    }
+    return {        
+        gestureEnabled:false,
+        headerStyle:{backgroundColor:Colors.grey1, height:Platform.OS === 'ios' ? 110 : 90, borderBottomWidth:2, borderBottomColor:Colors.grey3},
+        headerTitleStyle:{
+            color:"#FFFFFF",
+            fontFamily:"Baloo2-ExtraBold",
+            fontSize:25
+        },
+        header: () => {
+            return <View style={{
+                backgroundColor:Colors.grey1,
+                height:Platform.OS === 'ios' ? 85 : 65,
+                borderBottomWidth:2,
+                borderBottomColor:Colors.grey3,
+                flexDirection:'row',
+            }}>
+                <TouchableOpacity style={{
+                    width:"10%",
+                    justifyContent: "flex-end",
+                    paddingBottom:10,
+                    paddingLeft: 10
+                }} onPress={() => navigation.navigate("Feed")}>
+                    <Entypo 
+                        name={'home'}
+                        color={"#fff"}
+                        size={24}
+                    />
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={{
+                    flexDirection:'row',
+                    width:"45%",
+                    justifyContent: 'center',
+                    alignItems: "flex-end",
+                    paddingBottom:5,
+                }} onPress={moveToFeedScreen}>
+                    <MaterialCommunityIcons
+                        name="newspaper-variant-multiple"
+                        size={30}
+                        color={"#ffff"}
+                    />
+                    <Text style={{fontFamily: 'Baloo2-Bold', color: "#ffff", marginLeft:5, fontSize:20}}>Feed</Text>
+                </TouchableOpacity>
+
+                <View style={{
+                    flexDirection:'row',
+                    width:"30%",
+                    justifyContent: 'center',
+                    alignItems: "flex-end",
+                    paddingBottom:5,
+                }}>
+                    <FontAwesome
+                        name="music"
+                        size={30}
+                        color={Colors.red3}
+                    />
+                    <Text style={{fontFamily: 'Baloo2-Bold', color:Colors.red3, marginLeft:5, fontSize:20}}>Music</Text>
+                </View>
+                
+            </View>
+        }
+    }
+}
 
 
 export default MusicScreen;

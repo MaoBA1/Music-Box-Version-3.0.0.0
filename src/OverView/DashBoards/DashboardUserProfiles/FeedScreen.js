@@ -1,6 +1,6 @@
 //import liraries
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Image, Modal, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, Modal, ImageBackground, TouchableOpacity, Platform } from 'react-native';
 import Colors from '../../../Utitilities/AppColors';
 import { useDispatch, useSelector} from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -18,6 +18,8 @@ import Post from '../../../components/Post';
 import AddSongFromPostToPlaylist from '../../../components/AddSongFromPostToPlaylist';
 import { ActivityIndicator } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { getArtistSubsAction } from '../../../../store/actions/artistActions';
 
 
@@ -140,6 +142,7 @@ const FeedScreen = props => {
     const [genersVisible, setGenersVisible] = useState(false);
     const [skillsVisible, setSkillsVisible] = useState(false);
     let [isUserSubscribe, setIsUserSubscribe] = useState(false);
+
     const backToHomePage = () => {
         props.navigation.goBack(null);
         try {
@@ -187,8 +190,6 @@ const FeedScreen = props => {
         isUserSub();
         getAllUserSubScribes();
     },[])
-
-    
 
     const CloseAndOpenCommentScreen = (params) => {
         props.navigation.navigate("CommentScreen", {params: params});
@@ -257,17 +258,7 @@ const FeedScreen = props => {
                             justifyContent: 'space-between', 
                             flexDirection:'row',
                         }}>
-                            <Entypo
-                                name="arrow-left"
-                                style={{
-                                    left:8,
-                                    shadowColor:'#000', shadowOffset:{width:0, height:3},
-                                    shadowOpacity:0.5, 
-                                }}
-                                size={35}
-                                color={Colors.red3}
-                                onPress={backToHomePage}
-                            />
+                            <View></View>
                             <View style={{padding:7}}>
                                 {
                                     isUserSubscribe?
@@ -452,5 +443,73 @@ const FeedScreen = props => {
         }
     }
     
+export const screenOptions = ({navigation}) => {
+    const moveToMusicScreen = () => {
+        navigation.navigate("ArtistMusicBoard")
+    }
+    return {        
+        gestureEnabled:false,
+        headerStyle:{backgroundColor:Colors.grey1, height:Platform.OS === 'ios' ? 110 : 90, borderBottomWidth:2, borderBottomColor:Colors.grey3},
+        headerTitleStyle:{
+            color:"#FFFFFF",
+            fontFamily:"Baloo2-ExtraBold",
+            fontSize:25
+        },
+        header: () => {
+            return <View style={{
+                backgroundColor:Colors.grey1,
+                height:Platform.OS === 'ios' ? 85 : 65,
+                borderBottomWidth:2,
+                borderBottomColor:Colors.grey3,
+                flexDirection:'row',
+            }}>
+                <TouchableOpacity style={{
+                    width:"10%",
+                    justifyContent: "flex-end",
+                    paddingBottom:10,
+                    paddingLeft: 10
+                }} onPress={navigation.goBack}>
+                    <Entypo 
+                        name={'home'}
+                        color={"#fff"}
+                        size={24}
+                    />
+                </TouchableOpacity>
+                
+                <View style={{
+                    flexDirection:'row',
+                    width:"45%",
+                    justifyContent: 'center',
+                    alignItems: "flex-end",
+                    paddingBottom:5,
+                }}>
+                    <MaterialCommunityIcons
+                        name="newspaper-variant-multiple"
+                        size={30}
+                        color={Colors.red3}
+                    />
+                    <Text style={{fontFamily: 'Baloo2-Bold', color: Colors.red3, marginLeft:5, fontSize:20}}>Feed</Text>
+                </View>
+
+                <TouchableOpacity style={{
+                    flexDirection:'row',
+                    width:"30%",
+                    justifyContent: 'center',
+                    alignItems: "flex-end",
+                    paddingBottom:5,
+                }} onPress={moveToMusicScreen}>
+                    <FontAwesome
+                        name="music"
+                        size={30}
+                        color={"#fff"}
+                    />
+                    <Text style={{fontFamily: 'Baloo2-Bold', color:'#fff', marginLeft:5, fontSize:20}}>Music</Text>
+                </TouchableOpacity>
+                
+            </View>
+        }
+    }
+}
+
 
 export default FeedScreen;

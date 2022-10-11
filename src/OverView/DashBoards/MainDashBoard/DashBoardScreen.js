@@ -22,7 +22,8 @@ import {
 import AddSongFromPostToPlaylist from '../../../components/AddSongFromPostToPlaylist';
 import Colors from '../../../Utitilities/AppColors';
 import { Avatar } from 'react-native-elements';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const DashBoardScreen = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const DashBoardScreen = ({ navigation }) => {
                                     openCommentScreen={CloseAndOpenCommentScreen} 
                                     openAddToPlaylist={() => setAddToPlaylistVisible(true)}
                                     setSongForPlaylist={setSongForPlaylist}
-                                    moveToPostAuthorProfile={() => navigation.navigate("ProfileStack")}
+                                    moveToPostAuthorProfile={() => navigation.navigate("ArtistFeed")}
                                 />
                             }
                             
@@ -137,47 +138,70 @@ export const screenOptions = ({navigation}) => {
             fontFamily:"Baloo2-ExtraBold",
             fontSize:25
         },
-        
-        headerTitleAlign: 'center',
-        headerLeft: () => {
-            return  <View style={{ 
-                marginLeft: 10,
-                marginBottom:10,
-                flexDirection: 'row',
-                justifyContent: "space-between",
-                width:80,
-                alignItems: 'center'
+        header: () => {
+            return <View style={{
+                backgroundColor:Colors.grey1,
+                height:Platform.OS === 'ios' ? 100 : 80,
+                borderBottomWidth:2,
+                borderBottomColor:Colors.grey3,
+                flexDirection:'row',
             }}>
-                <TouchableOpacity 
-                    onPress={logout}
-                    style={{ alignItems: 'center' }}
-                >
-                    <Avatar 
-                        rounded
-                        source={{ uri: userAvatar}}
-                    />
-                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:10, color:'#fff'}}>Logout</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={moveToUserChats}>
-                    <Ionicons name="chatbox-ellipses" size={24} color={Colors.grey3}/>
-                </TouchableOpacity>
-            </View>
-        },
-        headerRight: () => {
-            return  <View style={{ marginRight: 20, marginBottom:10 }}>
-               <TouchableOpacity 
-                    onPress={moveToMusicBoard}
-                    style={{ alignItems: 'center' }}
-                >
-                    <Avatar 
+                <View style={{
+                    alignItems: "center",
+                    width: '40%',
+                    paddingLeft:10,
+                    paddingTop: Platform.OS === 'ios' ? 30 : 10,
+                    flexDirection: 'row',
+                }}>
+                    <Avatar
                         rounded
                         source={ require('../../../../assets/Logo.png') }
+                        size={35}
                     />
-                    <Text style={{fontFamily:'Baloo2-Bold', fontSize:10, color:'#fff'}}>Music Board</Text>
-                </TouchableOpacity>
+                    <Text style={{
+                        fontFamily: 'Baloo2-ExtraBold',
+                        fontSize:20,
+                        color: Colors.red3,
+                        top:2.5
+                    }}>Music Box</Text>
+                </View>
+                <View style={{
+                    width:"20%",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    paddingBottom:5
+                }}>
+                    <Text style={{
+                        fontFamily: 'Baloo2-Bold',
+                        color: "#fff",
+                        fontSize:16
+                    }}>Feed</Text>
+                </View>
+                <View style={{
+                    width:"40%",
+                    flexDirection: 'row',
+                    alignItems: "center",
+                    justifyContent:"flex-end",
+                    paddingRight:10,
+                    paddingTop: Platform.OS === 'ios' ? 30 : 10,
+                }}>
+                    <Ionicons 
+                        name="chatbox-ellipses"
+                        size={24}
+                        color={Colors.grey3}
+                        onPress={moveToUserChats}
+                        style={{margin:5}}
+                    />
+                    <FontAwesome
+                        name="music"
+                        size={24}
+                        style={{margin:5}}
+                        color={Colors.red3}
+                        onPress={moveToMusicBoard}
+                    />
+                </View>
             </View>
         }
-        
     }
 }
 

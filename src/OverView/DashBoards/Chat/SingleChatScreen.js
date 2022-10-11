@@ -12,6 +12,7 @@ import { collection, addDoc, serverTimestamp, onSnapshot, Timestamp  } from "fir
 import { useSelector } from 'react-redux';
 import { Avatar } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
+import { ActivityIndicator } from 'react-native';
 
 const SingleChatScreen = ({ navigation, route }) => {
     // reciver 
@@ -125,9 +126,34 @@ const SingleChatScreen = ({ navigation, route }) => {
                     )
                     :
                     (
-                        <View>
-
-                        </View>
+                        <>
+                            {
+                                userId === reciverId?
+                                (
+                                    <View style={{
+                                        padding:10,
+                                        backgroundColor: Colors.red3,
+                                        borderTopLeftRadius:20,
+                                        borderTopRightRadius:20,
+                                        borderBottomLeftRadius:20
+                                    }}>
+                                        <ActivityIndicator size="small" color={Colors.red3}/>
+                                    </View>
+                                )
+                                :
+                                (
+                                    <View style={{
+                                        padding:10,
+                                        backgroundColor: Colors.grey2,
+                                        borderTopLeftRadius:20,
+                                        borderTopRightRadius:20,
+                                        borderBottomRightRadius:20
+                                    }}>
+                                        <ActivityIndicator size="small" color={Colors.red3}/>
+                                    </View>
+                                )
+                            }
+                        </>
                     )
 
                 }}
