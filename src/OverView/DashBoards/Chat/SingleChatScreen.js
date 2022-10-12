@@ -10,9 +10,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { db } from '../../../../firebase';
 import { collection, addDoc, serverTimestamp, onSnapshot, Timestamp  } from "firebase/firestore";
 import { useSelector } from 'react-redux';
-import { Avatar } from 'react-native-elements';
+import { Avatar, Input } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { ActivityIndicator } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 
 const SingleChatScreen = ({ navigation, route }) => {
     // reciver 
@@ -86,6 +87,29 @@ const SingleChatScreen = ({ navigation, route }) => {
                     avatar: reciverAvatar,
                 }}
                 showAvatarForEveryMessage={true}
+                renderInputToolbar={
+                    () => {
+                        return <View style={{
+                            flexDirection:"row",
+                            borderWidth:2,
+                            top:35,
+                        }}>
+                            <TextInput
+                                style={{
+                                    borderWidth:2,
+                                    backgroundColor:Colors.grey2,
+                                    borderRadius:20,
+                                    height:40,
+                                    width:"85%",
+                                    marginLeft:5,
+                                    paddingHorizontal:10,
+                                    fontFamily:"Baloo2-Bold"
+                                }}
+                                placeholder="Type a Message...."
+                            />
+                        </View>
+                    }
+                }
                 renderBubble={({currentMessage}) => {
                     const userId = currentMessage?.user?._id;
                     const userName = currentMessage?.user?.name;
