@@ -30,10 +30,10 @@ const CommentScreen = ({navigation, route}) => {
     const dispatch = useDispatch();
     const userDataSelector = useSelector(state => state.UserReducer);
     const user = userDataSelector?.UserReducer?.message;
-    const post = route.params.params.post;
-    const postAuthorId = route.params.params.post.postAuthorId;
-    const postAuthorName = route.params.params.postAuthor;
-    const postAuthorImage = route.params.params.postAuthorImage;    
+    const post = route?.params?.params?.post || route?.params?.post;
+    const postAuthorId = route?.params?.params?.post?.postAuthorId || route?.params?.post?.postAuthorId;
+    const postAuthorName = route?.params?.params?.postAuthor || route?.params?.postAuthor;
+    const postAuthorImage = route?.params?.params?.postAuthorImage || route?.params?.postAuthorImage;    
     let commentsSelector = useSelector(state => state.Post?.postCommentReducer);
     const [commentText, setCommentText] = useState('');
     const [keyboardStatus, setKeyboardStatus] = useState(undefined);

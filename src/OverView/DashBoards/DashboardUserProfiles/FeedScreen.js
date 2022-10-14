@@ -1,4 +1,3 @@
-//import liraries
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Image, Modal, ImageBackground, TouchableOpacity, Platform } from 'react-native';
 import Colors from '../../../Utitilities/AppColors';
@@ -19,8 +18,11 @@ import AddSongFromPostToPlaylist from '../../../components/AddSongFromPostToPlay
 import { ActivityIndicator } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { getArtistSubsAction } from '../../../../store/actions/artistActions';
+import { db } from '../../../../firebase';
+import { collection, addDoc, onSnapshot, getDocs, query, where, } from "firebase/firestore";
 
 
 export const GenersModal = ({close}) => {
@@ -142,17 +144,50 @@ const FeedScreen = props => {
     const [genersVisible, setGenersVisible] = useState(false);
     const [skillsVisible, setSkillsVisible] = useState(false);
     let [isUserSubscribe, setIsUserSubscribe] = useState(false);
+    const userArtistName = artistSelector?.ArtistDataReducer?.artistName;
+    const userFirstName = userSelector?.UserReducer?.account?.firstName;
+    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
+    const isSuperUser = userSelector?.UserReducer?.account?.isSuperUser;
+    const userId = isSuperUser? artistSelector?.ArtistDataReducer?._id : userSelector?.UserReducer?.account._id;
+    const reciverName = isSuperUser ? userArtistName : userFormattedFirstName;
+    const reciverPhoto = isSuperUser ? artistSelector?.ArtistDataReducer?.profileImage : userDataSelector?.UserReducer?.account?.Avatar;
+    const thisProfile = appSelector?.PostAuthorProfile;
+   
+    const createNewChat = async() => {
+        const q1 = query(collection(db, "single-chats"), where("chatName", "==", reciverName + " " + artistName));
+        const q2 = query(collection(db, "single-chats"), where("chatName", "==", artistName + " " + reciverName));
+        const querySnapshot1 = await getDocs(q1);
+        const querySnapshot2 = await getDocs(q2);
+        
+        if(querySnapshot1.empty && querySnapshot2.empty) {
+            await addDoc(collection(db, "single-chats"), {
+                chatName: reciverName + " " + artistName,
+                contacts:[
+                    {
+                        id: userId,
+                        name: reciverName,
+                        photo: reciverPhoto
+                    },
+                    {
+                        id: thisProfile._id,
+                        name: artistName,
+                        photo: thisProfile.profileImage
+                    }
+                ]
+            }).then((result) => { props.navigation.navigate("SingleChatScreen", { contact: thisProfile, chatId: result.id })});
 
-    const backToHomePage = () => {
-        props.navigation.goBack(null);
-        try {
-            cleanArtistPostsForDashboardProfil(dispatch);
-            cleanSongReducers(dispatch);
-            cleanPlaylistReducer(dispatch);
-            cleanAlbumReducer(dispatch);
-        }catch(error) {
-            console.log(error.message);
-        }        
+        } else if(!querySnapshot1.empty || !querySnapshot2.empty) {
+            const unsub = onSnapshot(collection(db, "single-chats"), (snapShot) => {
+                snapShot.forEach(doc => {
+                    if(doc.data().chatName === reciverName + " " + artistName || 
+                        doc.data().chatName === artistName + " " + reciverName
+                    ) {
+                        props.navigation.navigate("SingleChatScreen", { contact: thisProfile, chatId: doc.id })
+                    }
+                })
+            })
+        }
+        
     }
 
     function isUserSub(){
@@ -255,11 +290,18 @@ const FeedScreen = props => {
                             zIndex:1,
                             display: 'flex',
                             width:'100%',
-                            justifyContent: 'space-between', 
+                            justifyContent:"space-between",
+                            alignItems: 'center',
                             flexDirection:'row',
                         }}>
-                            <View></View>
-                            <View style={{padding:7}}>
+                            {userId !== _id && <AntDesign
+                                name="message1"
+                                size={25}
+                                color={Colors.red3}
+                                style={{margin:7}}
+                                onPress={createNewChat}
+                            />}
+                            { userId !== _id && <View style={{padding:7}}>
                                 {
                                     isUserSubscribe?
                                     (
@@ -271,7 +313,7 @@ const FeedScreen = props => {
                                             borderColor: Colors.red3
                                         }} onPress={unsubscribe}>
                                             <Text style={{color:Colors.red3, fontFamily:'Baloo2-Bold'}}>
-                                                UnSubscribe
+                                                Unsubscribe
                                             </Text>
                                         </TouchableOpacity>
                                     )
@@ -291,14 +333,14 @@ const FeedScreen = props => {
                                     )
                                 }
                                 
-                            </View>
+                            </View>}
                         </View>
                         
                         <ImageBackground
                             source={{uri:profileSeconderyImage}}
                             style={{
                                 width: '100%',
-                                height:200,
+                                height:180,
                                 borderBottomWidth:2,
                                 borderColor:Colors.grey6,
                                 flexDirection:'column-reverse',
@@ -354,7 +396,7 @@ const FeedScreen = props => {
                         <View style={{
                             flexDirection:'row',
                             justifyContent:'space-between',
-                            height:50
+                            height:50,
                         }}>
                             
                             <View style={{flexDirection:'row', width:'78%', backgroundColor:Colors.grey4, top:0.5, borderBottomRightRadius:50, borderTopWidth:0.5}}>
@@ -409,16 +451,16 @@ const FeedScreen = props => {
                         
                     </ScrollView>
                     {
-                        !artistPosts &&
+                        !artistPosts || artistPosts?.length === 0 && 
                         (
                             <ImageBackground 
                                     source={ require('../../../../assets/Logo.png') }
                                     resizeMode="cover" 
                                     style={{
-                                        flex: 0.8,
+                                        flex:(genersVisible || skillsVisible) ? 0.2 : 1,
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        backgroundColor: Colors.grey1
+                                        backgroundColor: Colors.grey1,
                                     }}
                                     imageStyle={{opacity: 0.3}}
                             >
@@ -434,7 +476,7 @@ const FeedScreen = props => {
                 <ImageBackground 
                         source={ require('../../../../assets/Logo.png') }
                         resizeMode="cover" 
-                        style={{flex:1, alignItems: 'center', justifyContent: 'center'}}
+                        style={{flex:(genersVisible || skillsVisible) ? 0.2 : 1, alignItems: 'center', justifyContent: 'center'}}
                         imageStyle={{opacity: 0.3}}
                 >
                     <ActivityIndicator color={Colors.red3} size={"large"}/>
@@ -459,7 +501,7 @@ export const screenOptions = ({navigation}) => {
         header: () => {
             return <View style={{
                 backgroundColor:Colors.grey1,
-                height:Platform.OS === 'ios' ? 85 : 65,
+                height:Platform.OS === 'ios' ? 90 : 70,
                 borderBottomWidth:2,
                 borderBottomColor:Colors.grey3,
                 flexDirection:'row',
@@ -486,10 +528,10 @@ export const screenOptions = ({navigation}) => {
                 }}>
                     <MaterialCommunityIcons
                         name="newspaper-variant-multiple"
-                        size={30}
+                        size={25}
                         color={Colors.red3}
                     />
-                    <Text style={{fontFamily: 'Baloo2-Bold', color: Colors.red3, marginLeft:5, fontSize:20}}>Feed</Text>
+                    <Text style={{fontFamily: 'Baloo2-Bold', color: Colors.red3, marginLeft:5, fontSize:18}}>Feed</Text>
                 </View>
 
                 <TouchableOpacity style={{
@@ -501,10 +543,10 @@ export const screenOptions = ({navigation}) => {
                 }} onPress={moveToMusicScreen}>
                     <FontAwesome
                         name="music"
-                        size={30}
+                        size={25}
                         color={"#fff"}
                     />
-                    <Text style={{fontFamily: 'Baloo2-Bold', color:'#fff', marginLeft:5, fontSize:20}}>Music</Text>
+                    <Text style={{fontFamily: 'Baloo2-Bold', color:'#fff', marginLeft:5, fontSize:18}}>Music</Text>
                 </TouchableOpacity>
                 
             </View>

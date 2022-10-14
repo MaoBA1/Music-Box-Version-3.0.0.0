@@ -13,16 +13,18 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Style from './style/ArtistFeedStyle';
 import Colors from '../../Utitilities/AppColors';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { getArtistPostsById } from '../../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-import FeedHeadr from './components/FeedHedar';
+
 import UploadPostModal from './Modals/UploadPostModal';
 import ArtistPost from './components/ArtistPost';
-import Comment from '../CommentScreen';
-import ArtistPostCommentModal from './Modals/AtristPostCommentModal';
+
 
 const ArtistFeedScreen = props => {
     const [uploadPostModalVisible, setUploadPostModalVisible] = useState(false);
@@ -31,8 +33,8 @@ const ArtistFeedScreen = props => {
     const artistPosts = postSelector.ArtistPostsReducer;
     const artistSelector = useSelector(state => state.ArtistsReducer);
     const artistId = artistSelector?.ArtistDataReducer?._id;
-    const [commentParams, setCommentParams] = useState(null);
-    const [commentScreenVisible, setCommentScreenVisble] = useState(false);
+    const artistName = artistSelector?.ArtistDataReducer?.artistName;
+    const profileImage = artistSelector?.ArtistDataReducer?.profileImage;
     
     
     useEffect(() => {
@@ -51,9 +53,16 @@ const ArtistFeedScreen = props => {
 
     return(
         <View style={Style.backgroundContainer}>
-            <FeedHeadr goBack={() =>  props.navigation.navigate('Setting')} openModal={setUploadPostModalVisible}/>
+            
             {uploadPostModalVisible && <UploadPostModal close={setUploadPostModalVisible}/>}
-            {commentScreenVisible && <ArtistPostCommentModal close={setCommentScreenVisble} params={commentParams}/>}
+            <ScrollView>
+                <Ionicons
+                    name="ios-add-circle"
+                    color={Colors.red3}
+                    style={{ alignSelf:"flex-end", marginTop:15, right:10 }}
+                    size={30}
+                    onPress={() => setUploadPostModalVisible(true)}
+                />
             {
                 !artistPosts || artistPosts?.length == 0 ?
                 (
@@ -63,24 +72,114 @@ const ArtistFeedScreen = props => {
                 )
                 :
                 (
-                    <FlatList
-                        data={artistPosts.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt)))}
-                        keyExtractor={item => item._id}
-                        renderItem={post => <ArtistPost post={post.item} artist={artistSelector?.ArtistDataReducer} openComments={setCommentScreenVisble} setCommentDetails={setCommentParams}/>}
-                    />
+                    artistPosts.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt))).map((item, index) => 
+                        <ArtistPost key={item._id} post={item} artist={artistSelector?.ArtistDataReducer} 
+                            openComments={() => props.navigation.navigate("CommentScreen", {post:item, postAuthor:artistName, postAuthorImage:profileImage})} 
+                        />
+                    )
                 )
             }
+            </ScrollView>
             
         </View>
     )
 }
 
 
-export const screenOptions = navData => {
+export const screenOptions = ({ navigation }) => {
     return {        
         gestureEnabled: false,
-        headerShown: false,
+        header: () => {
+            return <View style={{
+                    height:Platform.OS === "ios" ? 75 : 60,
+                    flexDirection:'row',
+                    alignItems:"flex-end",
+                    backgroundColor: Colors.grey1
+                }}>
+                    <View style={{
+                        width:`10%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }}>
+                        
+                        <AntDesign 
+                            name="arrowleft"
+                            size={22}
+                            color="#ffffff"
+                            onPress={() => navigation.popToTop()}
+                            style={{left:5, bottom:2}}
+                        />
+                        
+                    </View>
+
+                    <TouchableOpacity style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }} onPress={() => navigation.navigate("Setting")}>
+                        <Ionicons
+                            name="ios-settings"
+                            size={22}
+                            color={"#fff"}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:"#fff",
+                            fontSize:16
+                        }}>
+                            Setting
+                        </Text>
+                    </TouchableOpacity>
+
+                    <View style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }}>
+                            <MaterialCommunityIcons
+                            name="newspaper-variant-multiple"
+                            size={22}
+                            color={Colors.red3}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:Colors.red3,
+                            fontSize:16
+                        }}>
+                            Feed
+                        </Text>
+                    </View>
+
+
+                    <TouchableOpacity style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }} onPress={() => navigation.navigate("Music")}>
+                        <FontAwesome
+                            name="music"
+                            size={22}
+                            color={"#fff"}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:"#fff",
+                            fontSize:16
+                        }}>
+                            Music
+                        </Text>
+                    </TouchableOpacity>
+            </View>
+        }
     }
 }
+
 
 export default ArtistFeedScreen;

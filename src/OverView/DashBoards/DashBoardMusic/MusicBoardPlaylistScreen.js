@@ -5,6 +5,7 @@ import MusicGeneralHeader from '../../../OverView/artist/components/MusicGeneral
 import Colors from '../../../Utitilities/AppColors';
 import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Audio } from 'expo-av';
 import { play, pause, resume, playNext } from '../../../../audioController';
 import { 
@@ -270,7 +271,6 @@ const MusicBoardPlaylistScreen = (props) => {
 
     return (
         <View style={{flex: 1, backgroundColor:Colors.grey1}}>
-            <MusicGeneralHeader goBack={() => props.navigation.goBack(null)} title={screenName}/>
             <Modal
                 visible={deletPostVisible}
                 transparent={true}
@@ -386,6 +386,30 @@ const MusicBoardPlaylistScreen = (props) => {
         </View>
     );
 };
+
+
+export const screenOptions = ({navigation, route}) => {
+    const { screenName } = route.params;
+    const moveToFeedScreen = () => {
+        navigation.navigate("ArtistFeed")
+    }
+    return {        
+        title: screenName,
+        headerStyle:{backgroundColor:Colors.grey1, borderBottomWidth:2, borderBottomColor:Colors.grey3},
+        headerTitleStyle:{
+            color:"#FFFFFF",
+            fontFamily:"Baloo2-ExtraBold",
+            fontSize:20
+        },
+        headerTitleAlign: 'center',
+        presentation:"transparentModal",
+        headerLeft: () => {
+            return <TouchableOpacity onPress={navigation.goBack} style={{ marginLeft:10 }}>
+                <AntDesign name="arrowleft" size={24} color="#ffffff"/>
+            </TouchableOpacity>
+        },
+    }
+}
 
 
 export default MusicBoardPlaylistScreen;

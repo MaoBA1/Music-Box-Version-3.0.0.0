@@ -43,7 +43,8 @@ const CreateNewSingleChatScreen = ({ navigation }) => {
                         photo: contact.profileImage
                     }
                 ]
-            }).then((result) => { navigation.navigate("SingleChatScreen", { contact: contact, chatId: result.id })})
+            }).then((result) => { navigation.navigate("SingleChatScreen", { contact: contact, chatId: result.id })});
+
         } else if(!querySnapshot1.empty || !querySnapshot2.empty) {
             const unsub = onSnapshot(collection(db, "single-chats"), (snapShot) => {
                 snapShot.forEach(doc => {

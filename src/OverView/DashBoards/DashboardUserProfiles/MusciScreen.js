@@ -412,7 +412,8 @@ const MusicScreen = props => {
                                                         margin:10,
                                                         alignItems: 'center',
                                                         top:5,
-                                                        height:'100%'
+                                                        height:'100%',
+                                                        width:90
                                                     }} onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.tracks, screenName: item.playlistName})}>
                                                         <Image
                                                             style={{width:85, height:85, resizeMode:'stretch'}}
@@ -421,7 +422,6 @@ const MusicScreen = props => {
                                                         <Text numberOfLines={1} style={{
                                                             fontFamily:'Baloo2-Medium',
                                                             color:'#fff', 
-                                                            width:'80%'
                                                         }}>
                                                             {item.playlistName}
                                                         </Text>
@@ -464,7 +464,8 @@ const MusicScreen = props => {
                                                         margin:10,
                                                         alignItems: 'center',
                                                         top:5,
-                                                        height:'100%'
+                                                        height:'100%',
+                                                        width:90
                                                     }} onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.tracks, screenName: item.albumName})}>
                                                         <Image
                                                             style={{width:85, height:85, resizeMode:'stretch'}}
@@ -473,7 +474,6 @@ const MusicScreen = props => {
                                                         <Text numberOfLines={1} style={{
                                                             fontFamily:'Baloo2-Medium',
                                                             color:'#fff', 
-                                                            width:'80%'
                                                         }}>
                                                             {item.albumName}
                                                         </Text>
@@ -575,7 +575,7 @@ export const screenOptions = ({navigation}) => {
         header: () => {
             return <View style={{
                 backgroundColor:Colors.grey1,
-                height:Platform.OS === 'ios' ? 85 : 65,
+                height:Platform.OS === 'ios' ? 90 : 70,
                 borderBottomWidth:2,
                 borderBottomColor:Colors.grey3,
                 flexDirection:'row',
@@ -602,10 +602,10 @@ export const screenOptions = ({navigation}) => {
                 }} onPress={moveToFeedScreen}>
                     <MaterialCommunityIcons
                         name="newspaper-variant-multiple"
-                        size={30}
+                        size={25}
                         color={"#ffff"}
                     />
-                    <Text style={{fontFamily: 'Baloo2-Bold', color: "#ffff", marginLeft:5, fontSize:20}}>Feed</Text>
+                    <Text style={{fontFamily: 'Baloo2-Bold', color: "#ffff", marginLeft:5, fontSize:18}}>Feed</Text>
                 </TouchableOpacity>
 
                 <View style={{
@@ -617,10 +617,10 @@ export const screenOptions = ({navigation}) => {
                 }}>
                     <FontAwesome
                         name="music"
-                        size={30}
+                        size={25}
                         color={Colors.red3}
                     />
-                    <Text style={{fontFamily: 'Baloo2-Bold', color:Colors.red3, marginLeft:5, fontSize:20}}>Music</Text>
+                    <Text style={{fontFamily: 'Baloo2-Bold', color:Colors.red3, marginLeft:5, fontSize:18}}>Music</Text>
                 </View>
                 
             </View>

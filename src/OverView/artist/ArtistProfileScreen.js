@@ -14,6 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Style from './style/ArtistProfileStyle';
 import Colors from '../../Utitilities/AppColors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getArtistData } from '../../ApiCalls';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -23,6 +27,7 @@ import ChangeImageModal from './Modals/ChangeImageModal';
 import ChangeDescriptionModal from './Modals/ChangeDescriptionModal';
 import EdditGenersModal from './Modals/EdditGenrersModal';
 import EdditSkillsModal from './Modals/EdditSkillsModal';
+import { Platform } from 'react-native';
 
 
 
@@ -100,7 +105,7 @@ const ArtistProfileScreen = props => {
 
     return(
         <ScrollView style={Style.backgroundContainer}>
-        <GeneralHeader title={formatted_artistName} size={'short'} goBack={() => props.navigation.goBack(null)}/>
+        {/* <GeneralHeader title={formatted_artistName} size={'short'} goBack={() => props.navigation.goBack(null)}/> */}
         {changeImageVisible && <ChangeImageModal details={changeImageDetails}/>}
         {changeDescriptionVisible && <ChangeDescriptionModal  desc={artistDescription} func={setChangeDescriptionVisible}/>}
         {editGenersVisible && <EdditGenersModal details={edditGenersModalDetails} func={setEditGenersVisible}/>}
@@ -114,17 +119,27 @@ const ArtistProfileScreen = props => {
                         color={'#fff'}
                     />
                 </TouchableOpacity>
+                <Text style={{
+                        fontFamily: 'Baloo2-ExtraBold',
+                        color: Colors.red3,
+                        fontSize:24,
+                        top:160,
+                        zIndex:1,
+                        position:"absolute",
+                        left:10,
+                    }}>{formatted_artistName}</Text>
                 <Image
                     style={Style.subImage}
                     source={{uri:profileSeconderyImage}}
                 />
+                
             </View>
-            <View style={[Style.profileImageView, {zIndex:1}]}>
+            <View style={[Style.profileImageView, {zIndex:1, alignSelf:"center"}]}>
                 <Image
                     style={Style.profileImage}
                     source={{uri:profileImage}}
                 />
-                <TouchableOpacity onPress={() => openChangeImageModal('main')} style={{right:0, bottom:5, position: 'absolute', zIndex:1, alignItems: 'center', justifyContent: 'center', width:20, height:20, backgroundColor: Colors.grey3, borderRadius:50}}>
+                <TouchableOpacity onPress={() => openChangeImageModal('main')} style={{right:-5, bottom:70, position: 'absolute', zIndex:1, alignItems: 'center', justifyContent: 'center', width:20, height:20, backgroundColor: Colors.grey3, borderRadius:50}}>
                     <MaterialIcons
                         name={'edit'}
                         size={15}
@@ -209,10 +224,98 @@ const ArtistProfileScreen = props => {
 }
 
 
-export const screenOptions = navData => {
+export const screenOptions = ({ navigation }) => {
     return {        
         gestureEnabled: false,
-        headerShown: false,
+        header: () => {
+            return <View style={{
+                    height:Platform.OS === "ios" ? 75 : 60,
+                    flexDirection:'row',
+                    alignItems:"flex-end",
+                    backgroundColor: Colors.grey1
+                }}>
+                    <View style={{
+                        width:`10%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }}>
+                        
+                        <AntDesign 
+                            name="arrowleft"
+                            size={22}
+                            color="#ffffff"
+                            onPress={() => navigation.popToTop()}
+                            style={{left:5, bottom:2}}
+                        />
+                        
+                    </View>
+
+                    <View style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }}>
+                        <Ionicons
+                            name="ios-settings"
+                            size={22}
+                            color={Colors.red3}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:Colors.red3,
+                            fontSize:16
+                        }}>
+                            Setting
+                        </Text>
+                    </View>
+
+                    <TouchableOpacity style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }} onPress={() => navigation.navigate("Feed")}>
+                            <MaterialCommunityIcons
+                            name="newspaper-variant-multiple"
+                            size={22}
+                            color={"#fff"}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:"#fff",
+                            fontSize:16
+                        }}>
+                            Feed
+                        </Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }} onPress={() => navigation.navigate("Music")}>
+                        <FontAwesome
+                            name="music"
+                            size={22}
+                            color={"#fff"}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:"#fff",
+                            fontSize:16
+                        }}>
+                            Music
+                        </Text>
+                    </TouchableOpacity>
+            </View>
+        }
     }
 }
 

@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -301,7 +302,7 @@ const MenuScreen = props => {
                     <View style={{flexDirection: 'row', width:'80%', justifyContent: 'space-between', marginTop:120, alignSelf: 'center'}}>
                             <TouchableOpacity
                                 style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
-                                onPress={() => props.navigation.jumpTo('Home')}
+                                onPress={() => props.navigation.jumpTo('Home', {screen: "Feed"})}
                             >
                                 <FontAwesome5
                                     name="newspaper"
@@ -312,14 +313,14 @@ const MenuScreen = props => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
-                                onPress={() => props.navigation.jumpTo('Library')}
+                                onPress={() => props.navigation.jumpTo('Home', {screen: "Music Board"})}
                             >
-                                <Ionicons
-                                    name="library"
+                                <FontAwesome
+                                    name="music"
                                     size={40}
                                     color={Colors.grey6}
                                 />
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Your Library</Text>
+                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Music</Text>
                             </TouchableOpacity>
                     </View>
                     <View style={{flexDirection: 'row', width:'80%', justifyContent: 'space-between', marginTop:20, alignSelf: 'center'}}>
@@ -336,28 +337,27 @@ const MenuScreen = props => {
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
-                                onPress={() => props.navigation.jumpTo('Search')}
+                                onPress={() => props.navigation.navigate('UserChatScreen')}
                             >
-                                <FontAwesome   
-                                    name="search"
+                                <Entypo   
+                                    name="chat"
                                     size={40}
                                     color={Colors.grey6}
                                 />
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Search</Text>
+                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Messages</Text>
                             </TouchableOpacity>
                     </View>
                     <View style={{flexDirection: 'row', width:'80%', justifyContent: 'space-between', marginTop:20, alignSelf: 'center'}}>
                             <TouchableOpacity 
                                 style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
-                                
+                                onPress={() => props.navigation.navigate('Search')}
                             >
-                                <FontAwesome5
-                                    name="user-friends"
-                                    size={40}
+                                <Fontisto 
+                                    name={'search'}
                                     color={Colors.grey6}
+                                    size={40}
                                 />
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Your Favorite</Text>
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Artists</Text>
+                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Search</Text>
                             </TouchableOpacity>
                             {
                                 userFavoriteSongs?.songs?.length > 0 ?
@@ -417,13 +417,13 @@ export const screenOptions = navData => {
         
         tabBarIcon:({focused,color,size}) => {
             const iconColor = focused? Colors.red3 : '#ffff'
-            const iconSzie = focused? 24 : 22
+            const iconSzie = focused? 24 : 20
             return(
                 
                 <>
                     <ImageBackground
                         source={{uri: userAvatar} || require('../../../assets/icon.png')}
-                        style={{width:40, height:40, bottom:10, zIndex:1, alignItems: 'center'}}
+                        style={{width:30, height:30, bottom:5, zIndex:1, alignItems: 'center'}}
                         imageStyle={{borderRadius:50,  resizeMode:'stretch'}}
                     >
                         <Entypo

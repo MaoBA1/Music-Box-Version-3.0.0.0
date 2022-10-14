@@ -17,6 +17,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { 
     getAllArtistSongs,
     getArtistTop5,
@@ -43,7 +46,7 @@ import MusicHeader from './components/MusicHeader';
 import UploadSongModal from './Modals/UploadSongModal';
 import CreateNewPlaylistModal from './Modals/CreateNewPlaylistModal';
 import CreateNewAlbumModal from './Modals/CreateNewAlbumModal';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 
 const ArtistMusicScreen = props => {
@@ -269,7 +272,7 @@ const ArtistMusicScreen = props => {
                 style={Style.backgroundContainer}
                 imageStyle={{opacity: 0.3}}
         >
-            <MusicHeader goBack={() =>  props.navigation.navigate('Setting')}/>
+            {/* <MusicHeader goBack={() =>  props.navigation.navigate('Setting')}/> */}
             {uploadSongModalVisible && <UploadSongModal close={setUploadSongModalVisible}/>}
             {createNewPlaylistModalVisible && <CreateNewPlaylistModal close={setCreateNewPlaylistModalVisible}/>}
             {createNewAlbumModalVisible && <CreateNewAlbumModal close={setCreateNewAlbumModalVisible}/>}
@@ -300,7 +303,7 @@ const ArtistMusicScreen = props => {
                 </View>
             </Modal>
             
-            <View style={{width:'100%', flexDirection:'row', borderBottomWidth:2, borderColor:Colors.grey3}}>
+            <View style={{width:'100%', flexDirection:'row',top:10}}>
                 <TouchableOpacity onPress={() => setCreateNewAlbumModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/3}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', borderRightWidth:1, borderColor: Colors.grey3}}>
                     <MaterialIcons
                         name='album'
@@ -895,11 +898,99 @@ const ArtistMusicScreen = props => {
 }
 
 
-export const screenOptions = navData => {
+export const screenOptions = ({ navigation }) => {
     return {        
         gestureEnabled: false,
-        headerShown: false,
+        header: () => {
+            return <View style={{
+                    height:Platform.OS === "ios" ? 75 : 60,
+                    flexDirection:'row',
+                    alignItems:"flex-end",
+                    backgroundColor: Colors.grey1
+                }}>
+                    <View style={{
+                        width:`10%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }}>
+                        
+                        <AntDesign 
+                            name="arrowleft"
+                            size={22}
+                            color="#ffffff"
+                            onPress={() => navigation.popToTop()}
+                            style={{left:5, bottom:2}}
+                        />
+                        
+                    </View>
+
+                    <TouchableOpacity style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }} onPress={() => navigation.navigate("Setting")}>
+                        <Ionicons
+                            name="ios-settings"
+                            size={22}
+                            color={"#fff"}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:"#fff",
+                            fontSize:16
+                        }}>
+                            Setting
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }} onPress={() => navigation.navigate("Feed")}>
+                            <MaterialCommunityIcons
+                            name="newspaper-variant-multiple"
+                            size={22}
+                            color={"#fff"}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:"#fff",
+                            fontSize:16
+                        }}>
+                            Feed
+                        </Text>
+                    </TouchableOpacity>
+
+                    <View style={{
+                        width:`${90/3}%`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection:'row',
+                    }}>
+                        <FontAwesome
+                            name="music"
+                            size={22}
+                            color={Colors.red3}
+                        />
+                        <Text style={{
+                            marginLeft:5,
+                            fontFamily:'Baloo2-Bold',
+                            color:Colors.red3,
+                            fontSize:16
+                        }}>
+                            Music
+                        </Text>
+                    </View>
+            </View>
+        }
     }
 }
+
 
 export default ArtistMusicScreen;

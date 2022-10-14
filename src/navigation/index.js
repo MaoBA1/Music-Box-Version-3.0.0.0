@@ -34,7 +34,7 @@ import MusicBoard, {screenOptions as MusicBoardScreenOptions} from '../OverView/
 import FeedScreen, {screenOptions as FeedScreenOptions} from '../OverView/DashBoards/DashboardUserProfiles/FeedScreen';
 import MusciScreen, {screenOptions as MusciScreenOptions} from '../OverView/DashBoards/DashboardUserProfiles/MusciScreen';
 import PlayListScreen from '../OverView/DashBoards/DashboardUserProfiles/PlayListScreen';
-import MusicBoardPlaylistScreen from '../OverView/DashBoards/DashBoardMusic/MusicBoardPlaylistScreen';
+import MusicBoardPlaylistScreen, {screenOptions as MusicBoardPlaylistScreenOptions} from '../OverView/DashBoards/DashBoardMusic/MusicBoardPlaylistScreen';
 import MenuScreen, {screenOptions as MenuScreenOptions} from '../OverView/Menu/MenuScreen';
 import CommentScreen, {screenOptions as CommentScreenOptions} from '../OverView/CommentScreen';
 
@@ -185,12 +185,12 @@ export const DashBoardTopBarStack = () => {
 // }
 
 
-const ArtistProfileTopStackNavigator = createMaterialTopTabNavigator();
-export const ArtistProfileTopBar = () => {
+const ArtistProfileStackNavigator = createStackNavigator();
+export const ArtistProfileStack = () => {
 
     return(
-        <ArtistProfileTopStackNavigator.Navigator>
-            <ArtistProfileTopStackNavigator.Group screenOptions={{
+        <ArtistProfileStackNavigator.Navigator>
+            <ArtistProfileStackNavigator.Group screenOptions={{
                 tabBarLabelStyle: {
                     fontFamily: 'Baloo2-Bold',
                     fontSize:16,            
@@ -207,11 +207,12 @@ export const ArtistProfileTopBar = () => {
                 tabBarPressColor:Colors.red3,
                 indicatorStyle:{backgroundColor:Colors.red1}
             }}>
-                <ArtistProfileTopStackNavigator.Screen name="Setting" component={ArtistProfileScreen} options={ArtistProfileScreenOptions}/>
-                <ArtistProfileTopStackNavigator.Screen name="Feed" component={ArtistFeedScreen} options={ArtistFeedScreenOptions}/>
-                <ArtistProfileTopStackNavigator.Screen name="Music" component={ArtistMusicScreen} options={ArtistMusicScreenOptions}/>
-            </ArtistProfileTopStackNavigator.Group>
-        </ArtistProfileTopStackNavigator.Navigator>
+                <ArtistProfileStackNavigator.Screen name="Setting" component={ArtistProfileScreen} options={ArtistProfileScreenOptions}/>
+                <ArtistProfileStackNavigator.Screen name="Feed" component={ArtistFeedScreen} options={ArtistFeedScreenOptions}/>
+                <ArtistProfileStackNavigator.Screen name="Music" component={ArtistMusicScreen} options={ArtistMusicScreenOptions}/>
+                <ArtistProfileStackNavigator.Screen name="CommentScreen" component={CommentScreen} options={CommentScreenOptions}/>
+            </ArtistProfileStackNavigator.Group>
+        </ArtistProfileStackNavigator.Navigator>
     )
 }
 
@@ -225,7 +226,7 @@ export const DashBoardContainerStack = () => {
             <DashBoardContainerStackNavigator.Screen name='ArtistFeed' component={FeedScreen} options={FeedScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name='ArtistMusicBoard' component={MusciScreen} options={MusciScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name="ArtistPlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>
-            <DashBoardContainerStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+            <DashBoardContainerStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={MusicBoardPlaylistScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name="CommentScreen" component={CommentScreen} options={CommentScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name="UserChatScreen" component={UserChatsScreen} options={UserChatsScreenOptions}/>
             <DashBoardContainerStackNavigator.Screen name="CreateNewSingleChatScreen" component={CreateNewSingleChatScreen} options={CreateNewSingleChatScreenOptions}/>
@@ -241,12 +242,13 @@ export const ProfileStack = () => {
             <profileStackNavigator.Screen name="ProfileFirstPage" component={ProfileScreen} options={ProfileScreenOptions}/>
             <profileStackNavigator.Screen name="EditRegularUserPage" component={EditRegularUserScreen} options={EditRegularUserScreenOptions}/>
             <profileStackNavigator.Screen name="CreateArtistPage" component={CreatArtistScreen} options={CreatArtistScreenOptions}/>
-            <profileStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileTopBar} options={{headerShown: false}}/>
-            <profileStackNavigator.Screen name="AllSingels" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+            <profileStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileStack} options={{headerShown: false}}/>
+            <profileStackNavigator.Screen name="AllSingels" component={MusicBoardPlaylistScreen} options={MusicBoardPlaylistScreenOptions}/>
             <profileStackNavigator.Screen name='ArtistFeed' component={FeedScreen} options={FeedScreenOptions}/>
             <profileStackNavigator.Screen name='ArtistMusicBoard' component={MusciScreen} options={MusciScreenOptions}/>
             <profileStackNavigator.Screen name="ArtistPlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>
             <profileStackNavigator.Screen name="SearchScreen" component={SearchToImportScreen} options={{headerShown: false}}/>
+            <profileStackNavigator.Screen name="SingleChatScreen" component={SingleChatScreen} options={SingleChatScreenOptions}/>
         </profileStackNavigator.Navigator>
     )
 }
@@ -256,8 +258,8 @@ const LibraryStackNavigator = createStackNavigator();
 export const LibraryStack = () => {
     return(
         <LibraryStackNavigator.Navigator>
-            <LibraryStackNavigator.Screen name="LibraryScreen" component={LibraryScreen} options={{headerShown: false}}/>
-            <LibraryStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+            <LibraryStackNavigator.Screen name="LibraryScreen" component={LibraryScreen} options={LibraryScreenOptions}/>
+            <LibraryStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={MusicBoardPlaylistScreenOptions}/>
         </LibraryStackNavigator.Navigator>
     )
 }
@@ -268,8 +270,10 @@ export const SearchStack = () => {
     return(
         <SearchStackNavigator.Navigator>
             <SearchStackNavigator.Screen name="SearchScreen" component={SearchScreen} options={{headerShown: false}}/>
-            <SearchStackNavigator.Screen name="ProfileStack" component={ProfiledashBoardStack} options={{headerShown: false}}/>
+            <SearchStackNavigator.Screen name='ArtistFeed' component={FeedScreen} options={FeedScreenOptions}/>
+            <SearchStackNavigator.Screen name='ArtistMusicBoard' component={MusciScreen} options={MusciScreenOptions}/>
             <SearchStackNavigator.Screen name="PlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/> 
+            <SearchStackNavigator.Screen name="SingleChatScreen" component={SingleChatScreen} options={SingleChatScreenOptions}/>
         </SearchStackNavigator.Navigator>
     )
 }
@@ -281,8 +285,11 @@ const MenuStack = () => {
             <MenuStackNavigator.Screen name="MenuScreen" component={MenuScreen} options={{headerShown: false}}/>
             <MenuStackNavigator.Screen name="EditRegularUserPage" component={EditRegularUserScreen} options={EditRegularUserScreenOptions}/>
             <MenuStackNavigator.Screen name="CreateArtistPage" component={CreatArtistScreen} options={CreatArtistScreenOptions}/>
-            <MenuStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileTopBar} options={{headerShown: false}}/>
-            <MenuStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={{headerShown: false}}/>
+            <MenuStackNavigator.Screen name="ArtistProfilePage" component={ArtistProfileStack} options={{headerShown: false}}/>
+            <MenuStackNavigator.Screen name="PlaylistScreen" component={MusicBoardPlaylistScreen} options={MusicBoardPlaylistScreenOptions}/>
+            <MenuStackNavigator.Screen name="UserChatScreen" component={UserChatsScreen} options={UserChatsScreenOptions}/>
+            <MenuStackNavigator.Screen name="Search" component={SearchStack} options={{headerShown: false, presentation:"modal"}}/>
+            <MenuStackNavigator.Screen name="SingleChatScreen" component={SingleChatScreen} options={SingleChatScreenOptions}/>
         </MenuStackNavigator.Navigator>
     )
 }

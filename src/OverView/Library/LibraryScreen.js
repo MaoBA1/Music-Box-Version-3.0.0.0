@@ -49,34 +49,10 @@ const LibraryScreen = props => {
         <ImageBackground 
                 source={ require('../../../assets/AppAssets/Logo.png') }
                 resizeMode="cover" 
-                style={{flex:1, backgroundColor:Colors.grey1, alignItems: 'center'}}
+                style={{flex:1, backgroundColor:Colors.grey1}}
                 imageStyle={{opacity: 0.3}}
         >
-            <View style={{
-                width: '100%',
-                padding: 10,
-                backgroundColor:Colors.grey1,
-                shadowColor: '#171717',
-                shadowOffset: {width: 10, height: 10},
-                shadowOpacity: 0.5,
-                shadowRadius: 10,
-                height:100,
-                borderBottomWidth:2, 
-                borderColor: Colors.grey3,
-                alignItems: 'center',
-                justifyContent: 'flex-end'
-            }}>
-                <Text style={{
-                    fontFamily:'Baloo2-ExtraBold', 
-                    color: '#fff',
-                    fontSize:22,
-                    textShadowColor: Colors.red3,
-                    textShadowOffset: {width: 0, height:3.5},
-                    textShadowRadius:5,
-                }}>
-                    Your Library
-                </Text>
-            </View>
+            
             <Modal
                 visible={deletPostVisible}
                 transparent={true}
@@ -107,7 +83,6 @@ const LibraryScreen = props => {
                 userPlaylists && userPlaylists.length > 0?
                 (
                     <FlatList
-                        style={{marginTop:50}}
                         numColumns={2}   
                         data={userPlaylists}
                         keyExtractor={item => item._id}
@@ -173,15 +148,18 @@ const LibraryScreen = props => {
 }
 
 
-export const screenOptions = navData => {
+export const screenOptions = ({ navigation }) => {
     return {
-        headerShown: false,
         tabBarLabel:'Library',
-        headerTitle:'Library',
-        tabBarLabelStyle: {
-            fontFamily: 'Baloo2-Medium',
+        title:'Library',
+        headerStyle:{backgroundColor:Colors.grey1, height:Platform.OS === 'ios' ? 110 : 90, borderBottomWidth:2, borderBottomColor:Colors.grey3},
+        headerTitleStyle:{
+            color:"#FFFFFF",
+            fontFamily:"Baloo2-ExtraBold",
             fontSize:25
         },
+        headerTitleAlign: 'center',
+        headerLeft: () => {return <></>},
         tabBarIcon:({focused,color,size}) => {
             const iconColor = focused? Colors.red3 : '#ffffff'
             const iconSzie = focused? 24 : 22

@@ -88,7 +88,6 @@ const ArtistPost = props => {
         if(userToken){
             await getPostComment(dispatch, userToken, post._id)
             .then(result => {
-                props.setCommentDetails({post:post, postAuthor:formatted_artistName, postAuthorImage:props.artist.profileImage, artistId:artistId});
                 props.openComments(true);
             })
         }

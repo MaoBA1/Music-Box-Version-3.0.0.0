@@ -23,35 +23,6 @@ const UserChatsScreen = ({ navigation }) => {
     const reciverName = isSuperUser ? artistName : userFormattedFirstName;
     
     
-    // useEffect(() => {
-    //     const unsub = onSnapshot(collection(db, "single-chats"), (snapShot) => {
-    //         let contacts = [];
-    //         snapShot.docs.forEach(x => {
-    //             let messages = [];
-    //             if(x.data().contacts.some(contact => contact.id === reciverId)) {
-    //                 const messagesUnSub = onSnapshot(collection(db, "single-chats", x.id, "massages"), snapShot => {
-    //                     snapShot.docs.forEach((doc) => {
-    //                         messages.push({
-    //                             text: doc.data().message,
-    //                             createdAt: new Date(new Timestamp(doc?.data()?.timestamp?.seconds, doc?.data()?.timestamp?.nanoseconds).toDate()),
-    //                             user: {
-    //                                 _id: doc.data().senderId,
-    //                                 name:doc.data().senderName,
-    //                                 avatar: doc.data().avatar
-    //                             },
-    //                         });                        
-    //                     });
-    //                     messages = messages.sort((a, b) => b.createdAt - a.createdAt);
-    //                     let item = {data: x.data().contacts.filter(x => x.id !== reciverId)[0], id: x.id, messages: messages};
-    //                     contacts.push(item);
-    //                     setChats(contacts);
-    //                 })
-    //             }
-    //         })
-            
-    //     });
-    // },[])
-
     const getChatMessages = async(chatID) => {
         let messages = [];
         const querySnapshot = await getDocs(collection(db, "single-chats", chatID, "massages"));
@@ -151,7 +122,7 @@ export const screenOptions = ({ navigation }) => {
         },
         headerTitleAlign: 'center',
         headerLeft: () => {
-            return <TouchableOpacity onPress={navigation.goBack} style={{ marginLeft:10 }}>
+            return <TouchableOpacity onPress={() => navigation.popToTop()} style={{ marginLeft:10 }}>
                 <AntDesign name="arrowleft" size={24} color="#ffffff"/>
             </TouchableOpacity>
         },

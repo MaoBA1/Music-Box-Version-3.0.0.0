@@ -210,7 +210,7 @@ const SearchToImportScreen = (props) => {
     const openToArtistScreen = (artist) => {
         try {
             dispatch(setPostAuthorProfileAction(artist))
-            props.navigation.navigate("ProfileStack");
+            props.navigation.navigate("ArtistFeed");
         }catch(error) {
             console.log(error.message);
         }        

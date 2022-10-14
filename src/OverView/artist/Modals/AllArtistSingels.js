@@ -39,7 +39,7 @@ const AllArtistSingels = props => {
         isLoading,
         MusicOnForGroundReducer
     } = appBackGroundSelector;
-    console.log(props);
+    
    
     useEffect(() => {
         const onPlaybackStatusUpdate = async(playbackStatus) => {

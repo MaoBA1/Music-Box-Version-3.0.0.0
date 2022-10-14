@@ -3,10 +3,12 @@ import {
     View,
     TouchableOpacity,
     Keyboard,
-    Text
+    Text,
+    Platform
 } from 'react-native';
 import Colors from '../../../Utitilities/AppColors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { db } from '../../../../firebase';
 import { collection, addDoc, serverTimestamp, onSnapshot, Timestamp  } from "firebase/firestore";
 import { useSelector } from 'react-redux';
@@ -14,6 +16,7 @@ import { Avatar, Input } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { ActivityIndicator } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+
 
 const SingleChatScreen = ({ navigation, route }) => {
     // reciver 
@@ -38,15 +41,15 @@ const SingleChatScreen = ({ navigation, route }) => {
     // chat configuration
     const chatId = route.params.chatId
     const chatRef = collection(db, "single-chats", chatId, "massages");
-    
+    const [input, setInput] = useState("");
     const [ messages, setMessages ] = useState([]);
-    
+
     useEffect(() => {
         const snap = onSnapshot(chatRef, (snapShot) => {
             setMessages(snapShot.docs.map(doc => ({
                 _id: doc.id,
                 text: doc.data().message,
-                createdAt: new Date(new Timestamp(doc?.data()?.timestamp?.seconds, doc?.data()?.timestamp?.nanoseconds).toDate()),
+                createdAt: doc.data().createdAt,
                 user: {
                     _id: doc.data().senderId,
                     name:doc.data().senderName,
@@ -60,12 +63,13 @@ const SingleChatScreen = ({ navigation, route }) => {
     const sendMessage = async(m) => {
         Keyboard.dismiss();
         await addDoc( chatRef, {
-            message:m[0].text,
+            message:m.text,
             senderName: reciverName,
             senderId: reciverId,
-            timestamp: serverTimestamp(),
+            createdAt: Date.now(),
             avatar: reciverAvatar
         })
+        setInput("");
     }
     
     const onSend = useCallback((messages = []) => {
@@ -87,25 +91,59 @@ const SingleChatScreen = ({ navigation, route }) => {
                     avatar: reciverAvatar,
                 }}
                 showAvatarForEveryMessage={true}
+                render
                 renderInputToolbar={
                     () => {
                         return <View style={{
                             flexDirection:"row",
-                            borderWidth:2,
-                            top:35,
+                            backgroundColor: Colors.grey3,
+                            top:Platform.OS === "ios" ? 30 : -5,
+                            alignItems: "center",
+                            height:50
                         }}>
                             <TextInput
                                 style={{
-                                    borderWidth:2,
                                     backgroundColor:Colors.grey2,
                                     borderRadius:20,
-                                    height:40,
+                                    height:30,
                                     width:"85%",
                                     marginLeft:5,
                                     paddingHorizontal:10,
-                                    fontFamily:"Baloo2-Bold"
+                                    fontFamily:"Baloo2-Bold",
                                 }}
                                 placeholder="Type a Message...."
+                                onSubmitEditing={() => onSend({
+                                    _id:0,
+                                    avatar: reciverAvatar,
+                                    text: input,
+                                    senderId: reciverId,
+                                    senderName: reciverName,
+                                    user:{
+                                        _id: reciverId,
+                                        name: reciverName,
+                                        avatar: reciverAvatar,
+                                    }
+                                })}
+                                value={input}
+                                onChangeText={text  => setInput(text)}
+                            />
+                            <Ionicons 
+                                name="ios-send-sharp"
+                                color={Colors.red3} 
+                                size={28}
+                                style={{left:15}}
+                                onPress={() => onSend({
+                                    _id:0,
+                                    avatar: reciverAvatar,
+                                    text: input,
+                                    senderId: reciverId,
+                                    senderName: reciverName,
+                                    user:{
+                                        _id: reciverId,
+                                        name: reciverName,
+                                        avatar: reciverAvatar,
+                                    }
+                                })}
                             />
                         </View>
                     }
@@ -200,7 +238,7 @@ export const screenOptions = ({ navigation, route }) => {
         },
         headerTitleAlign: "center",
         headerLeft: () => {
-            return <TouchableOpacity onPress={navigation.goBack} style={{ marginLeft:10, marginBottom:5 }}>
+            return <TouchableOpacity onPress={() => navigation.popToTop()} style={{ marginLeft:10, marginBottom:5 }}>
                 <AntDesign name="arrowleft" size={24} color="#ffffff"/>
             </TouchableOpacity>
         },

@@ -87,7 +87,7 @@ const MusicBoardScreen = props => {
             list = list.sort((a, b) => 0.5 - Math.random()).slice(0,6);
             setTopList(list);
         }
-        if(userPlaylists?.length > 0 && songsByUserFavoriteGeners?.length > 0){
+        if(userPlaylists?.length > 0 || songsByUserFavoriteGeners?.length > 0){
             makeTopList();
         }
 

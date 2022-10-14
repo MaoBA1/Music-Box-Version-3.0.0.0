@@ -115,8 +115,8 @@ const ArtistPostCommentModal = props => {
                         onChangeText={text => setCommentText(text)}
                         keyboardAppearance='dark'
                         multiline 
-                        autoCorrect={false}
-                        autoComplete={false}                       
+                        // autoCorrect={false}
+                        // autoComplete={false}                       
                     />
 
                     {
