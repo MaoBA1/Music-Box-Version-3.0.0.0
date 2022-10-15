@@ -39,11 +39,35 @@ const UploadPostModal = props => {
     }
     
     const HandleVideoUpload = async (video) => {
-        const response = await fetch(video);
-        const blob = await response.blob();
+        // const response = await fetch(video);
+        // const blob = await response.blob();
+        const metadata = { contentType: "video/mp4" };
+
+  const blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+
+    xhr.ontimeout = function (e) {
+      // XMLHttpRequest timed out. Do something here.
+
+      console.log(e);
+    };
+    xhr.onerror = function (e) {
+      console.log(e);
+
+      reject(new TypeError("Network request failed"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", video, true);
+    xhr.timeout = 1000 * 60;
+    xhr.send(null);
+  });
         const imageRef = ref(storage, "songVideos/" + songName);
         const downloadURL =
-         await uploadBytes(imageRef, blob).then(snapshot => {
+         await uploadBytes(imageRef, blob, metadata).then(snapshot => {
             return getDownloadURL(snapshot.ref);
          })
         return downloadURL;
