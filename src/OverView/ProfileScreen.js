@@ -37,13 +37,16 @@ const ProfileScreen = props => {
     const isSuperUser = userDataSelector?.UserReducer?.account?.isSuperUser;
     const [isVisible, setIsVisble] = useState(false);
     const [token, setToken] = useState(null);
-
+    
     const userFormattedLastNameOparition = () => {
         const substringLastName = userLastName?.split(' ')
         let splittedLastName = [];
-        substringLastName?.forEach(x => {
-            splittedLastName.push(
-            x[0]?.toUpperCase() + x?.substring(1,x?.length))
+        substringLastName?.forEach((item, index) => {
+            if(item) {
+                splittedLastName.push(
+                    item[0]?.toUpperCase() + item?.substring(1,item?.length))
+            }
+            
         })
         return splittedLastName.join(' ');
     }

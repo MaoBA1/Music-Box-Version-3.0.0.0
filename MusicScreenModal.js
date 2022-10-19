@@ -323,7 +323,7 @@ const MusicScreenModal = props => {
                         <ImageBackground
                             source={{uri:songImage}}
                             style={{width:250, height: 300, alignItems: 'center', justifyContent: 'center'}}
-                            imageStyle={{opacity: isPlaying? 1 : 0.5, borderRadius:20}}
+                            imageStyle={{opacity: isPlaying? 1 : 0.5, borderRadius:20, resizeMode:"stretch"}}
                         >
                             {isLoading && <ActivityIndicator size="large" color={Colors.red3}/>}
                         </ImageBackground>

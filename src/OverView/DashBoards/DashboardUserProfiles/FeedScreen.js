@@ -150,7 +150,7 @@ const FeedScreen = props => {
     const isSuperUser = userSelector?.UserReducer?.account?.isSuperUser;
     const userId = isSuperUser? artistSelector?.ArtistDataReducer?._id : userSelector?.UserReducer?.account._id;
     const reciverName = isSuperUser ? userArtistName : userFormattedFirstName;
-    const reciverPhoto = isSuperUser ? artistSelector?.ArtistDataReducer?.profileImage : userDataSelector?.UserReducer?.account?.Avatar;
+    const reciverPhoto = isSuperUser ? artistSelector?.ArtistDataReducer?.profileImage : userSelector?.UserReducer?.account?.Avatar;
     const thisProfile = appSelector?.PostAuthorProfile;
    
     const createNewChat = async() => {

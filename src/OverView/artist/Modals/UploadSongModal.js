@@ -14,8 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSongsByUserFavoriteGeners, getAllSearchResults, getArtistLatestRealeases, getAllArtistSongs, setIsUploadComplete, setIsWaitingForUpload } from '../../../ApiCalls';
 import { uploadNewSongAction } from '../../../../store/actions/songActions';
 import { storage } from '../../../../firebase';
-import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { setIsWaitingForUploadAction, setIsUploadCompleteAction } from '../../../../store/actions/appActions';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 
 
 
@@ -391,65 +391,3 @@ export default UploadPostModal;
 
 
 
-// let details = {
-//     trackName: songName,
-//     trackLength: trackLength,
-//     trackImage: '',
-//     trackUri: '',
-//     gener: artistMainGener
-// }
-
-// const HandleVideoUpload = async (video) => {
-//     const response = await fetch(video);
-//     const blob = await response.blob();
-//     const imageRef = ref(storage, "songVideos/" + `${video.split("/")[video.split("/").length - 1]}`);
-//     const uploadFile = uploadBytesResumable(imageRef, blob);
-//     uploadFile.on('state_changed', (snapshot) => {
-//         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-//         console.log('====================================');
-//         console.log(snapshot.state);
-//         console.log('====================================');
-//         console.log('video progress: ' + progress);
-//         if(snapshot.bytesTransferred === snapshot.totalBytes) {
-//             getDownloadURL(uploadFile.snapshot.ref).then(async downloadURL => {
-//                 details.trackUri = downloadURL;
-//                 const jsonToken = await AsyncStorage.getItem('Token');        
-//                     const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
-//                     if(userToken) {
-//                         let action = uploadNewSongAction(userToken, details);
-//                         try{
-//                             await dispatch(action)
-//                             .then(result => {
-//                                 getAllArtistSongs(dispatch, userToken, artistId);
-//                                 getArtistLatestRealeases(dispatch, userToken, artistId);
-//                                 setIsLoading(false);
-//                                 props.close(false);
-//                             })
-//                         } catch(error){
-//                             console.log(error.message);
-//                         }
-//                     }
-//             })
-//         }
-//     }),(error) => {console.log(error)}
-// }
-
-// const HandleImageUpload = async (image) => {
-//     const response = await fetch(image);
-//     const blob = await response.blob();
-//     const imageRefFile = ref(storage, "songImages/" + `${image.split("/")[image.split("/").length - 1]}`);
-//     const uploadFile = uploadBytesResumable(imageRefFile, blob);
-//     uploadFile.on('state_changed', (snapshot) => {
-//         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-//         console.log('image progress: ' + progress);
-//         if(snapshot.bytesTransferred === snapshot.totalBytes) {
-//             getDownloadURL(uploadFile.snapshot.ref).then(downloadURL => {
-//                 console.log(downloadURL);
-//                 details.trackImage = downloadURL;
-//                 HandleVideoUpload(song);
-//             })
-//         }
-        
-//     })
-    
-// }
