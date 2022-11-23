@@ -18,17 +18,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maorbrasher.MusicBox3"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
-      
+      },
+      "package": "com.maorbrasher.MusicBox3"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "57cb3144-a55b-461f-88d3-8fbb639e247c"
+      }
     }
   }
 }
