@@ -49,7 +49,7 @@
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
     "save": "^2.5.0",
-    "expo-updates": "~0.14.6"
+    "expo-updates": "~0.14.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

@@ -6,13 +6,10 @@ import {
     TouchableOpacity,
     ImageBackground,
     Modal, Platform,
-    ActivityIndicator,
-    KeyboardAvoidingView } from 'react-native';
+} from 'react-native';
 import Style from './style/SignUpStyle';
 import ModalStyle from './style/ModalStyle';
 import Colors from '../Utitilities/AppColors';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -319,7 +316,7 @@ const SignUpScreen = props => {
 }
 
 
-export const screenOptions = navData => {
+export const screenOptions = () => {
     return {
         headerTitle:'Register',
         headerShown: true,
