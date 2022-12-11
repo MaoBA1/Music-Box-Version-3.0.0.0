@@ -15,17 +15,15 @@ import Colors from './src/Utitilities/AppColors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MusicScreenModal from "./MusicScreenModal";
 import PlayerButton from './src/components/PlayerButton';
-import { play, pause, resume, playNext } from './audioController';
+import { pause, resume, playNext } from './audioController';
 import { 
     pauseSongAction,
     resumeSongAction,
     playNextSongAction,
     preperNextSongAction,
     setMusicOnForGroundAction,
-    setIsUploadCompleteAction,
-    setIsWaitingForUploadAction
 } from './store/actions/appActions';
-import { setIsWaitingForUpload, setIsUploadComplete } from './src/ApiCalls';
+import { setIsUploadComplete } from './src/ApiCalls';
 import { Image, Dimensions } from "react-native";
 
 export const { height } = Dimensions.get('window');

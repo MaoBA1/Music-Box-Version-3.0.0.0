@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
@@ -51,11 +50,6 @@ const loadFontsFromAssets = () => {
 
 
 export default function App() {
-  const [isFontsLoading,setIsFontsLoading] = useState(false);
-  const [isMusicInTheBackGround, setIsMusicInTheBackground] = useState(false);
-  
-
-
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
