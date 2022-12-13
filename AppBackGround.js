@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
     View, 
     TouchableOpacity,
@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMusicOnBackGroundAction } from './store/actions/appActions'
-import {RootStack as AppNavigator, AuthStack} from './src/navigation';
+import {RootStack as AppNavigator} from './src/navigation';
 import {NavigationContainer} from '@react-navigation/native';
 import Colors from './src/Utitilities/AppColors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -29,7 +29,8 @@ import { Image, Dimensions } from "react-native";
 export const { height } = Dimensions.get('window');
 
 
-
+// Bottom Song Bar controller
+// It should appear when a user plays a song in the background
 export const SongBar = props => {
     const dispatch = useDispatch();
     const appSelector = useSelector(state => state.AppReducer);
@@ -314,6 +315,7 @@ export const SongBar = props => {
     )
 }
 
+// Side Song Bottom bar
 export const SideSongBar = props => {
     const dispatch = useDispatch();
     const appSelector = useSelector(state => state.AppReducer);
