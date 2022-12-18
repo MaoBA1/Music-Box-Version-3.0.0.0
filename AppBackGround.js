@@ -357,6 +357,7 @@ export const SideSongBar = props => {
     )
 }
 
+// This component used as indicator to upload some media
 export const UploadBarStatus = ({}) => {
     const dispatch = useDispatch();
     const appSelector = useSelector(state => state.AppReducer);

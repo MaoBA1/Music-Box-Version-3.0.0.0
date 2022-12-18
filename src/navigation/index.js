@@ -1,16 +1,11 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { TouchableOpacity, Platform, View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../Utitilities/AppColors';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useSelector } from 'react-redux';
 
 
@@ -52,13 +47,12 @@ import CreatArtistScreen, {screenOptions as CreatArtistScreenOptions} from '../O
 import ArtistProfileScreen, {screenOptions as ArtistProfileScreenOptions} from '../OverView/artist/ArtistProfileScreen';
 import ArtistFeedScreen, {screenOptions as ArtistFeedScreenOptions} from '../OverView/artist/ArtistFeedScreen';
 import ArtistMusicScreen, {screenOptions as ArtistMusicScreenOptions} from '../OverView/artist/ArtistMusicScreen';
-import AllArtistSingels from '../OverView/artist/Modals/AllArtistSingels';
+
 
 //comment
 
 
-
-
+// This is the stack that holds all the other stacks that contain the application's screens
 const RootStackNavigator = createStackNavigator();
 export const RootStack = () => {
     return(
@@ -145,45 +139,6 @@ export const DashBoardTopBarStack = () => {
         </DashBoardTopStackNavigator.Navigator>
     )
 }
-
-// const DashBoardArtistProfileStackNavigator = createStackNavigator();
-// export const DashBoardArtistProfileStack = () => {
-//     return(
-//         <DashBoardArtistProfileStackNavigator.Navigator>
-//             <DashBoardArtistProfileStackNavigator.Group screenOptions={{
-//             tabBarLabelStyle: {
-//                 fontFamily: 'Baloo2-Bold',
-//                 fontSize:16,            
-//             },
-//             tabBarStyle:{
-//                 backgroundColor:Colors.grey1,
-//                 paddingTop:Platform.OS == 'ios' ? 30 : 10,
-                
-//             },
-            
-//             tabBarIndicatorStyle:{backgroundColor:Colors.red3},
-//             tabBarActiveTintColor:Colors.red3,
-//             tabBarInactiveTintColor:Colors.grey3,
-//             tabBarPressColor:Colors.red3,
-//             indicatorStyle:{backgroundColor:Colors.red1}
-//         }}>
-//                 <DashBoardArtistProfileStackNavigator.Screen name='Feed' component={FeedScreen}/>
-//                 <DashBoardArtistProfileStackNavigator.Screen name='Music Board' component={MusciScreen}/>
-//             </DashBoardArtistProfileStackNavigator.Group>
-//         </DashBoardArtistProfileStackNavigator.Navigator>
-//     )
-// }
-// const profiledashBoardStackNavigator = createStackNavigator();
-// export const ProfiledashBoardStack = () => {
-//     return(
-//         <profiledashBoardStackNavigator.Navigator>
-//             <profiledashBoardStackNavigator.Screen name='Feed' component={FeedScreen}/>
-//             <profiledashBoardStackNavigator.Screen name='Music Board' component={MusciScreen}/> 
-//             <profiledashBoardStackNavigator.Screen name="PlaylistScreen" component={PlayListScreen} options={{headerShown: false}}/>                        
-//         </profiledashBoardStackNavigator.Navigator>
-//     )
-// }
-
 
 const ArtistProfileStackNavigator = createStackNavigator();
 export const ArtistProfileStack = () => {
