@@ -89,7 +89,7 @@ const VarificationScreen = props => {
                                             <View style={Style.verificationMessageView}>
                                                 <Text style={Style.explainText}>Hello {firstName}!</Text>
                                                 <Text style={Style.explainText}>We sent verification code to</Text>
-                                                <Text style={Style.explainText}>{user.email}</Text>
+                                                <Text style={Style.explainText}>the phone number linked to {user.email}</Text>
                                             </View>
                                         
                                             <View style={Style.verificationTextInputView}>
