@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     FlatList,
     ScrollView,
-    Modal
+    Modal,
+    Linking
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Style from './style/ArtistFeedStyle';
@@ -61,7 +62,7 @@ const ArtistFeedScreen = props => {
                     color={Colors.red3}
                     style={{ alignSelf:"flex-end", marginTop:15, right:10 }}
                     size={30}
-                    onPress={() => setUploadPostModalVisible(true)}
+                    onPress={() => Linking.openURL(`https://musicbox-uploadmediacenter.netlify.app`)}
                 />
             {
                 !artistPosts || artistPosts?.length == 0 ?

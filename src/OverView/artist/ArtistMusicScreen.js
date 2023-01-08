@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     FlatList,
     ScrollView,
-    Modal
+    Modal,
+    Linking
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Style from './style/ArtistFeedStyle';
@@ -89,8 +90,17 @@ const ArtistMusicScreen = props => {
             getAllArtistAlbums(dispatch, userToken, artistId);
         }
     }
+    const [userToken, setUserToken] = useState(null)
+    const getUserToken = async() => {
+        const jsonToken = await AsyncStorage.getItem('Token');        
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
+        if(userToken) { 
+            setUserToken(userToken);
+        }
+    }
 
     useEffect(() => {
+        getUserToken();
         const onPlaybackStatusUpdate = async(playbackStatus) => {
             if(playbackStatus.isLoaded && playbackStatus.isPlaying) {
                 dispatch(handleSeeBarAction({
@@ -131,6 +141,7 @@ const ArtistMusicScreen = props => {
             playbackObj.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
         }
         getArtistSongs();
+
     },[
         SongIndexReducer,
         SongOnBackGroundReducer,                
@@ -328,7 +339,7 @@ const ArtistMusicScreen = props => {
                         <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:12}}>Add to Playlist</Text>
                     </View>    
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setUploadSongModalVisible(true)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/4}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', borderLeftWidth:1, borderColor:Colors.grey3}}>
+                <TouchableOpacity onPress={() => Linking.openURL(`https://musicbox-uploadmediacenter.netlify.app`)} style={{backgroundColor:Colors.grey1, padding:10, width:`${100/4}%`, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', borderLeftWidth:1, borderColor:Colors.grey3}}>
                     <MaterialIcons
                         name='music-note'
                         size={25}
