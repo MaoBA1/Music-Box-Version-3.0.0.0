@@ -205,7 +205,16 @@ export const Song = ({item}) => {
     }
 
     return(
-        <TouchableOpacity onPress={() => handleAudioPress(item, 0, [item])} style={{width: '100%', padding:10, borderBottomWidth:1, backgroundColor: Colors.grey1, flexDirection:'row', borderColor:Colors.grey3}}>
+        <TouchableOpacity 
+            onPress={() => handleAudioPress(item, 0, [item])}
+            style={{
+                width: '100%',
+                padding:10,
+                borderBottomWidth:1,
+                backgroundColor: Colors.grey1,
+                flexDirection:'row',
+                borderColor:Colors.grey3
+            }}>
             <View style={{width: '20%'}}>
             <ImageBackground
                 style={{width: 65, height: 65, alignItems: 'center', justifyContent: 'center'}}
@@ -311,7 +320,8 @@ const SearchScreen = props => {
 
     const SerchByKeyWord = (text) => {
         setSearch(text);
-        let results = SearchSelector.filter(x => x?.name?.includes(search) === true || x?.name?.toLowerCase().includes(search.toLowerCase()));
+        let results = SearchSelector.filter(x => x?.name?.includes(search) === true || 
+        x?.name?.toLowerCase().includes(search.toLowerCase()));
         setSearchResult(results);
     }
 
@@ -376,7 +386,10 @@ const SearchScreen = props => {
                                 }
                                 {item.type === 'song' && <Song item={item}/>}
                                 {item.type === 'album' && 
-                                    <TouchableOpacity onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.tracks, screenName: item.name})}>
+                                    <TouchableOpacity 
+                                        onPress={() => props.navigation.navigate("PlaylistScreen",
+                                        {songsList: item.tracks, screenName: item.name})}
+                                    >
                                         <Album item={item}/>
                                     </TouchableOpacity>
                                 }

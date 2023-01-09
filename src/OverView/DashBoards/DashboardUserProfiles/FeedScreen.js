@@ -146,11 +146,14 @@ const FeedScreen = props => {
     let [isUserSubscribe, setIsUserSubscribe] = useState(false);
     const userArtistName = artistSelector?.ArtistDataReducer?.artistName;
     const userFirstName = userSelector?.UserReducer?.account?.firstName;
-    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
+    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + 
+    userFirstName?.substring(1,userFirstName?.length);
     const isSuperUser = userSelector?.UserReducer?.account?.isSuperUser;
-    const userId = isSuperUser? artistSelector?.ArtistDataReducer?._id : userSelector?.UserReducer?.account._id;
+    const userId = isSuperUser? artistSelector?.ArtistDataReducer?._id : 
+    userSelector?.UserReducer?.account._id;
     const reciverName = isSuperUser ? userArtistName : userFormattedFirstName;
-    const reciverPhoto = isSuperUser ? artistSelector?.ArtistDataReducer?.profileImage : userSelector?.UserReducer?.account?.Avatar;
+    const reciverPhoto = isSuperUser ? artistSelector?.ArtistDataReducer?.profileImage :
+     userSelector?.UserReducer?.account?.Avatar;
     const thisProfile = appSelector?.PostAuthorProfile;
    
     const createNewChat = async() => {
@@ -284,7 +287,11 @@ const FeedScreen = props => {
                         flex: 1,
                         backgroundColor:Colors.grey1
                     }}>
-                        {addToPlaylistVisible && <AddSongFromPostToPlaylist close={setAddToPlaylistVisible} track={songForPlaylist}/>}
+                        {addToPlaylistVisible && 
+                            <AddSongFromPostToPlaylist 
+                                close={setAddToPlaylistVisible}
+                                track={songForPlaylist}
+                        />}
                         <View style={{
                             position: 'absolute',
                             zIndex:1,
@@ -399,7 +406,15 @@ const FeedScreen = props => {
                             height:50,
                         }}>
                             
-                            <View style={{flexDirection:'row', width:'78%', backgroundColor:Colors.grey4, top:0.5, borderBottomRightRadius:50, borderTopWidth:0.5}}>
+                            <View 
+                                style={{
+                                    flexDirection:'row',
+                                    width:'78%',
+                                    backgroundColor:Colors.grey4,
+                                    top:0.5,
+                                    borderBottomRightRadius:50,
+                                    borderTopWidth:0.5
+                                }}>
                                 <TouchableOpacity
                                      style={{width:'50%', alignItems: 'center', borderRightWidth:0.5, justifyContent: 'center'}}
                                      onPress={() => openModals('gener')}
@@ -434,7 +449,9 @@ const FeedScreen = props => {
                                 (
                                     <View style={{bottom: 8}}>
                                         {
-                                            artistPosts?.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt))).map((item, index) => (
+                                            artistPosts?.
+                                            sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt))).
+                                            map((item, index) => (
                                                 <View key={index}>
                                                     <Post
                                                         post={item}
@@ -464,7 +481,9 @@ const FeedScreen = props => {
                                     }}
                                     imageStyle={{opacity: 0.3}}
                             >
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>There is no content to show right now</Text>
+                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>
+                                    There is no content to show right now
+                                </Text>
                             </ImageBackground>
                         ) 
                     }

@@ -69,7 +69,12 @@ const EditRegularUserScreen = props => {
     ]
 
     const isFiledFull = () => {
-        if(firstName.length < 2 || lastName.length < 2 || digits3 == '' || phoneNmber == '' || birthDate.getFullYear() > 2018) {                                
+        if(firstName.length < 2 || 
+            lastName.length < 2 ||
+             digits3 == '' ||
+              phoneNmber == '' ||
+               birthDate.getFullYear() >
+             2018) {                                
                 return false;
             } else {
                 return true;
@@ -80,7 +85,8 @@ const EditRegularUserScreen = props => {
     const HandleFileUpload = async () => {
         const response = await fetch(image);
         const blob = await response.blob();
-        const imageRef = ref(storage, "RegularUserProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const imageRef = ref(storage, "RegularUserProfileImages/" +
+         `${image.split("/")[image.split("/").length - 1]}`);
         const uploadFile = await uploadBytes(imageRef, blob);
         return getDownloadURL(uploadFile.ref);
     }
@@ -185,7 +191,9 @@ const EditRegularUserScreen = props => {
                                 (
                                     <View>
                                         <ActivityIndicator  color="#000"/>
-                                        <Text style={ModalStyle.errorMessegText}>Uploading your new profile picture ....</Text>
+                                        <Text style={ModalStyle.errorMessegText}>
+                                            Uploading your new profile picture ....
+                                        </Text>
                                     </View>
                                 )
                                 :
@@ -208,20 +216,46 @@ const EditRegularUserScreen = props => {
                     </View>
                 </Modal>
             </View>
-                <TouchableOpacity onPress={() => props.navigation.goBack(null)} style={{position: 'absolute', top:45, left:20}}>
+                <TouchableOpacity 
+                    onPress={() => props.navigation.goBack(null)}
+                    style={{
+                        position: 'absolute',
+                        top:45,
+                        left:20
+                    }}>
                     <FontAwesome5
                         name='arrow-left'
                         size={20}
                         color={'#fff'}
                     />
                 </TouchableOpacity>
-            <View style={{width:'100%', top:80, flexDirection:'row', padding:10, backgroundColor:Colors.grey4, justifyContent:'space-between'}}>
+            <View 
+                style={{
+                    width:'100%',
+                    top:80,
+                    flexDirection:'row',
+                    padding:10,
+                    backgroundColor:Colors.grey4,
+                    justifyContent:'space-between'
+                }}>
                 <View style={{height:70, width:'20%'}}>
                     <Image
                         source={{uri:image}}
                         style={{width:70, height:70, borderRadius:50}}
                     />
-                    <TouchableOpacity onPress={selectImageFromGallery} style={{width:25, height:25, alignItems: 'center', justifyContent: 'center', backgroundColor:Colors.grey7, borderRadius:50, left:55, bottom:70}}>
+                    <TouchableOpacity 
+                        onPress={selectImageFromGallery}
+                        style={{
+                            width:25,
+                            height:25,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor:Colors.grey7,
+                            borderRadius:50,
+                            left:55,
+                            bottom:70
+                        }}
+                    >
                         <MaterialIcons
                             name='edit'
                             size={15}
@@ -292,8 +326,30 @@ const EditRegularUserScreen = props => {
                     </View>
                     {
                             show && (
-                                <View style={Platform.OS == 'ios'? {width: '100%', flexDirection:'row-reverse'} : {}}>
-                                <View style={Platform.OS == 'ios'? {width:110, height:35, borderRadius:50, justifyContent:'center',alignItems:'center', backgroundColor:Colors.grey3}: {}}>
+                                <View style={
+                                    Platform.OS == 'ios'? 
+                                    {
+                                        width: '100%', 
+                                        flexDirection:'row-reverse'
+                                    }
+                                    :
+                                    {}
+                                }>
+                                <View 
+                                    style={
+                                        Platform.OS == 'ios'?
+                                        {
+                                            width:110,
+                                            height:35,
+                                            borderRadius:50,
+                                            justifyContent:'center',
+                                            alignItems:'center',
+                                            backgroundColor:Colors.grey3
+                                        }
+                                        :
+                                        {}
+                                    }
+                                >
                                 <DateTimePicker
                                     testID="dateTimePicker"
                                     value={birthDate}
@@ -350,18 +406,45 @@ const EditRegularUserScreen = props => {
                     </View>
 
 
-                    <View style={{width:'100%', height:130, alignItems: 'center', justifyContent: 'space-between', top:50}}>
+                    <View style={{
+                        width:'100%',
+                        height:130,
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        top:50
+                    }}>
                         {
                             isFiledFull() ?
                             (
-                                <TouchableOpacity onPress={updateAccount} style={{padding:10, borderWidth:2, borderRadius:50, borderColor:'#fff', backgroundColor:Colors.red3}}>
-                                    <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Update your Account</Text>
+                                <TouchableOpacity 
+                                    onPress={updateAccount}
+                                    style={{
+                                        padding:10,
+                                        borderWidth:2,
+                                        borderRadius:50,
+                                        borderColor:'#fff',
+                                        backgroundColor:Colors.red3
+                                    }}
+                                >
+                                    <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>
+                                        Update your Account
+                                    </Text>
                                 </TouchableOpacity>
                             )
                             :
                             (
-                                <View style={{padding:10, borderWidth:2, borderRadius:50, borderColor:'#fff', backgroundColor:Colors.red3, opacity:0.7}}>
-                                    <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>Update your Account</Text>
+                                <View 
+                                    style={{
+                                        padding:10,
+                                        borderWidth:2,
+                                        borderRadius:50,
+                                        borderColor:'#fff',
+                                        backgroundColor:Colors.red3,
+                                        opacity:0.7
+                                    }}>
+                                    <Text style={{fontFamily:'Baloo2-Bold', color:'#fff'}}>
+                                        Update your Account
+                                    </Text>
                                 </View>
                             )
                         }                        

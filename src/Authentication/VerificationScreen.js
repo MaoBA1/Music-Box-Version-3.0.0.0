@@ -132,7 +132,8 @@ const VarificationScreen = props => {
 
                                             
                                             
-                                            <TouchableOpacity onPress={() => props.navigation.navigate("Login")} style={Style.buttonView}>
+                                            <TouchableOpacity onPress={() => props.navigation.navigate("Login")} 
+                                            style={Style.buttonView}>
                                                 <Text style={Style.explainText}>Back to login</Text>                                    
                                             </TouchableOpacity>
                                         </View>

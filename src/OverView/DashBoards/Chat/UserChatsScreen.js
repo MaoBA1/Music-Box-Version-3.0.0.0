@@ -16,10 +16,12 @@ const UserChatsScreen = ({ navigation }) => {
     const userDataSelector = useSelector(state => state.UserReducer);
     const isSuperUser = userDataSelector?.UserReducer?.account?.isSuperUser;
     const artistSelector = useSelector(state => state.ArtistsReducer);
-    const reciverId = isSuperUser? artistSelector?.ArtistDataReducer?._id : userDataSelector?.UserReducer?.account._id;
+    const reciverId = isSuperUser? artistSelector?.ArtistDataReducer?._id : 
+    userDataSelector?.UserReducer?.account._id;
     const artistName = artistSelector?.ArtistDataReducer?.artistName;
     const userFirstName = userDataSelector?.UserReducer?.account?.firstName;
-    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
+    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + 
+    userFirstName?.substring(1,userFirstName?.length);
     const reciverName = isSuperUser ? artistName : userFormattedFirstName;
     
     
@@ -29,7 +31,9 @@ const UserChatsScreen = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
             messages.push({
                 text: doc.data().message,
-                createdAt: new Date(new Timestamp(doc?.data()?.timestamp?.seconds, doc?.data()?.timestamp?.nanoseconds).toDate()),
+                createdAt: 
+                new Date(new Timestamp(doc?.data()?.
+                timestamp?.seconds, doc?.data()?.timestamp?.nanoseconds).toDate()),
                 user: {
                     _id: doc.data().senderId,
                     name:doc.data().senderName,
@@ -47,7 +51,8 @@ const UserChatsScreen = ({ navigation }) => {
                 if(x.data().contacts.some(contact => contact.id === reciverId)) {
                     let messages = await getChatMessages(x.id);
                     messages = messages.sort((a, b) => b.createdAt - a.createdAt);
-                    let item = {data: x.data().contacts.filter(x => x.id !== reciverId)[0], id: x.id, messages: messages, lastModified: messages[0]?.createdAt};
+                    let item = {data: x.data().contacts.filter(x => x.id !== reciverId)[0], 
+                        id: x.id, messages: messages, lastModified: messages[0]?.createdAt};
                     if(item.messages.length > 0) {
                         contacts.push(item);
                         contacts = contacts.sort((a, b) => b.lastModified - a.lastModified);
@@ -77,7 +82,8 @@ const UserChatsScreen = ({ navigation }) => {
                         alignItems: "center",
                         borderBottomWidth:0.5,
                         borderColor: Colors.grey3,
-                    }} onPress={() => navigation.navigate("SingleChatScreen", { contact: item.data, chatId: item.id })}>
+                    }} onPress={() => navigation.navigate("SingleChatScreen", 
+                    { contact: item.data, chatId: item.id })}>
                         <Avatar
                             rounded
                             source={{

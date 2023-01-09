@@ -31,7 +31,8 @@ const ProfileScreen = props => {
     const userPlaylists = userDataSelector?.UserReducer?.account?.playlists;
     const userSubscribes = userDataSelector?.UserSubs?.Subscribes;
     const userFirstName = userDataSelector?.UserReducer?.account?.firstName;
-    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
+    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + 
+    userFirstName?.substring(1,userFirstName?.length);
     const userLastName = userDataSelector?.UserReducer?.account?.lastName;
     const userAvatar = userDataSelector?.UserReducer?.account?.Avatar;
     const isSuperUser = userDataSelector?.UserReducer?.account?.isSuperUser;
@@ -82,7 +83,9 @@ const ProfileScreen = props => {
     
     const removeGenerFromFavorites = async (generId) => {
         try{
-            const request = await fetch(baseIpRequest.ServerAddress + '/accounts/removeGenerFromFavorites/' + generId, {
+            const request = await fetch(baseIpRequest.ServerAddress + 
+                '/accounts/removeGenerFromFavorites/' +
+                generId, {
                 method:'PUT',
                 headers: {
                     'Content-type': 'application/json',
@@ -126,7 +129,9 @@ const ProfileScreen = props => {
             <View style={Style.mainContainer}>
                 <View style={Style.UpperContainer}>
                     <View style={Style.upperButtonPart}>
-                            <TouchableOpacity onPress={() => props.navigation.navigate('EditRegularUserPage')} style={Style.upperIconContainer}>
+                            <TouchableOpacity 
+                                onPress={() => props.navigation.navigate('EditRegularUserPage')} 
+                                style={Style.upperIconContainer}>
                                 <FontAwesome5
                                     name='user-edit'
                                     color='#fff'
@@ -136,7 +141,9 @@ const ProfileScreen = props => {
                             {
                                 isSuperUser?
                                 (
-                                    <TouchableOpacity onPress={() => props.navigation.navigate("ArtistProfilePage")}style={Style.superUserImageContainer}>
+                                    <TouchableOpacity 
+                                        onPress={() => props.navigation.navigate("ArtistProfilePage")}
+                                        style={Style.superUserImageContainer}>
                                         <Image
                                             source={{uri:userDataSelector?.UserReducer?.superAccount?.profileImage}}
                                             style={{width:40, height:40, borderRadius:50}}
@@ -145,7 +152,9 @@ const ProfileScreen = props => {
                                 )
                                 :
                                 (
-                                    <TouchableOpacity onPress={() => props.navigation.navigate('CreateArtistPage')}style={Style.upperIconContainer}>
+                                    <TouchableOpacity 
+                                        onPress={() => props.navigation.navigate('CreateArtistPage')}
+                                        style={Style.upperIconContainer}>
                                         <MaterialIcons
                                             name='upgrade'
                                             color='#fff'
@@ -180,7 +189,16 @@ const ProfileScreen = props => {
                                 />
                             </TouchableOpacity>
                     </View>
-                    <View style={{width:'100%', flexDirection:'row', backgroundColor:Colors.grey4, padding: 10, alignItems: 'center', marginVertical:5}}>
+                    <View 
+                        style={{
+                            width:'100%',
+                            flexDirection:'row',
+                            backgroundColor:Colors.grey4,
+                            padding: 10,
+                            alignItems: 'center',
+                            marginVertical:5
+                        }}
+                    >
                         <FlatList
                             horizontal
                             data={userFavoritesGeners}
@@ -190,7 +208,19 @@ const ProfileScreen = props => {
                                 <View>
                                     {
                                         userFavoritesGeners.length > 1 &&
-                                        <TouchableOpacity onPress={() => removeGenerFromFavorites(item._id)} style={{backgroundColor:Colors.grey5, borderRadius:50, width:20, height:20, alignItems: 'center', justifyContent: 'center', position: 'absolute', zIndex:1}}>
+                                        <TouchableOpacity 
+                                            onPress={() => removeGenerFromFavorites(item._id)}
+                                            style={{
+                                                backgroundColor:Colors.grey5,
+                                                borderRadius:50,
+                                                width:20,
+                                                height:20,
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                position: 'absolute',
+                                                zIndex:1
+                                            }}
+                                        >
                                             <Ionicons
                                                 name='close'
                                                 size={15}
@@ -226,7 +256,15 @@ const ProfileScreen = props => {
                     {
                         userSubscribes?.length > 0?
                         (
-                            <View style={{width:'100%', flexDirection:'row', backgroundColor:Colors.grey4, padding:10, alignItems: 'center', marginVertical:5}}>
+                            <View 
+                                style={{
+                                    width:'100%',
+                                    flexDirection:'row',
+                                    backgroundColor:Colors.grey4,
+                                    padding:10,
+                                    alignItems: 'center',
+                                    marginVertical:5
+                                }}>
                                 <FlatList
                                     horizontal
                                     data={userSubscribes}
@@ -239,9 +277,22 @@ const ProfileScreen = props => {
                                         >
                                             <Image
                                                 source={{uri:item.profileImage}}
-                                                style={{width:80, height:50, margin:5, borderRadius:10, resizeMode:'stretch'}}
+                                                style={{
+                                                    width:80,
+                                                    height:50,
+                                                    margin:5,
+                                                    borderRadius:10,
+                                                    resizeMode:'stretch'
+                                                }}
                                             />
-                                            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Bold', color:'#fff', top:5}}>{item.artistName}</Text>
+                                            <Text numberOfLines={1} 
+                                                style={{
+                                                    fontFamily:'Baloo2-Bold',
+                                                    color:'#fff',
+                                                    top:5
+                                                }}>
+                                                {item.artistName}
+                                            </Text>
                                         </TouchableOpacity>
                                     }
                                 />
@@ -250,8 +301,25 @@ const ProfileScreen = props => {
                         )
                         :
                         (
-                            <View style={{width:'100%', flexDirection:'row', backgroundColor:Colors.grey4, padding:10, alignItems: 'center', justifyContent: 'center', marginVertical:5}}>
-                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:18, color:Colors.red3}}>No subscribes yet</Text>
+                            <View 
+                                style={{
+                                    width:'100%',
+                                    flexDirection:'row',
+                                    backgroundColor:Colors.grey4,
+                                    padding:10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginVertical:5
+                                }}>
+                                <Text 
+                                    style={{
+                                        fontFamily:'Baloo2-Bold',
+                                        fontSize:18,
+                                        color:Colors.red3
+                                    }}
+                                >
+                                    No subscribes yet
+                                </Text>
                             </View>
                         )
                     }
@@ -273,7 +341,15 @@ const ProfileScreen = props => {
                     {
                         userPlaylists?.length > 0?
                         (
-                            <View style={{width:'100%', flexDirection:'row', backgroundColor:Colors.grey4, padding:10, alignItems: 'center', marginVertical:5}}>
+                            <View style={{
+                                    width:'100%',
+                                    flexDirection:'row',
+                                    backgroundColor:Colors.grey4,
+                                    padding:10,
+                                    alignItems: 'center',
+                                    marginVertical:5
+                                }}
+                            >
                                 <FlatList
                                     horizontal
                                     data={userPlaylists}
@@ -281,14 +357,24 @@ const ProfileScreen = props => {
                                     renderItem={
                                         ({item, index}) => 
                                         <TouchableOpacity 
-                                            onPress={() => props.navigation.navigate("AllSingels", {songsList: item.songs, screenName: item.playlistName})}
+                                            onPress={() => props.navigation.navigate("AllSingels", 
+                                            {songsList: item.songs, screenName: item.playlistName})}
                                             style={{alignItems: 'center'}}
                                         >
                                             <Image
                                                 source={{uri:item.playlistImage}}
                                                 style={{width:80, height:50, margin:5, borderRadius:10, resizeMode:'stretch'}}
                                             />
-                                            <Text numberOfLines={1} style={{fontFamily:'Baloo2-Bold', color:'#fff', top:5}}>{item.playlistName}</Text>
+                                            <Text 
+                                                numberOfLines={1}
+                                                style={{
+                                                    fontFamily:'Baloo2-Bold',
+                                                    color:'#fff',
+                                                    top:5
+                                                }}
+                                            >
+                                                {item.playlistName}
+                                            </Text>
                                         </TouchableOpacity>
                                     }
                                 />
@@ -297,10 +383,41 @@ const ProfileScreen = props => {
                         )
                         :
                         (
-                            <View style={{width:'100%', backgroundColor:Colors.grey4, padding:10, alignItems: 'center', marginVertical:5}}>
-                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:18, color:Colors.red3}}>Don't have playlists yet?</Text>
-                                <Text style={{fontFamily:'Baloo2-Medium', fontSize:18, color:'#fff'}}>What are you waiting for</Text>
-                                <Text style={{fontFamily:'Baloo2-Medium', fontSize:18, color:'#fff'}}>Click on the plus button</Text>
+                            <View 
+                                style={{
+                                    width:'100%',
+                                    backgroundColor:Colors.grey4,
+                                    padding:10,
+                                    alignItems: 'center',
+                                    marginVertical:5
+                                }}
+                            >
+                                <Text 
+                                    style={{
+                                        fontFamily:'Baloo2-Bold',
+                                        fontSize:18,
+                                        color:Colors.red3
+                                    }}
+                                >
+                                    Don't have playlists yet?
+                                </Text>
+                                <Text 
+                                    style={{
+                                        fontFamily:'Baloo2-Medium',
+                                        fontSize:18,
+                                        color:'#fff'
+                                    }}
+                                >
+                                    What are you waiting for
+                                </Text>
+                                <Text 
+                                    style={{
+                                        fontFamily:'Baloo2-Medium',
+                                        fontSize:18,
+                                        color:'#fff'
+                                }}>
+                                    Click on the plus button
+                                </Text>
                             </View>
                         )
                     }

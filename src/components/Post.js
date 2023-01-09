@@ -32,7 +32,8 @@ const Post = props => {
     const getUserDataSelector = useSelector(state => state.UserReducer);
     const artists = getAllArtistsSelector? getAllArtistsSelector?.ArtistsReducer?.artists : null;
     let likeStatus = false;
-    const formatted_artistName = post?.postAuthorName[0]?.toUpperCase() + post?.postAuthorName?.substring(1,post?.postAuthorName?.length);    
+    const formatted_artistName = post?.postAuthorName[0]?.toUpperCase() + 
+    image.pngpost?.postAuthorName?.substring(1,post?.postAuthorName?.length);    
     const postDate = new Date(post?.creatAdt).toDateString();
     let postAuthor = null;
     
@@ -152,7 +153,8 @@ const Post = props => {
         if(userToken){
             await getPostComment(dispatch, userToken, post._id)
             .then(result => {
-                props.openCommentScreen({post:post, postAuthor:formatted_artistName, postAuthorImage:postAuthor.profileImage})
+                props.openCommentScreen({post:post, postAuthor:formatted_artistName,
+                    postAuthorImage:postAuthor.profileImage})
             })
         }
     }

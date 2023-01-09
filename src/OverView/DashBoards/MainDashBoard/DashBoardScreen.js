@@ -97,7 +97,9 @@ const DashBoardScreen = ({ navigation }) => {
                                 style={{flex:1, width:'100%', height:'100%', alignItems: 'center', justifyContent:'center'}}
                                 imageStyle={{opacity: 0.3}}
                         >
-                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>There is no content to show right now</Text>
+                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:20}}>
+                                There is no content to show right now
+                            </Text>
                         </ImageBackground>
                     ) 
                     

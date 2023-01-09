@@ -17,7 +17,8 @@ const FirstUseScreen = props => {
     const geners = generSelector?.GenerReducer?.AllGeners;
     const user = userDataSelector?.UserReducer?.account;
     const firstName = user?.firstName;
-    const formattedUserFirstName = firstName? firstName[0].toUpperCase() + firstName?.substring(1,firstName?.length) : firstName;
+    const formattedUserFirstName = firstName? firstName[0].toUpperCase() +
+    firstName?.substring(1,firstName?.length) : firstName;
     const token = props.route.params?.token;
     
    const MoveToHomePage = async() => {

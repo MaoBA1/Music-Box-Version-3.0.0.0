@@ -28,7 +28,8 @@ const MenuScreen = props => {
     const userDataSelector = useSelector(state => state.UserReducer);
     const user = userDataSelector?.UserReducer?.account;
     const userFirstName = userDataSelector?.UserReducer?.account?.firstName;
-    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
+    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + 
+    userFirstName?.substring(1,userFirstName?.length);
     const userLastName = userDataSelector?.UserReducer?.account?.lastName;
     const userAvatar = userDataSelector?.UserReducer?.account?.Avatar;
     const isSuperUser = userDataSelector?.UserReducer?.account?.isSuperUser;
@@ -138,7 +139,15 @@ const MenuScreen = props => {
                                 color={Colors.red3}
                                 onPress={() => setProfileOptionVisible(false)}
                             />
-                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:16, left:10}}>Your profile screens</Text>
+                            <Text 
+                                style={{
+                                    fontFamily:'Baloo2-Bold',
+                                    color:'#fff',
+                                    fontSize:16,
+                                    left:10
+                                }}>
+                                Your profile screens
+                            </Text>
                         </View>
                         <TouchableOpacity style={{
                             width:'95%',
@@ -155,7 +164,16 @@ const MenuScreen = props => {
                                     source={{uri:userAvatar}}
                                     style={{width:50, height:50, borderRadius:50, resizeMode:'stretch'}}
                                 />
-                                <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:13, left:10}}>{userFormattedFirstName} {userLastName}</Text>
+                                <Text 
+                                    style={{
+                                        fontFamily:'Baloo2-Bold',
+                                        color:'#fff',
+                                        fontSize:13,
+                                        left:10
+                                    }}
+                                >
+                                    {userFormattedFirstName} {userLastName}
+                                </Text>
                             
                         </TouchableOpacity>
                         <TouchableOpacity style={{
@@ -183,14 +201,32 @@ const MenuScreen = props => {
                                             style={{width:47, height:47, borderRadius:50, resizeMode:'stretch'}}
                                         />
                                     </View>
-                                        <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:13, left:10}}>{userDataSelector?.UserReducer?.superAccount?.artistName} </Text>
+                                        <Text 
+                                            style={{
+                                                fontFamily:'Baloo2-Bold',
+                                                color:'#fff',
+                                                fontSize:13,
+                                                left:10
+                                            }}
+                                        >
+                                            {userDataSelector?.UserReducer?.superAccount?.artistName}
+                                        </Text>
                                     </>
                                 )
                                 :
                                 (
                                     <>
                                     <View 
-                                        style={{width:47, height:47, borderRadius:50, backgroundColor:Colors.grey3, alignItems: 'center', justifyContent: 'center', borderColor:'#fff', borderWidth:1}}
+                                        style={{
+                                            width:47,
+                                            height:47,
+                                            borderRadius:50,
+                                            backgroundColor:Colors.grey3,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderColor:'#fff',
+                                            borderWidth:1
+                                        }}
                                     >
                                         <FontAwesome
                                             name='level-up'
@@ -198,7 +234,14 @@ const MenuScreen = props => {
                                             size={20}
                                         />
                                     </View>
-                                        <Text style={{fontFamily:'Baloo2-Bold', color:Colors.red3, fontSize:13, left:10}}>Upgrade your account</Text>
+                                        <Text style={{
+                                            fontFamily:'Baloo2-Bold',
+                                            color:Colors.red3,
+                                            fontSize:13,
+                                            left:10
+                                        }}>
+                                            Upgrade your account
+                                        </Text>
                                     </>
                                 )
                             }
@@ -251,7 +294,15 @@ const MenuScreen = props => {
                                 source={{uri:userAvatar}}
                                 style={{width:50, height:50, borderRadius:50, resizeMode:'stretch'}}
                             />
-                            <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', fontSize:13, left:10}}>{userFormattedFirstName} {userLastName}</Text>
+                            <Text 
+                                style={{
+                                    fontFamily:'Baloo2-Bold',
+                                    color:'#fff',
+                                    fontSize:13,
+                                    left:10
+                                }}>
+                                {userFormattedFirstName} {userLastName}
+                            </Text>
                         </View>
                         <View style={{flexDirection: 'row', alignItems: 'center', width:'22%', justifyContent: 'space-between'}}>
                             
@@ -271,7 +322,16 @@ const MenuScreen = props => {
                                 :
                                 (
                                     <TouchableOpacity 
-                                        style={{width:30, height:30, borderRadius:50, backgroundColor:Colors.grey3, alignItems: 'center', justifyContent: 'center', borderColor:'#fff', borderWidth:1}}
+                                        style={{
+                                            width:30,
+                                            height:30,
+                                            borderRadius:50,
+                                            backgroundColor:Colors.grey3,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderColor:'#fff',
+                                            borderWidth:1
+                                    }}
                                         onPress={() => props.navigation.jumpTo('Profile', {screen:'CreateArtistPage'})}>
                                         <FontAwesome
                                             name='level-up'
@@ -299,9 +359,22 @@ const MenuScreen = props => {
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
-                    <View style={{flexDirection: 'row', width:'80%', justifyContent: 'space-between', marginTop:120, alignSelf: 'center'}}>
+                    <View style={{
+                        flexDirection: 'row',
+                        width:'80%',
+                        justifyContent: 'space-between',
+                        marginTop:120,
+                        alignSelf: 'center'
+                    }}>
                             <TouchableOpacity
-                                style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
+                                style={{
+                                    width:150,
+                                    height:150,
+                                    backgroundColor:Colors.grey4,
+                                    borderRadius:10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
                                 onPress={() => props.navigation.jumpTo('Home', {screen: "Feed"})}
                             >
                                 <FontAwesome5
@@ -312,7 +385,14 @@ const MenuScreen = props => {
                                 <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Feed</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
+                                style={{
+                                    width:150,
+                                    height:150,
+                                    backgroundColor:Colors.grey4,
+                                    borderRadius:10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
                                 onPress={() => props.navigation.jumpTo('Home', {screen: "Music Board"})}
                             >
                                 <FontAwesome
@@ -323,9 +403,24 @@ const MenuScreen = props => {
                                 <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Music</Text>
                             </TouchableOpacity>
                     </View>
-                    <View style={{flexDirection: 'row', width:'80%', justifyContent: 'space-between', marginTop:20, alignSelf: 'center'}}>
+                    <View 
+                        style={{
+                            flexDirection: 'row',
+                            width:'80%',
+                            justifyContent: 'space-between',
+                            marginTop:20,
+                            alignSelf: 'center'
+                        }}
+                    >
                             <TouchableOpacity 
-                                style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
+                                style={{
+                                    width:150,
+                                    height:150,
+                                    backgroundColor:Colors.grey4,
+                                    borderRadius:10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
                                 onPress={() => props.navigation.navigate('EditRegularUserPage')}
                             >
                                 <Ionicons
@@ -336,7 +431,14 @@ const MenuScreen = props => {
                                 <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Profile Settings</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
-                                style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
+                                style={{
+                                    width:150,
+                                    height:150,
+                                    backgroundColor:Colors.grey4,
+                                    borderRadius:10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
                                 onPress={() => props.navigation.navigate('UserChatScreen')}
                             >
                                 <Entypo   
@@ -347,9 +449,24 @@ const MenuScreen = props => {
                                 <Text style={{fontFamily:'Baloo2-Bold', color:'#fff', top:10 }}>Messages</Text>
                             </TouchableOpacity>
                     </View>
-                    <View style={{flexDirection: 'row', width:'80%', justifyContent: 'space-between', marginTop:20, alignSelf: 'center'}}>
+                    <View 
+                        style={{
+                            flexDirection: 'row',
+                            width:'80%',
+                            justifyContent: 'space-between',
+                            marginTop:20,
+                            alignSelf: 'center'
+                        }}
+                    >
                             <TouchableOpacity 
-                                style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
+                                style={{
+                                    width:150,
+                                    height:150,
+                                    backgroundColor:Colors.grey4,
+                                    borderRadius:10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
                                 onPress={() => props.navigation.navigate('Search')}
                             >
                                 <Fontisto 
@@ -363,8 +480,19 @@ const MenuScreen = props => {
                                 userFavoriteSongs?.songs?.length > 0 ?
                                 (
                                     <TouchableOpacity 
-                                        style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center'}}
-                                        onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: userFavoriteSongs?.songs, screenName: 'Your Favorite Songs', optionToDelete: false, isRegularUserPlaylist: true, playlistId: userFavoriteSongs?._id})}
+                                        style={{
+                                            width:150,
+                                            height:150,
+                                            backgroundColor:Colors.grey4,
+                                            borderRadius:10,
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                        onPress={() => props.navigation.navigate("PlaylistScreen",
+                                        {songsList: userFavoriteSongs?.songs, screenName: 'Your Favorite Songs',
+                                         optionToDelete: false, isRegularUserPlaylist: true,
+                                         playlistId: userFavoriteSongs?._id
+                                        })}
                                     >
                                         <FontAwesome5   
                                             name="music"
@@ -377,7 +505,16 @@ const MenuScreen = props => {
                                 )
                                 :
                                 (
-                                    <View style={{width:150, height:150, backgroundColor:Colors.grey4, borderRadius:10, alignItems: 'center', justifyContent: 'center', opacity:0.7}}>
+                                    <View 
+                                        style={{
+                                            width:150,
+                                            height:150,
+                                            backgroundColor:Colors.grey4,
+                                            borderRadius:10,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            opacity:0.7
+                                        }}>
                                         <FontAwesome5   
                                             name="music"
                                             size={40}

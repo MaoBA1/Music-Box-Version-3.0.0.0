@@ -82,7 +82,9 @@ const ResetPasswordScreen = props => {
                             <View style={{alignItems:'center', marginBottom:30}}>
                                 <Text style={Style.subTitleText}>Create a new password</Text>
                                 <Text style={Style.explainText}>- Password must be atlist 8 charcters</Text>
-                                <Text style={Style.explainText}>- A strong password is a combination{'\n'}  of letters, numbers and punctuation</Text>
+                                <Text style={Style.explainText}>
+                                    - A strong password is a combination{'\n'}  of letters, numbers and punctuation
+                                </Text>
                             </View>
                             <KeyboardAvoidingView>
                                 <View style={{width:'100%', alignItems:'center', margin:10}}>

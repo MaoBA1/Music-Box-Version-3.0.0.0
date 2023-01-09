@@ -25,11 +25,13 @@ const SingleChatScreen = ({ navigation, route }) => {
     const artistSelector = useSelector(state => state.ArtistsReducer);
     const artistName = artistSelector?.ArtistDataReducer?.artistName;
     const userFirstName = userDataSelector?.UserReducer?.account?.firstName;
-    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
+    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + 
+    userFirstName?.substring(1,userFirstName?.length);
     const userAvatar = userDataSelector?.UserReducer?.account?.Avatar;
     const artistAvatar = artistSelector?.ArtistDataReducer?.profileImage;
     const reciverName = isSuperUser ? artistName : userFormattedFirstName;
-    const reciverId = isSuperUser? artistSelector?.ArtistDataReducer?._id : userDataSelector?.UserReducer?.account._id;
+    const reciverId = isSuperUser? artistSelector?.ArtistDataReducer?._id :
+    userDataSelector?.UserReducer?.account._id;
     const reciverAvatar = isSuperUser ? artistAvatar : userAvatar;
     
     // contact
@@ -152,7 +154,8 @@ const SingleChatScreen = ({ navigation, route }) => {
                     const userId = currentMessage?.user?._id;
                     const userName = currentMessage?.user?.name;
                     const message = currentMessage?.text;
-                    const createdAt = new Date(currentMessage.createdAt).toLocaleTimeString().split(":").slice(0,2).join(":");
+                    const createdAt = new Date(currentMessage.createdAt).
+                    toLocaleTimeString().split(":").slice(0,2).join(":");
                     return createdAt? 
                     (
                         <>
@@ -166,8 +169,23 @@ const SingleChatScreen = ({ navigation, route }) => {
                                         borderTopRightRadius:20,
                                         borderBottomLeftRadius:20
                                     }}>
-                                        <Text style={{fontFamily:"Baloo2-Medium", color:'#fff', fontSize:15}}>{message}</Text>
-                                        <Text style={{fontFamily:"Baloo2-Regular", color: Colors.grey2, fontSize:12}}>{createdAt}</Text>
+                                        <Text 
+                                            style={{
+                                                fontFamily:"Baloo2-Medium",
+                                                color:'#fff',
+                                                fontSize:15
+                                            }}>
+                                            {message}
+                                        </Text>
+                                        <Text 
+                                            style={{
+                                                fontFamily:"Baloo2-Regular",
+                                                color: Colors.grey2,
+                                                fontSize:12
+                                            }}
+                                        >
+                                            {createdAt}
+                                        </Text>
                                     </View>
                                 )
                                 :
@@ -179,8 +197,23 @@ const SingleChatScreen = ({ navigation, route }) => {
                                         borderTopRightRadius:20,
                                         borderBottomRightRadius:20
                                     }}>
-                                        <Text style={{fontFamily:"Baloo2-Medium", color:Colors.grey4, fontSize:15}}>{message}</Text>
-                                        <Text style={{fontFamily:"Baloo2-Regular", color: Colors.grey3, fontSize:12}}>{createdAt}</Text>
+                                        <Text 
+                                            style={{
+                                                fontFamily:"Baloo2-Medium",
+                                                color:Colors.grey4,
+                                                fontSize:15
+                                            }}
+                                        >
+                                            {message}
+                                        </Text>
+                                        <Text
+                                             style={{
+                                                fontFamily:"Baloo2-Regular",
+                                                color: Colors.grey3,
+                                                fontSize:12
+                                            }}>
+                                                {createdAt}
+                                        </Text>
                                     </View>
                                 )
                             }

@@ -200,7 +200,10 @@ const SignUpScreen = props => {
                     {
                             show && (
                                 <View style={Platform.OS == 'ios'? {width: '100%', flexDirection:'row-reverse'} : {}}>
-                                <View style={Platform.OS == 'ios'? {width:110, height:35, borderRadius:50, justifyContent:'center',alignItems:'center', backgroundColor:Colors.grey3}: {}}>
+                                <View style={
+                                    Platform.OS == 'ios'?
+                                    {width:110, height:35, borderRadius:50, justifyContent:'center',alignItems:'center', backgroundColor:Colors.grey3}:
+                                {}}>
                                 <DateTimePicker
                                     testID="dateTimePicker"
                                     value={birthDate}

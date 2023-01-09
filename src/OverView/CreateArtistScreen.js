@@ -120,29 +120,13 @@ const CreatArtistScreen = props => {
         ]
     }
 
-    // const HandleFileUpload = async image => {
-    //     let sourceuri = image;
-    //     let newFile = {
-    //         uri: sourceuri,
-    //         type: `test/${sourceuri.split(".")[1]}`,
-    //         name: `test.${sourceuri.split(".")[1]}`
-    //     }
-    //     const data = new FormData();
-    //     data.append('file', newFile);
-    //     data.append('upload_preset', 'AritstProfileImages');
-    //     data.append('cloud_name', 'musicbox');
-    //     const res = await fetch('https://api.cloudinary.com/v1_1/musicbox/image/upload', {
-    //         method: 'post',
-    //         body: data
-    //     });
-    //     const result = await res.json();  
-    //     return result.secure_url;
-    // }
+  
 
     const HandleFileUpload = async (image) => {
         const response = await fetch(image);
         const blob = await response.blob();
-        const imageRef = ref(storage, "AritstProfileImages/" + `${image.split("/")[image.split("/").length - 1]}`);
+        const imageRef = ref(storage, "AritstProfileImages/" + 
+        `${image.split("/")[image.split("/").length - 1]}`);
         const uploadFile = await uploadBytes(imageRef, blob);
         return getDownloadURL(uploadFile.ref);
     }
@@ -230,7 +214,9 @@ const CreatArtistScreen = props => {
                                 <View style={ModalStyle.errorMessageContentView}>
                                     <View>
                                         <ActivityIndicator  color="#000"/>
-                                        <Text style={ModalStyle.errorMessegText}>Uploading your new profile pictures ....</Text>
+                                        <Text style={ModalStyle.errorMessegText}>
+                                            Uploading your new profile pictures ....
+                                        </Text>
                                     </View>
                                 </View>
                             )
@@ -258,10 +244,14 @@ const CreatArtistScreen = props => {
                !accountUpdated?
                 (
                     <View style={{flex:1, width:'100%', height:'100%'}}>
-                        <GeneralHeader title={'Create Artist Profile'} goBack={() => props.navigation.goBack(null)}/>
+                        <GeneralHeader title={'Create Artist Profile'} 
+                            goBack={() => props.navigation.goBack(null)}
+                        />
                         <ScrollView>
                             <View style={Style.queryTitleContainer}>
-                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>What is your nick ?</Text>
+                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>
+                                    What is your nick ?
+                                </Text>
                             </View>
 
                             <TextInput
@@ -276,7 +266,9 @@ const CreatArtistScreen = props => {
                             />
 
                             <View style={Style.queryTitleContainer}>
-                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>Description</Text>
+                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>
+                                    Description
+                                </Text>
                             </View>
 
                             <TextInput
@@ -290,18 +282,36 @@ const CreatArtistScreen = props => {
                             />
 
                             <View style={Style.queryTitleContainer}>
-                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>Pic Profile Image</Text>
+                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>
+                                    Pic Profile Image
+                                </Text>
                             </View>
 
-                            <View style={[Style.queryContainer, {height:100, alignItems: 'center', paddingHorizontal:20}]}>
+                            <View 
+                                style={
+                                    [
+                                        Style.queryContainer,
+                                        {
+                                            height:100,
+                                            alignItems: 'center',
+                                            paddingHorizontal:20
+                                        }
+                                    ]
+                                }
+                            >
                                 <View>
-                                    <TouchableOpacity onPress={() => takeImageWithcamra('main')} style={Style.pictureButton}>
+                                    <TouchableOpacity 
+                                        onPress={() => takeImageWithcamra('main')}
+                                        style={Style.pictureButton}
+                                    >
                                             <FontAwesome
                                                 name='camera'
                                                 size={20}
                                             />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => selectImageFromGallery('main')} style={[Style.pictureButton,{marginTop:10}]}>
+                                    <TouchableOpacity 
+                                        onPress={() => selectImageFromGallery('main')}
+                                        style={[Style.pictureButton,{marginTop:10}]}>
                                             <FontAwesome5
                                                 name='images'
                                                 size={20}
@@ -310,25 +320,53 @@ const CreatArtistScreen = props => {
                                 </View>
                                 <View style={{marginLeft:90, backgroundColor:'#fff', borderRadius:20}}>
                                     <Image
-                                        source={ profileImage.length > 0 ? {uri: profileImage} : require('../../assets/AppAssets/Logo.png') }
+                                        source={ 
+                                            profileImage.length > 0 ?
+                                            {uri: profileImage}
+                                            : require('../../assets/AppAssets/Logo.png')
+                                         }
                                         style={{width:120, height:80, borderRadius:20, resizeMode:'stretch'}}
                                     />
                                 </View>
                             </View>
 
                             <View style={[Style.queryTitleContainer, {width:250}]}>
-                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>Pic Profile secondery Image</Text>
+                                <Text style={{fontFamily:'Baloo2-SemiBold', color: Colors.red3}}>
+                                    Pic Profile secondery Image
+                                </Text>
                             </View>
 
-                            <View style={[Style.queryContainer, {height:100, alignItems: 'center', paddingHorizontal:20}]}>
+                            <View 
+                                style={
+                                    [
+                                        Style.queryContainer, 
+                                        {
+                                            height:100,
+                                            alignItems: 'center',
+                                            paddingHorizontal:20
+                                        }
+                                    ]
+                                }
+                            >
                                 <View>
-                                    <TouchableOpacity onPress={() => takeImageWithcamra('second')} style={Style.pictureButton}>
+                                    <TouchableOpacity 
+                                        onPress={() => takeImageWithcamra('second')}
+                                        style={Style.pictureButton}
+                                    >
                                             <FontAwesome
                                                 name='camera'
                                                 size={20}
                                             />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => selectImageFromGallery('second')} style={[Style.pictureButton,{marginTop:10}]}>
+                                    <TouchableOpacity 
+                                        onPress={() => selectImageFromGallery('second')}
+                                        style={
+                                            [
+                                                Style.pictureButton,
+                                                {marginTop:10}
+                                            ]
+                                        }
+                                    >
                                             <FontAwesome5
                                                 name='images'
                                                 size={20}
@@ -337,7 +375,14 @@ const CreatArtistScreen = props => {
                                 </View>
                                 <View style={{marginLeft:90, backgroundColor:'#fff', borderRadius:20}}>
                                     <Image
-                                        source={ profileSeconderyImage.length > 0 ? {uri: profileSeconderyImage} : require('../../assets/AppAssets/Logo.png') }
+                                        source={ 
+                                            profileSeconderyImage.length > 0 ?
+                                            {
+                                                uri: profileSeconderyImage
+                                            } 
+                                            :
+                                            require('../../assets/AppAssets/Logo.png')
+                                        }
                                         style={{width:120, height:80, borderRadius:20, resizeMode:'stretch'}}
                                     />
                                 </View>
@@ -416,20 +461,64 @@ const CreatArtistScreen = props => {
                                     }
                                 />
                             </View>
-                            {userSkillsError && <Text style={{left:20, bottom:30, fontFamily:'Baloo2-Bold', color:Colors.red3, fontSize:14}}>choose at least one skill</Text>}
+                            {
+                                userSkillsError 
+                                &&
+                                <Text 
+                                    style={{
+                                        left:20,
+                                        bottom:30,
+                                        fontFamily:'Baloo2-Bold',
+                                        color:Colors.red3,
+                                        fontSize:14
+                                    }}
+                                >
+                                    choose at least one skill
+                                </Text>
+                            }
 
                             <View style={{width:'100%', alignItems: 'center', marginBottom:50}}>
                                 {
                                     artistName.length > 2 && mainGener != null ?
                                     (
-                                        <TouchableOpacity onPress={createArtistProfile} style={{padding:10, backgroundColor:Colors.red3, borderRadius:50, borderWidth:2, borderColor:'#fff'}}>
-                                            <Text style={{fontFamily:'Baloo2-Bold', color: '#fff'}}>Create Artist Profile</Text>
+                                        <TouchableOpacity 
+                                            onPress={createArtistProfile}
+                                            style={{
+                                                padding:10,
+                                                backgroundColor:Colors.red3,
+                                                borderRadius:50,
+                                                borderWidth:2,
+                                                borderColor:'#fff'
+                                            }}>
+                                            <Text 
+                                                style={{
+                                                    fontFamily:'Baloo2-Bold',
+                                                    color: '#fff'
+                                                }}>
+                                                    Create Artist Profile
+                                            </Text>
                                         </TouchableOpacity>
                                     )
                                     :
                                     (
-                                        <View style={{opacity:0.7, padding:10, backgroundColor:Colors.red3, borderRadius:50, borderWidth:2, borderColor:'#fff'}}>
-                                            <Text style={{fontFamily:'Baloo2-Bold', color: '#fff'}}>Create Artist Profile</Text>
+                                        <View 
+                                            style={{
+                                                opacity:0.7,
+                                                padding:10,
+                                                backgroundColor:Colors.red3,
+                                                borderRadius:50,
+                                                borderWidth:2,
+                                                borderColor:'#fff'
+                                            }}
+                                        >
+                                            <Text 
+                                                style={{
+                                                    fontFamily:'Baloo2-Bold',
+                                                    color: '#fff'
+                                                }}
+                                            >
+                                                Create Artist Profile
+                                            </Text>
                                         </View>
                                     )
                                 }
@@ -441,7 +530,14 @@ const CreatArtistScreen = props => {
                 )
                 :
                 (
-                    <View style={{flex:1 , width:'100%', height:'100%', alignItems: 'center', justifyContent: 'center'}}>
+                    <View 
+                        style={{
+                            flex:1 ,
+                            width:'100%',
+                            height:'100%',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
                         <AntDesign
                             name="like1"
                             size={50}
@@ -457,7 +553,9 @@ const CreatArtistScreen = props => {
 
                         
                         
-                        <TouchableOpacity onPress={() => props.navigation.navigate("ArtistProfilePage")} style={Style.buttonView}>
+                        <TouchableOpacity 
+                            onPress={() => props.navigation.navigate("ArtistProfilePage")} 
+                            style={Style.buttonView}>
                             <Text style={Style.explainText}>Continue to your new profile</Text>                                    
                         </TouchableOpacity>
                     </View>

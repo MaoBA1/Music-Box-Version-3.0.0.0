@@ -250,8 +250,10 @@ const MusicScreen = props => {
         }
         
             {
-                (!artistTop5 || artistTop5?.length === 0) && (!artistLatestRealeases || artistLatestRealeases?.length === 0)
-                && (!allArtistPlaylist || allArtistPlaylist?.length === 0) && (!allArtistAlbums || allArtistAlbums?.length === 0)
+                (!artistTop5 || artistTop5?.length === 0) && 
+                (!artistLatestRealeases || artistLatestRealeases?.length === 0)
+                && (!allArtistPlaylist || allArtistPlaylist?.length === 0) &&
+                (!allArtistAlbums || allArtistAlbums?.length === 0)
                 && (!allArtistSongs || allArtistSongs?.length === 0) ?
                 ( 
                     <ImageBackground
@@ -414,7 +416,9 @@ const MusicScreen = props => {
                                                         top:5,
                                                         height:'100%',
                                                         width:90
-                                                    }} onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.tracks, screenName: item.playlistName})}>
+                                                    }} 
+                                                    onPress={() => props.navigation.navigate("PlaylistScreen", 
+                                                    {songsList: item.tracks, screenName: item.playlistName})}>
                                                         <Image
                                                             style={{width:85, height:85, resizeMode:'stretch'}}
                                                             source={{uri:item.playlistImage}}
@@ -466,7 +470,8 @@ const MusicScreen = props => {
                                                         top:5,
                                                         height:'100%',
                                                         width:90
-                                                    }} onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.tracks, screenName: item.albumName})}>
+                                                    }} onPress={() => props.navigation.navigate("PlaylistScreen", 
+                                                    {songsList: item.tracks, screenName: item.albumName})}>
                                                         <Image
                                                             style={{width:85, height:85, resizeMode:'stretch'}}
                                                             source={{uri:item.albumCover}}
@@ -530,7 +535,9 @@ const MusicScreen = props => {
                                                 )
                                             }
                                                 <View style={{width: '100%', alignItems: 'center', margin:10}}>
-                                                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: allArtistSongs, screenName:"Singels"})}>
+                                                    <TouchableOpacity style={{alignItems: 'center'}} 
+                                                    onPress={() => props.navigation.navigate("PlaylistScreen", 
+                                                    {songsList: allArtistSongs, screenName:"Singels"})}>
                                                         <Text style={{
                                                             color:Colors.grey3,
                                                             fontFamily: 'Baloo2-Medium'

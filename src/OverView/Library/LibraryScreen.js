@@ -66,13 +66,33 @@ const LibraryScreen = props => {
                             backgroundColor: Colors.red3
                         }}>
                             <View style={{padding:20}}>
-                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Are you sure you want delete this playlist?</Text>
+                                <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>
+                                    Are you sure you want delete this playlist?
+                                </Text>
                             </View>
                             <View style={{flexDirection:'row'}}>
-                                <TouchableOpacity onPress={() => setDeletePostVisible(false)} style={{width:'50%', borderRightWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                <TouchableOpacity 
+                                    onPress={() => setDeletePostVisible(false)} 
+                                    style={{
+                                        width:'50%',
+                                        borderRightWidth:0.5,
+                                        borderTopWidth:1,
+                                        alignItems: 'center',
+                                        justifyContent:'center',
+                                        padding:5
+                                    }}>
                                     <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Cancel</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => deleteUserPlaylistFromLibrary()} style={{width:'50%', borderLeftWidth:0.5, borderTopWidth:1, alignItems: 'center', justifyContent:'center', padding:5}}>
+                                <TouchableOpacity 
+                                    onPress={() => deleteUserPlaylistFromLibrary()} 
+                                    style={{
+                                        width:'50%',
+                                        borderLeftWidth:0.5,
+                                        borderTopWidth:1,
+                                        alignItems: 'center',
+                                        justifyContent:'center',
+                                        padding:5
+                                    }}>
                                     <Text style={{fontFamily:'Baloo2-Bold', fontSize:14, color: '#fff'}}>Yes</Text>
                                 </TouchableOpacity>
                             </View>
@@ -87,14 +107,25 @@ const LibraryScreen = props => {
                         data={userPlaylists}
                         keyExtractor={item => item._id}
                         renderItem={({item, index}) => 
-                            <TouchableOpacity onPress={() => props.navigation.navigate("PlaylistScreen", {songsList: item.songs, screenName: item.playlistName, optionToDelete: item.playlistName != 'Songs That You Liked', isRegularUserPlaylist: true, playlistId: item._id})}  style={{width:140 ,margin:25, alignItems: 'center'}}>
+                            <TouchableOpacity 
+                                onPress={() => props.navigation.navigate("PlaylistScreen",
+                                {songsList: item.songs, screenName: item.playlistName, 
+                                optionToDelete: item.playlistName != 'Songs That You Liked',
+                                isRegularUserPlaylist: true, playlistId: item._id})}  
+                                style={{width:140 ,margin:25, alignItems: 'center'}}>
                                {
                                     item.playlistName !== 'Songs That You Liked' && 
                                     <Ionicons
                                         name='close'
                                         size={30}
                                         color={'#fff'}
-                                        style={{backgroundColor:Colors.grey3, borderRadius:50, position: 'absolute', zIndex:1, right:135, bottom:190}}
+                                        style={{
+                                            backgroundColor:Colors.grey3,
+                                            borderRadius:50,
+                                            position: 'absolute',
+                                            zIndex:1,
+                                            right:135,
+                                            bottom:190}}
                                         onPress={() => openDeleteModal(item)}
                                     />
                                }
@@ -129,7 +160,13 @@ const LibraryScreen = props => {
                 )
                 :
                 (
-                    <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+                    <View 
+                        style={{
+                            flex:1,
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                    >
                         <Text
                             style={{
                                 fontFamily: 'Baloo2-Bold',

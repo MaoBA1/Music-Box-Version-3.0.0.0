@@ -17,14 +17,19 @@ const CreateNewSingleChatScreen = ({ navigation }) => {
     const artistSelector = useSelector(state => state.ArtistsReducer);
     const artistName = artistSelector?.ArtistDataReducer?.artistName;
     const userFirstName = userDataSelector?.UserReducer?.account?.firstName;
-    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + userFirstName?.substring(1,userFirstName?.length);
+    const userFormattedFirstName = userFirstName && userFirstName[0]?.toUpperCase() + 
+    userFirstName?.substring(1,userFirstName?.length);
     const reciverName = isSuperUser ? artistName : userFormattedFirstName;
-    const reciverId = isSuperUser? artistSelector?.ArtistDataReducer?._id : userDataSelector?.UserReducer?.account._id;
-    const reciverPhoto = isSuperUser ? artistSelector?.ArtistDataReducer?.profileImage : userDataSelector?.UserReducer?.account?.Avatar;
+    const reciverId = isSuperUser? artistSelector?.ArtistDataReducer?._id :
+     userDataSelector?.UserReducer?.account._id;
+    const reciverPhoto = isSuperUser ? artistSelector?.ArtistDataReducer?.profileImage :
+     userDataSelector?.UserReducer?.account?.Avatar;
     
     const createNewChat = async(contact) => {
-        const q1 = query(collection(db, "single-chats"), where("chatName", "==", reciverName + " " + contact.artistName));
-        const q2 = query(collection(db, "single-chats"), where("chatName", "==", contact.artistName + " " + reciverName));
+        const q1 = query(collection(db, "single-chats"), 
+        where("chatName", "==", reciverName + " " + contact.artistName));
+        const q2 = query(collection(db, "single-chats"), 
+        where("chatName", "==", contact.artistName + " " + reciverName));
         const querySnapshot1 = await getDocs(q1);
         const querySnapshot2 = await getDocs(q2);
         
@@ -43,7 +48,8 @@ const CreateNewSingleChatScreen = ({ navigation }) => {
                         photo: contact.profileImage
                     }
                 ]
-            }).then((result) => { navigation.navigate("SingleChatScreen", { contact: contact, chatId: result.id })});
+            }).then((result) => { navigation.navigate("SingleChatScreen", 
+            { contact: contact, chatId: result.id })});
 
         } else if(!querySnapshot1.empty || !querySnapshot2.empty) {
             const unsub = onSnapshot(collection(db, "single-chats"), (snapShot) => {

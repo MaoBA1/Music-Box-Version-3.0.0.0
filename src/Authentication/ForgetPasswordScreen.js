@@ -66,14 +66,18 @@ const ForgetPassword = props => {
                         >
                             <View style={ModalStyle.errorMessageView}>
                                 <View style={ModalStyle.errorMessageContentView}>
-                                    <Text style={ModalStyle.errorMessegText}>Are you sure you want to reset your password?</Text>
+                                    <Text style={ModalStyle.errorMessegText}>
+                                        Are you sure you want to reset your password?
+                                    </Text>
                                     <View style={ModalStyle.line}></View>
                                     <View style={{flexDirection:'row', alignItems: 'center'}}>
-                                        <TouchableOpacity onPress={forgetPassword} style={{marginTop:10, width:'50%', alignItems: 'center'}}>
+                                        <TouchableOpacity onPress={forgetPassword} 
+                                        style={{marginTop:10, width:'50%', alignItems: 'center'}}>
                                             <Text style={{fontFamily:'Baloo2-Medium'}}>OK</Text>
                                         </TouchableOpacity>
                                         
-                                        <TouchableOpacity style={{alignItems: 'center', marginTop:10, width:"50%"}} onPress={() => setIsVisble1(false)}>
+                                        <TouchableOpacity style={{alignItems: 'center', marginTop:10, width:"50%"}}
+                                         onPress={() => setIsVisble1(false)}>
                                             <Text style={{fontFamily:'Baloo2-Medium'}}>Cencel</Text>
                                         </TouchableOpacity>
                                     </View>
