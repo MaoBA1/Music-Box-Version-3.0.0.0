@@ -24,6 +24,7 @@ import Colors from '../../../Utitilities/AppColors';
 import { Avatar } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { getPosts } from '../../../ApiCalls';
 
 const DashBoardScreen = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -40,7 +41,9 @@ const DashBoardScreen = ({ navigation }) => {
     const CloseAndOpenCommentScreen = (params) => {
         navigation.navigate("CommentScreen", {params: params});
     }
-
+    const refresh = () => {
+        getPosts(dispatch, token);
+    }
     useEffect(() => {
         async function getToken(){
             const jsonToken = await AsyncStorage.getItem('Token');        
@@ -73,6 +76,7 @@ const DashBoardScreen = ({ navigation }) => {
                     post && post.length > 0 ?
                     (
                         <FlatList
+                            onResponderEnd={refresh}
                             style={{width: '100%'}}
                             data={post.sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt)))}
                             keyExtractor={item => item._id}

@@ -80,6 +80,7 @@ const ArtistMusicScreen = props => {
     } = appBackGroundSelector;
    
     const getArtistSongs = async () => {
+        console.log('refresh');
         const jsonToken = await AsyncStorage.getItem('Token');        
         const userToken = jsonToken != null ? JSON.parse(jsonToken) : null;
         if(userToken) {            
@@ -349,7 +350,9 @@ const ArtistMusicScreen = props => {
                 </TouchableOpacity>
             </View>
 
-            <ScrollView>
+            <ScrollView
+                onResponderEnd={getArtistSongs}
+            >
                 <View style={{marginTop:20}}>
                     <View style={{left:10}}>
                         <Text style={{fontFamily:'Baloo2-Bold', color: '#fff', fontSize:18}}>Top 5</Text>

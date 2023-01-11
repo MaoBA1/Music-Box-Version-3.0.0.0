@@ -37,15 +37,17 @@ const ArtistFeedScreen = props => {
     const artistName = artistSelector?.ArtistDataReducer?.artistName;
     const profileImage = artistSelector?.ArtistDataReducer?.profileImage;
     
+    async function getArtistPostsAsync(){
+        const jsonToken = await AsyncStorage.getItem('Token');
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+        if(userToken) {
+            getArtistPostsById(dispatch, userToken, artistId);
+        }
+    }
+
+    
     
     useEffect(() => {
-        async function getArtistPostsAsync(){
-            const jsonToken = await AsyncStorage.getItem('Token');
-            const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
-            if(userToken) {
-                getArtistPostsById(dispatch, userToken, artistId);
-            }
-        }
         getArtistPostsAsync();
         
     },[])
@@ -56,7 +58,9 @@ const ArtistFeedScreen = props => {
         <View style={Style.backgroundContainer}>
             
             {uploadPostModalVisible && <UploadPostModal close={setUploadPostModalVisible}/>}
-            <ScrollView>
+            <ScrollView
+             onResponderEnd={getArtistPostsAsync}
+            >
                 <Ionicons
                     name="ios-add-circle"
                     color={Colors.red3}
