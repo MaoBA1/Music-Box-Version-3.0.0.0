@@ -33,7 +33,7 @@ const Post = props => {
     const artists = getAllArtistsSelector? getAllArtistsSelector?.ArtistsReducer?.artists : null;
     let likeStatus = false;
     const formatted_artistName = post?.postAuthorName[0]?.toUpperCase() + 
-    image.pngpost?.postAuthorName?.substring(1,post?.postAuthorName?.length);    
+    postAuthorName?.substring(1,post?.postAuthorName?.length);    
     const postDate = new Date(post?.creatAdt).toDateString();
     let postAuthor = null;
     
