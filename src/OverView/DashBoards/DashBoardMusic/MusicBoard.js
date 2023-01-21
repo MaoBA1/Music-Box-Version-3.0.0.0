@@ -57,9 +57,9 @@ const MusicBoardScreen = props => {
 
     useEffect(() => {
         function makeTopList(){
-            let playlist = userPlaylists?.sort((a,b) => (a.songs.length - b.songs.length));
+            let playlist = userPlaylists?.sort((a,b) => ((a, b) => 0.5 - Math.random()));
             let songsByGeners = songsByUserFavoriteGeners?.map(x => x = x.songs);
-            songsByGeners = [].concat.apply([],songsByGeners);
+            songsByGeners = [].concat.apply([],songsByGeners).sort((a, b) => 0.5 - Math.random());
             let list = [];
             for(let i = 0; list.length < 3 && i < playlist?.length; i ++) {
                 list.push({
