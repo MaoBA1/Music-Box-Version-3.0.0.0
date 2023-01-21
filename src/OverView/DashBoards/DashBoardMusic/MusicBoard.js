@@ -499,7 +499,8 @@ const MusicBoardScreen = props => {
                         <View>
                             <ScrollView>
                                 {
-                                    songsByUserFavoriteGeners?.map((item, index) =>
+                                    songsByUserFavoriteGeners?.
+                                    map((item, index) =>
                                         item?.songs?.length > 0 &&
                                         <View key={index}>
                                             <Text 
@@ -514,7 +515,10 @@ const MusicBoardScreen = props => {
                                             </Text>
                                             <ScrollView horizontal>
                                                 {
-                                                    item?.songs?.map((item, index, list) =>
+                                                    item?.songs?.
+                                                    sort((a, b) => (new Date(b.creatAdt) - new Date(a.creatAdt)))
+                                                    .map((item, index, list) =>
+                                                        
                                                         <TouchableOpacity 
                                                             onPress={() => handleAudioPress(item, index, list)} 
                                                             key={index} style={{

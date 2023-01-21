@@ -44,7 +44,7 @@ const loadFontsFromAssets = () => {
     'Baloo2-Medium' : require('./assets/fonts/Baloo2-Medium.ttf'),
     'Baloo2-Regular' : require('./assets/fonts/Baloo2-Regular.ttf'),
     'Baloo2-SemiBold' : require('./assets/fonts/Baloo2-SemiBold.ttf'),
-    'Baloo2-VariableFont_wght' : require('./assets/fonts/Baloo2-VariableFont_wght.ttf'),
+    // 'Baloo2-VariableFont_wght' : require('./assets/fonts/Baloo2-VariableFont_wght.ttf'),
   });
 }
 

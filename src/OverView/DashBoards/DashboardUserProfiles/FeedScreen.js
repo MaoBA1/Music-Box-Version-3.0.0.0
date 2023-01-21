@@ -57,7 +57,7 @@ export const GenersModal = ({close}) => {
             <View style={{width: '100%', alignItems: 'center'}}>
                 <Image
                     source={{uri: mainGener.generImage}}
-                    style={{width:100, height:50, margin:10}}
+                    style={{width:100, height:60, margin:10}}
                 />
             </View>
             <Text style={{
@@ -68,14 +68,16 @@ export const GenersModal = ({close}) => {
             }}>
                 Additional Geners
             </Text>
-            <View style={{width: '100%', justifyContent: 'center', flexDirection:'row', margin:10}}>
-                {additionalGener.map((item, index) => 
-                    <Image
-                        key={index}
-                        source={{uri: item.generImage}}
-                        style={{width:100, height:50, marginTop:5}}
-                    />
-                )}
+            <View style={{width: '100%', margin:10}}>
+                <ScrollView horizontal scrollToOverflowEnabled>
+                    {additionalGener.map((item, index) => 
+                        <Image
+                            key={index}
+                            source={{uri: item.generImage}}
+                            style={{width:100, height:60, marginTop:5, marginHorizontal:7}}
+                        />
+                    )}
+                </ScrollView>
             </View>
         </View>
     )
