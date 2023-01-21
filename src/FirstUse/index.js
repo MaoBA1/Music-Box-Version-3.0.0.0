@@ -7,11 +7,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import GenerItem from "./components/GenerItem";
 import { getUserDataAction } from '../../store/actions/userActions';
-import { getGenersAction } from '../../store/actions/genersActions'
+import { getGenersAction } from '../../store/actions/genersActions';
+import { getPosts } from '../ApiCalls';
 
 
 
 const FirstUseScreen = props => {
+    const dispatch = useDispatch();
     const userDataSelector = useSelector(state => state.UserReducer);
     const generSelector = useSelector(state => state.GenerReducer);
     const geners = generSelector?.GenerReducer?.AllGeners;
@@ -24,7 +26,12 @@ const FirstUseScreen = props => {
    const MoveToHomePage = async() => {
         const jsonIsItFirstUse = JSON.stringify(false);
         await AsyncStorage.setItem('IsItFirstUse', jsonIsItFirstUse);
-        props.navigation.navigate('OverView')
+        const jsonToken = await AsyncStorage.getItem('Token');         
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+        if(userToken) {
+            getPosts(dispatch, userToken);
+            props.navigation.navigate('OverView')
+        }
    }
     
     return(
