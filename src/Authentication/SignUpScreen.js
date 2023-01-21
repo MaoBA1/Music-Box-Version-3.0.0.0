@@ -11,7 +11,8 @@ import Style from './style/SignUpStyle';
 import ModalStyle from './style/ModalStyle';
 import Colors from '../Utitilities/AppColors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from 'react-native-picker-select';
@@ -21,7 +22,9 @@ import baseIpRequest from '../ServerDev';
 
 const SignUpScreen = props => {
     const [show, setShow] = useState(false);
-    const[birthDate, setBirthDate] = useState(new Date(Date.now()));
+    const defaultDate = new Date(Date.now());
+    defaultDate.setFullYear(defaultDate.getFullYear() - 10)
+    const[birthDate, setBirthDate] = useState(defaultDate);
     const [phoneNmber, setPhoneNumber] = useState('');
     const [digits3, setDigits3] = useState('');
     const [email, setEmail] = useState('');
@@ -47,7 +50,7 @@ const SignUpScreen = props => {
     function onDateSelected(event, value) {
         const currentDate = value || birthDate;
         setBirthDate(currentDate);
-        setShow(false);
+        // setShow(false);
     };
 
     const isFiledFull = () => {
@@ -189,12 +192,16 @@ const SignUpScreen = props => {
                             />
                         </View>
 
-                        <TouchableOpacity style={Style.calnderBtn} onPress={() => setShow(true)}>
-                            <FontAwesome
+                        <TouchableOpacity style={Style.calnderBtn} onPress={!show? () => setShow(true) : () => setShow(false)}>
+                            {!show?(<FontAwesome5
                                 name="calendar"
                                 size={20}
                                 color='#fff'
-                            />
+                            />) : (<FontAwesome
+                                name="close"
+                                size={20}
+                                color='#fff'
+                            />)}
                         </TouchableOpacity>
                     </View>
                     {
@@ -212,7 +219,7 @@ const SignUpScreen = props => {
                                     display='default'
                                     onChange={onDateSelected} 
                                     style={{width:100, height:80}}
-                                                      
+                                    
                                 />
                                 </View>
                                 </View>
