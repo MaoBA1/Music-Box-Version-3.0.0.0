@@ -9,6 +9,7 @@ import {
     ScrollView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../Utitilities/AppColors';
@@ -24,9 +25,8 @@ import {
     handleSeeBarAction
 } from '../../../../store/actions/appActions';
 import { Avatar } from 'react-native-elements';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { getArtistsByUserFavoriteGeners, getSongsByUserFavoriteGeners } from '../../../ApiCalls';
 
 
 const MusicBoardScreen = props => {
@@ -87,7 +87,7 @@ const MusicBoardScreen = props => {
             list = list.sort((a, b) => 0.5 - Math.random()).slice(0,6);
             setTopList(list);
         }
-        if(userPlaylists?.length > 0 || songsByUserFavoriteGeners?.length > 0){
+        if((userPlaylists?.length > 0 || songsByUserFavoriteGeners?.length > 0) && topList.length === 0 ){
             makeTopList();
         }
 
@@ -246,11 +246,19 @@ const MusicBoardScreen = props => {
         }
     }
     
+    const refresh = async() => {
+        const jsonToken = await AsyncStorage.getItem('Token');          
+        const userToken = jsonToken != null ? JSON.parse(jsonToken) : null; 
+        if(userToken) {
+            getArtistsByUserFavoriteGeners(dispatch, userToken);
+            getSongsByUserFavoriteGeners(dispatch, userToken);
+        }
+    }
     return(
         <View 
             style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:Colors.grey4}}
         >
-            <ScrollView style={{flex:1, width: '100%',}}>
+            <ScrollView style={{flex:1, width: '100%',}} onResponderEnd={refresh}>
                 <View 
                 style={{flexDirection: 'row', width: '100%', justifyContent: 'space-around', marginVertical: 20 }}>
                     <View style={{width:'47%'}}>
