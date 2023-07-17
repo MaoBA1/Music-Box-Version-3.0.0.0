@@ -8,13 +8,10 @@ const SuperUser = require('../models/superUser');
 const Gener = require('../models/gener');
 const bcryptjs = require('bcryptjs');
 const auth = require('./auth');
-//const funcs = require('./myFunctions');
 const Song = require('../models/song');
 const Album = require('../models/album');
-// const { setOptionsAndSendMail } = require('../mailSender');
 const { setOptionsAndSenSMS } = require('../twilio');
-// const { setOptionsAndSendSms } = require('../vonage');
-const { setOptionsAndSendSms } = require('../whatsapp');
+
 
 
 router.post('/creatAccount', async(request, response) => {    
